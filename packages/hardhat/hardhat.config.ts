@@ -53,6 +53,13 @@ const config: HardhatUserConfig = {
         url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
         enabled: process.env.MAINNET_FORKING_ENABLED === "true",
       },
+      // ClearSettle: Enable interval mining for realistic epoch/phase testing
+      // This simulates real block production timing for partial finality demo
+      // TODO: For production, remove this and use actual network block times
+      mining: {
+        auto: true, // Set to false and interval: 5000 for manual testing
+        // interval: 5000, // Uncomment for 5-second blocks during demo
+      },
     },
     mainnet: {
       url: "https://mainnet.rpc.buidlguidl.com",

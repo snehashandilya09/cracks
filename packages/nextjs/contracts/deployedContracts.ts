@@ -4,6 +4,869 @@
  */
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  31337: {
+    ClearSettle: {
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "BondSlashed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+          ],
+          name: "EmergencyTriggered",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "startBlock",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "commitEnd",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "revealEnd",
+              type: "uint256",
+            },
+          ],
+          name: "EpochInitialized",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "clearingPrice",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "matchedVolume",
+              type: "uint256",
+            },
+          ],
+          name: "EpochSettled",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "startBlock",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "commitEndBlock",
+              type: "uint256",
+            },
+          ],
+          name: "EpochStarted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+          ],
+          name: "EpochVoided",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "string",
+              name: "invariantName",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "passed",
+              type: "bool",
+            },
+          ],
+          name: "InvariantChecked",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "commitmentHash",
+              type: "bytes32",
+            },
+          ],
+          name: "OrderCommitted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "enum OrderSide",
+              name: "side",
+              type: "uint8",
+            },
+          ],
+          name: "OrderRevealed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "enum EpochPhase",
+              name: "fromPhase",
+              type: "uint8",
+            },
+            {
+              indexed: false,
+              internalType: "enum EpochPhase",
+              name: "toPhase",
+              type: "uint8",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "blockNumber",
+              type: "uint256",
+            },
+          ],
+          name: "PhaseTransition",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "tokensReceived",
+              type: "uint256",
+            },
+          ],
+          name: "SettlementClaimed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "disputer",
+              type: "address",
+            },
+          ],
+          name: "SettlementDisputed",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+          ],
+          name: "claimSettlement",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "commitmentHash",
+              type: "bytes32",
+            },
+          ],
+          name: "commitOrder",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "forceAdvanceEpoch",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getBlocksRemaining",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "blocks",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCalculatedPhase",
+          outputs: [
+            {
+              internalType: "enum EpochPhase",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+          ],
+          name: "getCommitment",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "bytes32",
+                  name: "hash",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint40",
+                  name: "commitBlock",
+                  type: "uint40",
+                },
+                {
+                  internalType: "uint96",
+                  name: "bondAmount",
+                  type: "uint96",
+                },
+                {
+                  internalType: "bool",
+                  name: "revealed",
+                  type: "bool",
+                },
+                {
+                  internalType: "bool",
+                  name: "slashed",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct Commitment",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getConfig",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "commitDuration",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "revealDuration",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "safetyBufferDuration",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "minCommitBond",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "settlementFeeRate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "disputeBondMultiplier",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "assertionWindow",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "disputeWindow",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "maxEpochDuration",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct LibClearStorage.ProtocolConfig",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCurrentEpoch",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCurrentEpochId",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCurrentPhase",
+          outputs: [
+            {
+              internalType: "enum EpochPhase",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+          ],
+          name: "getEpochData",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "epochId",
+                  type: "uint256",
+                },
+                {
+                  internalType: "enum EpochPhase",
+                  name: "phase",
+                  type: "uint8",
+                },
+                {
+                  internalType: "uint256",
+                  name: "startBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "commitEndBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "revealEndBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "settleBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "safetyEndBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "clearingPrice",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "totalBuyVolume",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "totalSellVolume",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "matchedVolume",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "disputed",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct EpochData",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+          ],
+          name: "getSettlementResult",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "tokensReceived",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "tokensPaid",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "bondReturned",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "claimed",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct SettlementResult",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getStats",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "totalDeposits",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "totalWithdrawals",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "treasuryBalance",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "emergencyMode",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              internalType: "enum OrderSide",
+              name: "side",
+              type: "uint8",
+            },
+            {
+              internalType: "uint256",
+              name: "limitPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "salt",
+              type: "bytes32",
+            },
+          ],
+          name: "revealOrder",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "settleEpoch",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {
+        getBlocksRemaining: "contracts/core/EpochManager.sol",
+        getCalculatedPhase: "contracts/core/EpochManager.sol",
+        getConfig: "contracts/core/EpochManager.sol",
+        getCurrentEpochId: "contracts/core/EpochManager.sol",
+        getCurrentPhase: "contracts/core/EpochManager.sol",
+        getEpochData: "contracts/core/EpochManager.sol",
+      },
+      deployedOnBlock: 3,
+    },
+    YourContract: {
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "greetingSetter",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "newGreeting",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "premium",
+              type: "bool",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
+            },
+          ],
+          name: "GreetingChange",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "greeting",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "premium",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_newGreeting",
+              type: "string",
+            },
+          ],
+          name: "setGreeting",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "totalCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "userGreetingCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 1,
+    },
+  },
+} as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;
