@@ -39,8 +39,27 @@ const PHASE_COLORS: { [key: number]: string } = {
   6: "badge-error"
 };
 
+// Helper to mine blocks on local chain
+const mineBlocks = async (count: number) => {
+  for (let i = 0; i < count; i++) {
+    await fetch("http://localhost:8545", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "evm_mine",
+        params: [],
+        id: Date.now() + i,
+      }),
+    });
+  }
+};
+
 const ClearSettlePage: NextPage = () => {
   const { address: connectedAddress } = useAccount();
+  
+  // Mining state
+  const [isMining, setIsMining] = useState(false);
   
   // Order form state
   const [orderAmount, setOrderAmount] = useState("1");
@@ -55,24 +74,24 @@ const ClearSettlePage: NextPage = () => {
   const [revealPrice, setRevealPrice] = useState("1");
   const [revealSalt, setRevealSalt] = useState("");
 
-  // Contract reads
-  const { data: currentEpoch } = useScaffoldReadContract({
+  // Contract reads - with watch for auto-refresh
+  const { data: currentEpoch, refetch: refetchEpoch } = useScaffoldReadContract({
     contractName: "ClearSettle",
     functionName: "getCurrentEpoch",
   });
 
-  const { data: currentPhase } = useScaffoldReadContract({
+  const { data: currentPhase, refetch: refetchPhase } = useScaffoldReadContract({
     contractName: "ClearSettle",
     functionName: "getCurrentPhase",
   });
 
-  const { data: epochData } = useScaffoldReadContract({
+  const { data: epochData, refetch: refetchEpochData } = useScaffoldReadContract({
     contractName: "ClearSettle",
     functionName: "getEpochData",
     args: [currentEpoch || 1n],
   });
 
-  const { data: userCommitment } = useScaffoldReadContract({
+  const { data: userCommitment, refetch: refetchCommitment } = useScaffoldReadContract({
     contractName: "ClearSettle",
     functionName: "getCommitment",
     args: [currentEpoch || 1n, connectedAddress],
@@ -96,9 +115,59 @@ const ClearSettlePage: NextPage = () => {
     contractName: "ClearSettle",
   });
 
+  const { writeContractAsync: forceAdvanceEpoch, isPending: isAdvancing } = useScaffoldWriteContract({
+    contractName: "ClearSettle",
+  });
+
+  const { writeContractAsync: resetForDemo, isPending: isResetting } = useScaffoldWriteContract({
+    contractName: "ClearSettle",
+  });
+
+  // Current block number state
+  const [currentBlock, setCurrentBlock] = useState<bigint>(0n);
+
+  // Fetch current block number and refresh data
+  useEffect(() => {
+    const fetchBlock = async () => {
+      try {
+        const response = await fetch("http://localhost:8545", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            method: "eth_blockNumber",
+            params: [],
+            id: 1,
+          }),
+        });
+        const data = await response.json();
+        setCurrentBlock(BigInt(data.result));
+      } catch (e) {
+        console.error("Failed to fetch block:", e);
+      }
+    };
+    
+    fetchBlock();
+    const interval = setInterval(fetchBlock, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Calculate real phase from block numbers
+  const calculatedPhase = (() => {
+    if (!epochData) return Number(currentPhase) || 0;
+    const block = currentBlock;
+    const storedPhase = Number(currentPhase) || 0;
+    
+    if (storedPhase >= 5) return storedPhase; // FINALIZED/VOID
+    if (storedPhase === 4) return 4; // SAFETY_BUFFER
+    if (block <= epochData.commitEndBlock) return 1; // ACCEPTING_COMMITS
+    if (block <= epochData.revealEndBlock) return 2; // ACCEPTING_REVEALS
+    return 3; // SETTLING
+  })();
+
   // Generate random salt on mount
   useEffect(() => {
-    if (!connectedAddress) return; // Don't generate salt without address
+    if (!connectedAddress) return;
     const randomSalt = keccak256(encodePacked(
       ["uint256", "uint256", "address"],
       [BigInt(Date.now()), BigInt(Math.random() * 1e18), connectedAddress]
@@ -127,6 +196,14 @@ const ClearSettlePage: NextPage = () => {
     }
   }, [orderAmount, orderSide, orderPrice, orderSalt, connectedAddress]);
 
+  // Refetch all data
+  const refetchAll = () => {
+    refetchEpoch();
+    refetchPhase();
+    refetchEpochData();
+    refetchCommitment();
+  };
+
   // Handle commit
   const handleCommit = async () => {
     if (!commitmentHash) return;
@@ -144,6 +221,9 @@ const ClearSettlePage: NextPage = () => {
       args: [commitmentHash as `0x${string}`],
       value: parseEther("0.01"), // MIN_BOND
     });
+    
+    // Refresh data after transaction
+    setTimeout(refetchAll, 1000);
   };
 
   // Handle reveal
@@ -157,6 +237,9 @@ const ClearSettlePage: NextPage = () => {
         revealSalt as `0x${string}`
       ],
     });
+    
+    // Refresh data after transaction
+    setTimeout(refetchAll, 1000);
   };
 
   // Handle settle
@@ -164,6 +247,32 @@ const ClearSettlePage: NextPage = () => {
     await settleEpoch({
       functionName: "settleEpoch",
     });
+    
+    // Refresh data after transaction
+    setTimeout(refetchAll, 1000);
+  };
+
+  // Handle force advance to new epoch
+  const handleForceAdvance = async () => {
+    await forceAdvanceEpoch({
+      functionName: "forceAdvanceEpoch",
+    });
+    
+    // Refresh data after transaction
+    setTimeout(refetchAll, 1000);
+  };
+
+  // Handle advance to next phase (mine blocks)
+  const handleAdvancePhase = async () => {
+    setIsMining(true);
+    try {
+      await mineBlocks(61); // Mine 61 blocks to advance phase
+      // Refresh data after mining
+      setTimeout(refetchAll, 500);
+    } catch (e) {
+      console.error("Mining failed:", e);
+    }
+    setIsMining(false);
   };
 
   // Load saved order for reveal
@@ -178,10 +287,38 @@ const ClearSettlePage: NextPage = () => {
     }
   };
 
-  const phaseNumber = currentPhase !== undefined ? Number(currentPhase) : 0;
+  // Handle reset for demo
+  const handleResetDemo = async () => {
+    await resetForDemo({
+      functionName: "resetForDemo",
+    });
+    setTimeout(refetchAll, 1000);
+  };
+
+  // Use calculated phase for UI display
+  const phaseNumber = calculatedPhase;
+
+  // Check if emergency mode
+  const isEmergencyMode = stats && stats[3] === true;
 
   return (
     <div className="flex flex-col items-center py-10 px-4">
+      {/* Emergency Mode Banner */}
+      {isEmergencyMode && (
+        <div className="w-full max-w-4xl mb-4">
+          <div className="alert alert-error">
+            <span>🚨 Emergency Mode Active - Click "Reset Demo" to continue</span>
+            <button
+              className={`btn btn-sm btn-warning ${isResetting ? "loading" : ""}`}
+              onClick={handleResetDemo}
+              disabled={isResetting}
+            >
+              {isResetting ? "Resetting..." : "🔄 Reset Demo"}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-2">🔐 ClearSettle Protocol</h1>
@@ -222,7 +359,7 @@ const ClearSettlePage: NextPage = () => {
         {epochData && (
           <div className="mt-4">
             <div className="flex justify-between text-sm mb-1">
-              <span>Block Progress</span>
+              <span>Current Block: <strong>{currentBlock.toString()}</strong></span>
               <span>
                 Start: {epochData.startBlock.toString()} | 
                 Commit End: {epochData.commitEndBlock.toString()} | 
@@ -236,6 +373,20 @@ const ClearSettlePage: NextPage = () => {
             />
           </div>
         )}
+
+        {/* Advance Phase Button */}
+        <div className="mt-4 flex justify-center">
+          <button
+            className={`btn btn-outline btn-info ${isMining ? "loading" : ""}`}
+            onClick={handleAdvancePhase}
+            disabled={isMining || phaseNumber >= 5}
+          >
+            {isMining ? "Mining blocks..." : "⏩ Advance to Next Phase (Demo)"}
+          </button>
+          <span className="ml-3 text-xs text-gray-400 self-center">
+            Simulates blockchain time passing
+          </span>
+        </div>
       </div>
 
       {/* Main Content Grid */}
@@ -459,6 +610,22 @@ const ClearSettlePage: NextPage = () => {
                 {isSettling ? "Settling..." : "Trigger Settlement"}
               </button>
             </div>
+
+            {/* Start New Epoch Button - for demo purposes */}
+            {(phaseNumber >= 4) && (
+              <div className="mt-4 pt-4 border-t border-base-300">
+                <p className="text-sm text-gray-500 mb-2">
+                  Current epoch completed. Start a new one to demo again:
+                </p>
+                <button
+                  className={`btn btn-primary w-full ${isAdvancing ? "loading" : ""}`}
+                  onClick={handleForceAdvance}
+                  disabled={isAdvancing}
+                >
+                  {isAdvancing ? "Starting..." : "🔄 Start New Epoch"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

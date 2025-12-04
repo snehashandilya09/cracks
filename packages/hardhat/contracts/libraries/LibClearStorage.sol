@@ -154,8 +154,8 @@ library LibClearStorage {
      */
     function initializeConfig(ClearStorage storage s) internal {
         s.config = ProtocolConfig({
-            commitDuration: 10,              // 10 blocks for commits
-            revealDuration: 10,              // 10 blocks for reveals
+            commitDuration: 60,              // 60 blocks for commits (~3 min with 3s blocks)
+            revealDuration: 60,              // 60 blocks for reveals (~3 min with 3s blocks)
             safetyBufferDuration: 10,        // 10 blocks safety (increase for mainnet!)
             minCommitBond: 0.01 ether,       // 0.01 ETH minimum bond
             settlementFeeRate: 30,           // 0.30% fee

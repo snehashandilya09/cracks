@@ -405,6 +405,22 @@ contract ClearSettle is EpochManager, IClearSettleCore {
     {
         _forceAdvanceEpoch();
     }
+
+    /**
+     * @notice Reset emergency mode and start fresh epoch (DEMO ONLY)
+     * @dev This is for demonstration purposes - in production, 
+     *      emergency mode would require governance/multisig to reset
+     */
+    function resetForDemo() external nonReentrant {
+        LibClearStorage.ClearStorage storage s = _getStorage();
+        
+        // Reset emergency mode
+        s.emergencyMode = false;
+        s.emergencyReason = "";
+        
+        // Start a fresh epoch
+        _startNewEpoch();
+    }
     
     // ============ Internal Settlement Logic ============
     
