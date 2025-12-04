@@ -29,15 +29,24 @@ pragma solidity ^0.8.20;
  * @notice Epoch lifecycle phases
  * @dev Each epoch progresses through these phases sequentially
  * Transitions are time-bound (block-based) and cannot be skipped
+ *
+ * AFSM STATES (per Module-1 Section 2.1):
+ * - Idle → UNINITIALIZED
+ * - Batching → ACCEPTING_COMMITS / ACCEPTING_REVEALS
+ * - PreCommitted → SETTLING
+ * - InTransition → IN_TRANSITION (VeriSolid augmentation)
+ * - Dispute → VOID (or separate DISPUTE state for oracle challenges)
+ * - Finalized → FINALIZED
  */
 enum EpochPhase {
-    UNINITIALIZED,      // 0: Default state, epoch not started
-    ACCEPTING_COMMITS,  // 1: Users submit commitment hashes
-    ACCEPTING_REVEALS,  // 2: Users reveal orders with salt
-    SETTLING,           // 3: Batch settlement calculation
-    SAFETY_BUFFER,      // 4: Reorg protection period (CRITICAL for partial finality)
-    FINALIZED,          // 5: Settlement complete, withdrawals enabled
-    VOID                // 6: Emergency state - epoch invalidated (invariant violation)
+    UNINITIALIZED,      // 0: Default state, epoch not started (Idle)
+    ACCEPTING_COMMITS,  // 1: Users submit commitment hashes (Batching)
+    ACCEPTING_REVEALS,  // 2: Users reveal orders with salt (Batching)
+    SETTLING,           // 3: Batch settlement calculation (PreCommitted)
+    IN_TRANSITION,      // 4: CRITICAL - Locking state for reentrancy protection (InTransition)
+    SAFETY_BUFFER,      // 5: Reorg protection period (partial finality)
+    FINALIZED,          // 6: Settlement complete, withdrawals enabled (Finalized)
+    VOID                // 7: Emergency state - epoch invalidated (invariant violation)
 }
 
 /**
@@ -108,7 +117,7 @@ struct SettlementResult {
 /**
  * @notice Oracle assertion for disputed settlements
  * @dev Used in optimistic oracle defense mechanism
- * 
+ *
  * TODO: For production, integrate with Chainlink or UMA oracle
  * Currently uses internal assertion/dispute for hackathon demo
  */
@@ -121,6 +130,59 @@ struct OracleAssertion {
     bool disputed;                  // Whether challenged
     bool resolved;                  // Whether finalized
     bool truthful;                  // Outcome (if resolved)
+}
+
+// ============ MODULE 2: FAIR ORDERING & MEV RESISTANCE ============
+
+/**
+ * @notice Validator timestamp for reception log (Aequitas Stage I)
+ * @dev Used to track when each validator received a transaction
+ */
+struct ValidatorTimestamp {
+    address validator;              // Validator address
+    uint256 timestamp;              // When they received the tx (block number)
+}
+
+/**
+ * @notice Reception log entry for a transaction
+ * @dev Stores all validator timestamps for ordering fairness
+ */
+struct ReceptionLog {
+    bytes32 txHash;                 // Transaction hash
+    ValidatorTimestamp[] timestamps;// Timestamps from all validators
+    bool finalized;                 // Whether ordering is finalized
+}
+
+/**
+ * @notice Dependency graph edge for fair ordering
+ * @dev Used in Aequitas algorithm (Stage II)
+ */
+struct DependencyEdge {
+    bytes32 fromTx;                 // Source transaction
+    bytes32 toTx;                   // Target transaction
+    uint256 supportCount;           // Number of validators who saw fromTx first
+    bool enforced;                  // Whether edge is above fairness threshold
+}
+
+/**
+ * @notice Strongly Connected Component (SCC) - Atomic Batch
+ * @dev Transactions in same SCC are "simultaneous" (partial finality)
+ */
+struct AtomicBatch {
+    bytes32[] transactions;         // List of tx hashes in this SCC
+    uint256 batchIndex;             // Order in final sequence
+    bool executed;                  // Whether batch has been executed
+}
+
+/**
+ * @notice Counterfactual benchmark for FCA fairness
+ * @dev Stores oracle price and expected value per user
+ */
+struct CounterfactualBenchmark {
+    uint256 oraclePrice;            // Median oracle price for reference
+    address user;                   // User being benchmarked
+    uint256 expectedTokens;         // Tokens they'd get trading alone at oracle price
+    uint256 expectedCost;           // Cost they'd pay at oracle price
 }
 
 /**

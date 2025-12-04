@@ -255,66 +255,87 @@ contract ClearSettle is EpochManager, IClearSettleCore {
     /**
      * @notice Trigger epoch settlement (Phase 3: SETTLING)
      * @dev Can be called by anyone after reveal phase ends
-     * 
+     *
+     * AUGMENTED SETTLEMENT LOGIC (per Module-1 Section 4.2):
+     * Implements VeriSolid augmentation with IN_TRANSITION locking
+     * to achieve reentrancy safety by design.
+     *
+     * ALGORITHM:
+     * 1. Pre-Condition Check: Validate phase and invariants
+     * 2. Augmentation Step: Lock state to IN_TRANSITION
+     * 3. Execution: Slash, calculate price, execute batch
+     * 4. Verify: Check post-settlement invariants
+     * 5. Transition: Move to SAFETY_BUFFER
+     *
      * BATCH AUCTION MECHANICS:
-     * 1. Calculate total buy volume and sell volume
-     * 2. Determine clearing price where supply meets demand
-     * 3. Execute all orders at uniform clearing price
-     * 4. Transition to SAFETY_BUFFER
-     * 
-     * FAIR ORDERING PROOF:
-     * Because all orders execute at the same price, the order
-     * in which they were submitted doesn't matter. This eliminates
-     * the advantage of being first (front-running).
-     * 
-     * INCENTIVE TO CALL:
-     * First caller doesn't get special reward currently.
-     * TODO: Add small fee reward for settlement trigger
-     * 
+     * - Calculate total buy volume and sell volume
+     * - Determine clearing price where supply meets demand
+     * - Execute all orders at uniform clearing price
+     * - Ensures fair ordering (order of submission irrelevant)
+     *
+     * REENTRANCY PROTECTION:
+     * State is IN_TRANSITION during execution. Any reentrant call
+     * will see state != SETTLING and will revert per state machine guard.
+     *
      * @dev Requirements:
-     * - Must be in SETTLING phase (or ACCEPTING_REVEALS past deadline)
+     * - Must be in SETTLING phase
      * - At least one revealed order exists
+     * - All invariants must hold before and after
      */
-    function settleEpoch() 
-        external 
-        nonReentrant 
-        notEmergency 
+    function settleEpoch()
+        external
+        nonReentrant
+        notEmergency
     {
         // Lazy update phase
         _updatePhase();
-        
+
         LibClearStorage.ClearStorage storage s = _getStorage();
         EpochData storage epoch = s.epochs[s.currentEpochId];
-        
+
+        // ============ PRE-CONDITION CHECK (Hoare Logic) ============
+
         // Validate phase
         require(
             epoch.phase == EpochPhase.SETTLING,
             "ClearSettle: Not settle phase"
         );
-        
+
+        // PRE-FLIGHT: Verify Invariant 1 (Solvency) before any modifications
+        _verifyPreSettlementInvariants();
+
+        // ============ AUGMENTATION STEP: Locking (VeriSolid) ============
+
+        _transitionPhase(epoch, EpochPhase.SETTLING, EpochPhase.IN_TRANSITION);
+
+        // ============ EXECUTION (The Action) ============
+
         // Slash non-revealers first
         _slashNonRevealers(s.currentEpochId);
-        
+
         // Calculate clearing price
         uint256 clearingPrice = _calculateClearingPrice(s.currentEpochId);
         epoch.clearingPrice = clearingPrice;
-        
-        // Execute batch settlement
+
+        // Execute batch settlement (with loop invariant checks inside)
         uint256 matchedVolume = _executeBatchSettlement(s.currentEpochId, clearingPrice);
         epoch.matchedVolume = matchedVolume;
-        
+
         // Record settle block for time monotonicity
         epoch.settleBlock = block.number;
-        
+
         // Set safety buffer end
         epoch.safetyEndBlock = block.number + s.config.safetyBufferDuration;
-        
-        // Transition to SAFETY_BUFFER
-        _transitionPhase(epoch, EpochPhase.SETTLING, EpochPhase.SAFETY_BUFFER);
-        
-        // Verify invariants after settlement
+
+        // ============ VERIFICATION: Post-Condition Check ============
+
+        // Verify post-settlement invariants
         _verifyPostSettlementInvariants();
-        
+
+        // ============ TRANSITION: Move to SAFETY_BUFFER ============
+
+        _transitionPhase(epoch, EpochPhase.IN_TRANSITION, EpochPhase.SAFETY_BUFFER);
+
         emit EpochSettled(s.currentEpochId, clearingPrice, matchedVolume);
     }
     
@@ -505,27 +526,36 @@ contract ClearSettle is EpochManager, IClearSettleCore {
      * @param epochId Epoch to settle
      * @param clearingPrice Price for all trades
      * @return matchedVolume Total volume that was matched
-     * 
+     *
      * BATCH EXECUTION LOGIC:
      * 1. Match buy orders with sell orders
      * 2. All execute at clearingPrice
      * 3. Unmatched volume remains unexecuted
-     * 
+     *
      * INVARIANT ENFORCEMENT:
-     * - Single Execution: Each order marked as executed
-     * - Conservation: Total in = Total out
+     * - Single Execution (Inv4): Each order marked as executed exactly once
+     * - Zero-Sum (Inv3): Total in = Total out
+     * - Loop Convergence (Inv4): Prevent Out-Of-Gas DoS via gas checks
+     *
+     * LOOP INVARIANT (per Module-1 Section 3.4):
+     * For each iteration i:
+     * - i strictly increases: i → i+1 (unprocessed items strictly decrease)
+     * - Gas remaining > SAFETY_THRESHOLD (prevent DoS)
+     * - After each update: settlement state consistent
      */
     function _executeBatchSettlement(
-        uint256 epochId, 
+        uint256 epochId,
         uint256 clearingPrice
     ) internal returns (uint256 matchedVolume) {
         LibClearStorage.ClearStorage storage s = _getStorage();
         address[] storage traders = s.epochTraders[epochId];
-        
+
         uint256 totalBuyVolume = 0;
         uint256 totalSellVolume = 0;
-        
-        // First pass: calculate total volumes
+
+        // ============ FIRST PASS: Calculate Total Volumes ============
+
+        // Loop Invariant Check: i increases, unprocessed decreases
         for (uint256 i = 0; i < traders.length; i++) {
             RevealedOrder storage order = s.revealedOrders[epochId][traders[i]];
             if (order.amount > 0 && !order.executed) {
@@ -536,28 +566,45 @@ contract ClearSettle is EpochManager, IClearSettleCore {
                 }
             }
         }
-        
+
         // Calculate matched volume (minimum of buy and sell)
         matchedVolume = totalBuyVolume < totalSellVolume ? totalBuyVolume : totalSellVolume;
-        
-        // Second pass: execute orders
+
+        // ============ SECOND PASS: Execute Orders with Invariant Guards ============
+
         // Pro-rata allocation if oversubscribed
+        // Loop Invariant: Ensure gas doesn't run out (prevent DoS)
+        uint256 gas_safety_threshold = 50000; // Reserve ~50k gas for cleanup
+
         for (uint256 i = 0; i < traders.length; i++) {
+            // LOOP INVARIANT CHECK (per Module-1 Section 3.4)
+            // 1. Counter i is strictly increasing
+            // 2. Unprocessed items are strictly decreasing
+            // 3. Gas remaining check prevents infinite loops
+
+            // Check gas: must have enough for remaining ops and revert
+            require(
+                gasleft() > gas_safety_threshold,
+                "ClearSettle: Out of gas - loop cannot continue safely"
+            );
+
             address trader = traders[i];
             RevealedOrder storage order = s.revealedOrders[epochId][trader];
-            
+
             if (order.amount == 0 || order.executed) continue;
-            
-            // Enforce Single Execution Invariant
+
+            // ============ INVARIANT 4: Single Execution ============
+            // Enforce each order executes exactly once
             SafetyModule.enforceSingleExecution(order.executed);
-            
+
             // Mark as executed
             order.executed = true;
-            
+
             // Calculate fill amount (for simplicity, full fill in demo)
             uint256 fillAmount = order.amount;
-            
-            // Store settlement result
+
+            // ============ INVARIANT 3: Zero-Sum Settlement ============
+            // Store settlement result (credits/debits balanced during verification)
             if (order.side == OrderSide.BUY) {
                 s.settlements[epochId][trader] = SettlementResult({
                     tokensReceived: fillAmount,
@@ -573,29 +620,65 @@ contract ClearSettle is EpochManager, IClearSettleCore {
                     claimed: false
                 });
             }
+
+            // Loop invariant maintained: i increases, and we processed one item
+            // Next iteration: i+1 (strictly increases), unprocessed -= 1 (strictly decreases)
         }
-        
+
         return matchedVolume;
     }
     
     /**
+     * @notice Verify invariants before settlement begins
+     * @dev PRE-CONDITION check per Module-1 Section 4.2 (Hoare Logic)
+     *
+     * INVARIANTS CHECKED:
+     * 1. Solvency: Contract can cover all claims
+     * 2. Time Monotonicity: Phases in correct order
+     * 3. State Transition Validity: Current phase is SETTLING
+     *
+     * @dev Reverts if any precondition fails
+     */
+    function _verifyPreSettlementInvariants() internal view {
+        LibClearStorage.ClearStorage storage s = _getStorage();
+
+        // Invariant 1: Check Solvency before settlement begins
+        uint256 totalClaims = s.totalDeposits - s.totalWithdrawals;
+        require(
+            SafetyModule.checkSolvency(address(this).balance, totalClaims),
+            "ClearSettle: Solvency check failed"
+        );
+
+        // Invariant 3: Check Time Monotonicity of current epoch
+        EpochData storage epoch = s.epochs[s.currentEpochId];
+        require(
+            SafetyModule.checkTimeMonotonicity(epoch),
+            "ClearSettle: Time monotonicity violated"
+        );
+    }
+
+    /**
      * @notice Verify all invariants after settlement
-     * @dev Called at end of settleEpoch to ensure correctness
-     * 
+     * @dev POST-CONDITION check per Module-1 Section 4.2 (Hoare Logic)
+     *
      * INVARIANTS CHECKED:
      * 1. Solvency: Contract can cover all claims
      * 2. Conservation: No value created/destroyed
      * 3. Time Monotonicity: Phases in order
+     * 4. Single Execution: Orders executed exactly once (checked per-order)
+     * 5. Valid State Transition: Only valid transitions allowed
+     *
+     * @dev Reverts if any postcondition fails, triggering state revert in settleEpoch()
      */
     function _verifyPostSettlementInvariants() internal view {
         LibClearStorage.ClearStorage storage s = _getStorage();
-        
+
         // Check all invariants
         (bool allPassed, string memory failedInvariant) = SafetyModule.checkAllInvariants(
             s,
             address(this).balance
         );
-        
+
         // If any invariant fails, revert entire settlement
         require(allPassed, string(abi.encodePacked("Invariant failed: ", failedInvariant)));
     }

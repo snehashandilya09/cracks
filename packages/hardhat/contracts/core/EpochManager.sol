@@ -140,31 +140,37 @@ contract EpochManager is ClearStorageAccess {
      * @param epoch Epoch storage reference
      * @param fromPhase Current phase
      * @param toPhase Target phase
-     * 
-     * INVARIANT ENFORCEMENT:
+     *
+     * INVARIANT ENFORCEMENT (per Module-1 Section 4.2):
      * Every transition validates:
-     * 1. Transition is valid (state machine rules)
-     * 2. Time monotonicity preserved
+     * 1. Transition is valid (state machine rules) - Invariant 5
+     * 2. Time monotonicity preserved - Invariant 3
+     * 3. Solvency maintained - Invariant 1
+     *
+     * HOARE LOGIC:
+     * {P} transition {Q}
+     * P = preconditions (valid transition)
+     * Q = postconditions (invariants hold)
      */
     function _transitionPhase(
         EpochData storage epoch,
         EpochPhase fromPhase,
         EpochPhase toPhase
     ) internal {
-        // Enforce Invariant 5: Valid State Transition
+        // PRE-CONDITION: Enforce Invariant 5: Valid State Transition
         SafetyModule.enforceValidTransition(fromPhase, toPhase);
-        
+
         // Update phase
         epoch.phase = toPhase;
-        
+
         // Record transition block for time monotonicity
         if (toPhase == EpochPhase.SETTLING) {
             epoch.settleBlock = block.number;
         }
-        
-        // Enforce Invariant 3: Time Monotonicity
+
+        // POST-CONDITION: Enforce Invariant 3: Time Monotonicity
         SafetyModule.enforceTimeMonotonicity(epoch);
-        
+
         emit PhaseTransition(epoch.epochId, fromPhase, toPhase, block.number);
     }
     

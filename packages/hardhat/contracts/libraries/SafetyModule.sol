@@ -238,33 +238,43 @@ library SafetyModule {
      * @param fromPhase Current phase
      * @param toPhase Target phase
      * @return passed True if transition is allowed
-     * 
-     * VALID TRANSITION GRAPH:
-     * 
+     *
+     * VALID TRANSITION GRAPH (per Module-1 Section 2.2):
+     *
      *   UNINITIALIZED
      *         │
      *         ▼
-     *   ACCEPTING_COMMITS
-     *         │
-     *         ▼
-     *   ACCEPTING_REVEALS
-     *         │
-     *         ▼
-     *     SETTLING
-     *         │
-     *         ▼
-     *   SAFETY_BUFFER
-     *         │
-     *         ▼
-     *     FINALIZED
-     * 
+     *   ACCEPTING_COMMITS ◄───────────┐
+     *         │                       │
+     *         ▼                       │
+     *   ACCEPTING_REVEALS             │
+     *         │                       │
+     *         ▼                       │
+     *     SETTLING                    │
+     *         │                       │
+     *         ▼                       │
+     *   IN_TRANSITION (CRITICAL)      │ (on error)
+     *     ╱       ╲                   │
+     *    ╱         ╲                  │
+     *   ▼           ▼                 │
+     * SAFETY_    VOID ─────────────────┘
+     * BUFFER
+     *   │
+     *   ▼
+     * FINALIZED
+     *
+     * AFSM AUGMENTATION (VeriSolid):
+     * - SETTLING → IN_TRANSITION → SAFETY_BUFFER (normal path)
+     * - IN_TRANSITION can fail → back to SETTLING or VOID (error handling)
+     *
      * Special transitions:
      * - Any state → VOID (on invariant violation)
      * - FINALIZED → UNINITIALIZED (new epoch start)
-     * 
+     *
      * INVALID TRANSITIONS (examples):
      * - ACCEPTING_REVEALS → ACCEPTING_COMMITS (backward)
      * - ACCEPTING_COMMITS → FINALIZED (skipping phases)
+     * - IN_TRANSITION → ACCEPTING_COMMITS (no escaping to non-sequential)
      */
     function checkValidTransition(
         EpochPhase fromPhase,
@@ -274,7 +284,7 @@ library SafetyModule {
         if (toPhase == EpochPhase.VOID) {
             return true;
         }
-        
+
         // Normal transitions
         if (fromPhase == EpochPhase.UNINITIALIZED) {
             return toPhase == EpochPhase.ACCEPTING_COMMITS;
@@ -286,7 +296,14 @@ library SafetyModule {
             return toPhase == EpochPhase.SETTLING;
         }
         if (fromPhase == EpochPhase.SETTLING) {
-            return toPhase == EpochPhase.SAFETY_BUFFER;
+            // CRITICAL: Must transition through IN_TRANSITION for safety
+            return toPhase == EpochPhase.IN_TRANSITION;
+        }
+        if (fromPhase == EpochPhase.IN_TRANSITION) {
+            // Can proceed to SAFETY_BUFFER on success
+            // Or revert to SETTLING on error (handled by caller)
+            // Or transition to VOID on critical failure
+            return toPhase == EpochPhase.SAFETY_BUFFER || toPhase == EpochPhase.SETTLING;
         }
         if (fromPhase == EpochPhase.SAFETY_BUFFER) {
             return toPhase == EpochPhase.FINALIZED;
@@ -295,12 +312,12 @@ library SafetyModule {
             // New epoch can start
             return toPhase == EpochPhase.UNINITIALIZED || toPhase == EpochPhase.ACCEPTING_COMMITS;
         }
-        
+
         // VOID is terminal (no transitions out except new epoch)
         if (fromPhase == EpochPhase.VOID) {
             return toPhase == EpochPhase.UNINITIALIZED;
         }
-        
+
         return false;
     }
     
