@@ -35,13 +35,40 @@ describe("PIPELINE ADVERSARIAL: Complete 5-Module System Under Attack", () => {
         honest2 = signers[2];
         honest3 = signers[3];
 
+        // Deploy SafetyEngineImpl
         const SafetyEngineImpl = await ethers.getContractFactory("SafetyEngineImpl");
-        const OracleGadgetImpl = await ethers.getContractFactory("OracleGadgetImpl");
-
         safetyEngine = await SafetyEngineImpl.deploy();
         await safetyEngine.waitForDeployment();
 
-        oracleGadget = await OracleGadgetImpl.deploy();
+        // Deploy the 3 oracle adapters (all have no-arg constructors)
+        const ChainlinkAdapterFactory = await ethers.getContractFactory("ChainlinkOracleAdapter");
+        const chainlinkAdapter = await ChainlinkAdapterFactory.deploy();
+        await chainlinkAdapter.waitForDeployment();
+
+        const PythAdapterFactory = await ethers.getContractFactory("PythOracleAdapter");
+        const pythAdapter = await PythAdapterFactory.deploy();
+        await pythAdapter.waitForDeployment();
+
+        const UniswapAdapterFactory = await ethers.getContractFactory("UniswapV3TWAPAdapter");
+        const uniswapAdapter = await UniswapAdapterFactory.deploy();
+        await uniswapAdapter.waitForDeployment();
+
+        // Deploy OracleAggregator with all 3 oracle adapter addresses
+        const OracleAggregatorFactory = await ethers.getContractFactory("OracleAggregator");
+        const oracleAggregator = await OracleAggregatorFactory.deploy(
+            await chainlinkAdapter.getAddress(),
+            await pythAdapter.getAddress(),
+            await uniswapAdapter.getAddress()
+        );
+        await oracleAggregator.waitForDeployment();
+
+        // Deploy OracleGadgetImpl with required constructor args
+        const pairId = ethers.id("ETH/USD");
+        const OracleGadgetImpl = await ethers.getContractFactory("OracleGadgetImpl");
+        oracleGadget = await OracleGadgetImpl.deploy(
+            await oracleAggregator.getAddress(),
+            pairId
+        );
         await oracleGadget.waitForDeployment();
     });
 

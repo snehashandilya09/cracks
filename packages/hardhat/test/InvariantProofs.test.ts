@@ -33,8 +33,8 @@ describe("Invariant Proofs", function () {
   let charlie: HardhatEthersSigner;
 
   const MIN_BOND = ethers.parseEther("0.01");
-  const COMMIT_DURATION = 10;
-  const REVEAL_DURATION = 10;
+  const COMMIT_DURATION = 60; // blocks - matches contract's commitDuration
+  const REVEAL_DURATION = 60; // blocks - matches contract's revealDuration
   const SAFETY_BUFFER = 10;
   const BUY = 0;
   const SELL = 1;
@@ -416,16 +416,16 @@ describe("Invariant Proofs", function () {
       // Advance to SETTLING (3)
       await mineBlocks(REVEAL_DURATION + 1);
       
-      // Settlement transitions to SAFETY_BUFFER (4)
+      // Settlement transitions to SAFETY_BUFFER (5, not 4 - IN_TRANSITION is 4)
       await clearSettle.settleEpoch();
       const epochData = await clearSettle.getEpochData(1);
-      expect(epochData.phase).to.equal(4); // SAFETY_BUFFER
+      expect(epochData.phase).to.equal(5); // SAFETY_BUFFER (enum index 5)
 
       console.log("\n    📐 STATE TRANSITION PROOF:");
       console.log(`       UNINITIALIZED(0) → ACCEPTING_COMMITS(1) ✓`);
       console.log(`       ACCEPTING_COMMITS(1) → ACCEPTING_REVEALS(2) ✓`);
       console.log(`       ACCEPTING_REVEALS(2) → SETTLING(3) ✓`);
-      console.log(`       SETTLING(3) → SAFETY_BUFFER(4) ✓`);
+      console.log(`       SETTLING(3) → IN_TRANSITION(4) → SAFETY_BUFFER(5) ✓`);
       console.log(`       ✓ All transitions follow valid state machine`);
     });
 

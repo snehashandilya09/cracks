@@ -30,8 +30,8 @@ describe("ClearSettle Protocol", function () {
 
   // Constants
   const MIN_BOND = ethers.parseEther("0.01");
-  const COMMIT_DURATION = 10; // blocks
-  const REVEAL_DURATION = 10; // blocks
+  const COMMIT_DURATION = 60; // blocks - matches contract's commitDuration
+  const REVEAL_DURATION = 60; // blocks - matches contract's revealDuration
   const SAFETY_BUFFER = 10; // blocks
 
   // Order types
@@ -333,7 +333,7 @@ describe("ClearSettle Protocol", function () {
       await clearSettle.settleEpoch();
 
       const epochData = await clearSettle.getEpochData(1);
-      expect(epochData.phase).to.equal(4); // SAFETY_BUFFER
+      expect(epochData.phase).to.equal(5); // SAFETY_BUFFER (0=UNINITIALIZED, 1=ACCEPTING_COMMITS, 2=ACCEPTING_REVEALS, 3=SETTLING, 4=IN_TRANSITION, 5=SAFETY_BUFFER)
     });
   });
 

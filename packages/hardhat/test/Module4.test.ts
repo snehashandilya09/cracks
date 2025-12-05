@@ -48,13 +48,39 @@ describe("Module-4: Oracle Manipulation Resistance & Dispute Resolution", functi
   }
 
   beforeEach(async function () {
-    // Deploy oracle gadget
-    const OracleGadgetFactory = await ethers.getContractFactory("OracleGadgetImpl");
-    oracleGadget = await OracleGadgetFactory.deploy();
-    await oracleGadget.waitForDeployment();
-
-    // Get signers
+    // Get signers first
     [, prover, challenger, attacker, watchtower, user] = await ethers.getSigners();
+
+    // Deploy the 3 oracle adapters (all have no-arg constructors)
+    const ChainlinkAdapterFactory = await ethers.getContractFactory("ChainlinkOracleAdapter");
+    const chainlinkAdapter = await ChainlinkAdapterFactory.deploy();
+    await chainlinkAdapter.waitForDeployment();
+
+    const PythAdapterFactory = await ethers.getContractFactory("PythOracleAdapter");
+    const pythAdapter = await PythAdapterFactory.deploy();
+    await pythAdapter.waitForDeployment();
+
+    const UniswapAdapterFactory = await ethers.getContractFactory("UniswapV3TWAPAdapter");
+    const uniswapAdapter = await UniswapAdapterFactory.deploy();
+    await uniswapAdapter.waitForDeployment();
+
+    // Deploy OracleAggregator with all 3 oracle adapter addresses
+    const OracleAggregatorFactory = await ethers.getContractFactory("OracleAggregator");
+    const oracleAggregator = await OracleAggregatorFactory.deploy(
+      await chainlinkAdapter.getAddress(),
+      await pythAdapter.getAddress(),
+      await uniswapAdapter.getAddress()
+    );
+    await oracleAggregator.waitForDeployment();
+
+    // Deploy oracle gadget with required constructor args
+    const pairId = ethers.id("ETH/USD");
+    const OracleGadgetFactory = await ethers.getContractFactory("OracleGadgetImpl");
+    oracleGadget = await OracleGadgetFactory.deploy(
+      await oracleAggregator.getAddress(),
+      pairId
+    );
+    await oracleGadget.waitForDeployment();
   });
 
   // ============ PART 1: ORACLE PRICE SUBMISSION TESTS ============

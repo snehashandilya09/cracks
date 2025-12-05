@@ -186,6 +186,37 @@ struct CounterfactualBenchmark {
 }
 
 /**
+ * @notice State for Tarjan's SCC algorithm
+ * @dev Used internally for finding strongly connected components
+ *
+ * TARJAN'S ALGORITHM STATE:
+ * - disc[]: Discovery time of each node
+ * - low[]: Lowest discovery time reachable from subtree
+ * - onStack[]: Whether node is currently on DFS stack
+ * - stack[]: DFS stack for backtracking
+ * - sccId[]: Which SCC each node belongs to
+ * - sccs[][]: Collection of SCCs found
+ */
+struct TarjanState {
+    bytes32[] txHashes;             // Transaction hashes being processed
+    uint256 n;                      // Number of transactions
+    uint256 time;                   // Global time counter for discovery
+    uint256 sccCount;               // Number of SCCs found
+
+    // Tarjan algorithm arrays
+    uint256[] disc;                 // Discovery time per node
+    uint256[] low;                  // Lowlink value per node
+    bool[] onStack;                 // Stack membership per node
+    uint256[] stack;                // DFS stack
+    uint256 stackTop;               // Stack pointer
+    uint256[] sccId;                // SCC id per node
+
+    // Graph structure
+    uint256[][] adj;                // Adjacency list
+    uint256[][] sccs;               // Found SCCs (array of node indices)
+}
+
+/**
  * @title IClearSettleCore
  * @notice Main interface for ClearSettle protocol interactions
  */
