@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "../interfaces/IClearSettle.sol";
 import "../libraries/OracleGadget.sol";
+import "../oracles/OracleAggregator.sol";
 
 /**
  * @title OracleGadgetImpl
@@ -84,7 +85,28 @@ contract OracleGadgetImpl is IOracleGadget {
     uint256 public minAcceptablePrice = 0.01 ether;      // $0.01
     uint256 public maxAcceptablePrice = 100000 ether;    // $100k
 
+    /// @notice Oracle aggregator for real price verification
+    OracleAggregator public oracleAggregator;
+
+    /// @notice Asset pair for oracle verification (e.g., keccak256("ETH/USD"))
+    bytes32 public pairId;
+
     event EscrowWithdrawn(uint256 indexed gameId, address indexed beneficiary, uint256 amount);
+
+    // ============ Constructor ============
+
+    /**
+     * @notice Initialize OracleGadgetImpl with oracle aggregator
+     * @param _oracleAggregator Address of deployed OracleAggregator
+     * @param _pairId Asset pair ID (e.g., keccak256("ETH/USD"))
+     */
+    constructor(address _oracleAggregator, bytes32 _pairId) {
+        require(_oracleAggregator != address(0), "OracleGadgetImpl: Invalid oracle aggregator");
+        require(_pairId != bytes32(0), "OracleGadgetImpl: Invalid pair ID");
+
+        oracleAggregator = OracleAggregator(_oracleAggregator);
+        pairId = _pairId;
+    }
 
     // ============ Price Submission (Stage 1) ============
 
@@ -260,49 +282,55 @@ contract OracleGadgetImpl is IOracleGadget {
             outcome: BisectionOutcome.GAME_TIMEOUT  // Will be set after dispute resolution
         });
 
-        // For hackathon: simplified dispute resolution
-        // In production: would run bisection game
-        // For now: claim that price is valid (prover wins)
-        _resolveDisputeSimplified(oraclePriceId, true);  // true = prover wins
+        // Resolve dispute using REAL oracle verification
+        _resolveDisputeWithOracle(oraclePriceId);
 
         emit ChallengeRevealed(oraclePriceId, msg.sender, decision);
     }
 
     /**
-     * @notice Simplified dispute resolution (for hackathon demo)
+     * @notice Resolve dispute using real oracle verification
      * @param oraclePriceId ID of price submission
-     * @param proverWins True if prover wins dispute, false if challenger wins
      *
-     * SIMPLIFIED FOR HACKATHON:
-     * - Just resolves dispute and confirms price status
-     * - Does NOT distribute rewards on-chain (would require proper escrow architecture)
-     * - Off-chain: watchers claim rewards based on GameResolved events
-     *
-     * PRODUCTION IMPLEMENTATION:
-     * - Would have proper escrow vault holding all bonds
-     * - Would have automated reward payout on resolution
+     * REAL IMPLEMENTATION:
+     * - Uses OracleAggregator with 3 oracle sources (Chainlink, Pyth, Uniswap TWAP)
+     * - Byzantine-resistant median calculation
+     * - Handles all 4 adversarial conditions:
+     *   1. 30% incorrect values (median resistant)
+     *   2. Outdated data (staleness checks)
+     *   3. Missing updates (requires 2/3 oracles)
+     *   4. Conflicting values (deviation detection)
      */
-    function _resolveDisputeSimplified(uint256 oraclePriceId, bool proverWins)
+    function _resolveDisputeWithOracle(uint256 oraclePriceId)
         internal
     {
         OraclePriceSubmission storage sub = submissions[oraclePriceId];
         ChallengeCommit storage commit = challenges[oraclePriceId];
+
+        // Verify claimed price using real oracle aggregation
+        (bool isValid, string memory reason) = oracleAggregator.verifyClaimedPrice(
+            pairId,
+            sub.price,
+            sub.submitBlock  // Use submit block as claim timestamp
+        );
 
         uint256 reward = OracleGadget.calculateDisputeReward(
             sub.proverBond,
             commit.challengeBond
         );
 
-        address winner = proverWins ? sub.prover : commit.challenger;
+        address winner;
 
-        if (proverWins) {
-            // Prover wins: price confirmed
+        if (isValid) {
+            // Oracle confirms price is valid: prover wins
             sub.status = OraclePriceStatus.CONFIRMED;
             confirmedPrice = sub.price;
             confirmedPriceBlock = block.number;
+            winner = sub.prover;
         } else {
-            // Challenger wins: price rejected
+            // Oracle rejects price: challenger wins
             sub.status = OraclePriceStatus.INVALID;
+            winner = commit.challenger;
         }
 
         // Create game record
@@ -319,6 +347,11 @@ contract OracleGadgetImpl is IOracleGadget {
             status: DisputeGameStatus.RESOLVED,
             winner: winner
         });
+
+        // Update reveal outcome based on oracle verification
+        reveals[oraclePriceId].outcome = isValid
+            ? BisectionOutcome.PROVER_VALID
+            : BisectionOutcome.PROVER_INVALID;
 
         // Emit event for off-chain reward distribution
         emit GameResolved(gameId, winner, reward);
