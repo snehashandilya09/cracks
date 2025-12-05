@@ -1,7 +1,6 @@
 "use client";
 
 import { useAccount, useBalance } from "wagmi";
-import { Address } from "viem";
 
 interface HeaderProps {
   currentBlock: bigint;
@@ -41,7 +40,9 @@ export function Header({ currentBlock, epochId }: HeaderProps) {
               <p className="text-xs font-semibold uppercase text-slate-500">Wallet</p>
               {address ? (
                 <>
-                  <p className="mt-1 text-sm font-medium text-slate-900">{address.slice(0, 6)}...{address.slice(-4)}</p>
+                  <p className="mt-1 text-sm font-medium text-slate-900">
+                    {address.slice(0, 6)}...{address.slice(-4)}
+                  </p>
                   <p className="mt-1 text-xs text-slate-500">{balance?.formatted.slice(0, 6)} ETH</p>
                 </>
               ) : (

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { usePublicClient, useWalletClient, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { usePublicClient, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 /**
@@ -22,12 +22,12 @@ export function DevTools() {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { writeContract, data: resetTxHash } = useWriteContract();
-  
+
   // Wait for reset transaction confirmation
   const { isSuccess: resetConfirmed } = useWaitForTransactionReceipt({
     hash: resetTxHash,
   });
-  
+
   // Force page reload when reset is confirmed
   useEffect(() => {
     if (resetConfirmed && resetTxHash) {
@@ -241,7 +241,7 @@ export function DevTools() {
         <input
           type="number"
           value={blocksToMine}
-          onChange={(e) => setBlocksToMine(e.target.value)}
+          onChange={e => setBlocksToMine(e.target.value)}
           placeholder="Number of blocks"
           className="flex-1 rounded border border-amber-300 px-3 py-2 text-sm"
         />
@@ -257,7 +257,7 @@ export function DevTools() {
       <div className="mt-3 text-xs text-amber-700">
         <strong>Phase Durations:</strong> Commit: 60 blocks | Reveal: 60 blocks | Safety: 10 blocks
         <br />
-        <strong className="text-indigo-700">Tip:</strong> Use "🔄 Reset to COMMIT Phase" to start a fresh epoch anytime!
+        <strong className="text-indigo-700">Tip:</strong> Use Reset to COMMIT Phase to start a fresh epoch anytime!
       </div>
     </div>
   );

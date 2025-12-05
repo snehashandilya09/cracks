@@ -26,8 +26,8 @@ const scenarios: Scenario[] = [
       "Attacker sees only the commitment hash - order details are completely hidden",
       "Reveal phase: User publishes original order, proving commitment matches",
       "Attacker never learns the details in time to outbid",
-      "Fair execution guaranteed by uniform clearing price"
-    ]
+      "Fair execution guaranteed by uniform clearing price",
+    ],
   },
   {
     id: "sandwich-attack",
@@ -41,8 +41,8 @@ const scenarios: Scenario[] = [
       "No sequential execution advantage - timing is irrelevant",
       "Attacker cannot profit from placing orders around yours",
       "Pro-rata allocation if oversubscribed ensures fairness",
-      "MEV completely eliminated from batch settlement"
-    ]
+      "MEV completely eliminated from batch settlement",
+    ],
   },
   {
     id: "griefing",
@@ -56,8 +56,8 @@ const scenarios: Scenario[] = [
       "If user commits but doesn't reveal, bond is automatically slashed",
       "Economic penalty makes griefing attacks irrational",
       "Honest users always get their bonds back upon reveal",
-      "Protocol can force advance if too many non-reveals occur"
-    ]
+      "Protocol can force advance if too many non-reveals occur",
+    ],
   },
   {
     id: "replay",
@@ -71,8 +71,8 @@ const scenarios: Scenario[] = [
       "Nullifiers track consumed orders: keccak256(sender || nonce || payload)",
       "Reorg-safe design prevents replays across chain forks",
       "Commitment hash includes sender address (prevents cross-user replay)",
-      "Any attempt to replay is cryptographically detectable"
-    ]
+      "Any attempt to replay is cryptographically detectable",
+    ],
   },
   {
     id: "oracle-manipulation",
@@ -86,8 +86,8 @@ const scenarios: Scenario[] = [
       "Median price aggregation requires 2/3 honest oracles (Byzantine tolerance)",
       "If one oracle gives bad price, other two dominate the result",
       "Staleness checks: Max age thresholds for each source",
-      "Deviation limits: Max 30% deviation accepted from consensus"
-    ]
+      "Deviation limits: Max 30% deviation accepted from consensus",
+    ],
   },
   {
     id: "reorg",
@@ -101,8 +101,8 @@ const scenarios: Scenario[] = [
       "Within safety buffer window, transactions vulnerable - protected by monitoring",
       "After safety buffer: Settlement is immutable, deep reorg detected",
       "Nullifier tracking prevents replays even if reorg happens",
-      "Parent hash verification ensures ancestry integrity across reorgs"
-    ]
+      "Parent hash verification ensures ancestry integrity across reorgs",
+    ],
   },
   {
     id: "double-settle",
@@ -116,8 +116,8 @@ const scenarios: Scenario[] = [
       "Smart contract tracks all consumed nullifiers",
       "Duplicate claim with same nullifier is rejected onchain",
       "Storage-level protection: Claim flag prevents re-execution",
-      "Even across reorgs, idempotence is enforced"
-    ]
+      "Even across reorgs, idempotence is enforced",
+    ],
   },
   {
     id: "flash-loan",
@@ -131,9 +131,9 @@ const scenarios: Scenario[] = [
       "Flash loans only affect instantaneous prices, not time-weighted averages",
       "Even if one source is manipulated, Byzantine consensus protects result",
       "Chainlink and Pyth prices are external and cannot be flash-loaned",
-      "Deviation checks reject if manipulation is detected"
-    ]
-  }
+      "Deviation checks reject if manipulation is detected",
+    ],
+  },
 ];
 
 export default function SecurityDemoPage() {
@@ -162,8 +162,9 @@ export default function SecurityDemoPage() {
         <div className="mb-8 rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
           <h2 className="text-lg font-semibold text-blue-900">About These Demonstrations</h2>
           <p className="mt-2 text-sm text-blue-800">
-            These are simulated attack scenarios showing how ClearSettle's architecture prevents or mitigates common DeFi attacks.
-            None of these attacks can succeed against our protocol due to its formal invariant verification and multi-layered defenses.
+            These are simulated attack scenarios showing how ClearSettle architecture prevents or mitigates common DeFi
+            attacks. None of these attacks can succeed against our protocol due to its formal invariant verification and
+            multi-layered defenses.
           </p>
         </div>
 
@@ -198,7 +199,7 @@ export default function SecurityDemoPage() {
         <div className="space-y-6">
           <h2 className="text-2xl font-bold text-slate-900">Attack Scenarios</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            {scenarios.map((scenario) => (
+            {scenarios.map(scenario => (
               <ScenarioCard key={scenario.id} scenario={scenario} />
             ))}
           </div>
@@ -214,23 +215,33 @@ export default function SecurityDemoPage() {
             <ul className="space-y-2 ml-4">
               <li className="flex gap-2">
                 <span className="font-bold text-emerald-600">1.</span>
-                <span><strong>Solvency:</strong> Contract balance ≥ Total user claims (no bank runs)</span>
+                <span>
+                  <strong>Solvency:</strong> Contract balance {">="} Total user claims (no bank runs)
+                </span>
               </li>
               <li className="flex gap-2">
                 <span className="font-bold text-emerald-600">2.</span>
-                <span><strong>Conservation:</strong> Deposits = Withdrawals + Balance (no inflation bugs)</span>
+                <span>
+                  <strong>Conservation:</strong> Deposits = Withdrawals + Balance (no inflation bugs)
+                </span>
               </li>
               <li className="flex gap-2">
                 <span className="font-bold text-emerald-600">3.</span>
-                <span><strong>Monotonicity:</strong> Block times always increase (no time-travel attacks)</span>
+                <span>
+                  <strong>Monotonicity:</strong> Block times always increase (no time-travel attacks)
+                </span>
               </li>
               <li className="flex gap-2">
                 <span className="font-bold text-emerald-600">4.</span>
-                <span><strong>Single Execution:</strong> Each order executes at most once (no replays)</span>
+                <span>
+                  <strong>Single Execution:</strong> Each order executes at most once (no replays)
+                </span>
               </li>
               <li className="flex gap-2">
                 <span className="font-bold text-emerald-600">5.</span>
-                <span><strong>Valid Transitions:</strong> Only valid state machine transitions allowed</span>
+                <span>
+                  <strong>Valid Transitions:</strong> Only valid state machine transitions allowed
+                </span>
               </li>
             </ul>
             <p className="mt-3 text-xs text-slate-600">

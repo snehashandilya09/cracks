@@ -1,16 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { Header } from "./_components/Header";
-import { Navigation } from "./_components/Navigation";
-import { StatusPanel } from "./_components/StatusPanel";
-import { CommitTab } from "./_components/CommitTab";
-import { RevealTab } from "./_components/RevealTab";
-import { MarketViewTab } from "./_components/MarketViewTab";
-import { StatsTab } from "./_components/StatsTab";
-import { DevTools } from "./_components/DevTools";
 import { useClearSettle } from "../../hooks/useClearSettle";
+import { CommitTab } from "./_components/CommitTab";
+import { DevTools } from "./_components/DevTools";
+import { Header } from "./_components/Header";
+import { InvariantStatusPanel } from "./_components/InvariantStatusPanel";
+import { MarketViewTab } from "./_components/MarketViewTab";
+import { Navigation } from "./_components/Navigation";
+import { RevealTab } from "./_components/RevealTab";
+import { StatsTab } from "./_components/StatsTab";
+import { StatusPanel } from "./_components/StatusPanel";
 
 type TabType = "commit" | "reveal" | "market" | "stats";
 
@@ -38,10 +39,7 @@ export default function ClearSettleDashboard() {
       <Navigation />
 
       {/* Header */}
-      <Header
-        currentBlock={currentBlock}
-        epochId={epochData?.epochId ?? 0n}
-      />
+      <Header currentBlock={currentBlock} epochId={epochData?.epochId ?? 0n} />
 
       {/* Main Content */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -50,13 +48,18 @@ export default function ClearSettleDashboard() {
           <DevTools />
         </div>
 
+        {/* Invariant Status Panel - Module 1 Showcase */}
+        <div className="mb-6">
+          <InvariantStatusPanel />
+        </div>
+
         {/* Status Panel */}
         <StatusPanel epochData={epochData} currentPhase={currentPhase} />
 
         {/* Tab Navigation */}
         <div className="mt-8 border-b border-slate-200 bg-white rounded-t-lg">
           <div className="flex gap-8 px-6 sm:px-8">
-            {tabs.map((tab) => (
+            {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -75,18 +78,10 @@ export default function ClearSettleDashboard() {
 
         {/* Tab Content */}
         <div className="rounded-b-lg border border-t-0 border-slate-200 bg-white p-6 sm:p-8">
-          {activeTab === "commit" && (
-            <CommitTab currentPhase={currentPhase?.phase ?? null} />
-          )}
-          {activeTab === "reveal" && (
-            <RevealTab currentPhase={currentPhase?.phase ?? null} />
-          )}
-          {activeTab === "market" && (
-            <MarketViewTab epochData={epochData} />
-          )}
-          {activeTab === "stats" && (
-            <StatsTab epochData={epochData} />
-          )}
+          {activeTab === "commit" && <CommitTab currentPhase={currentPhase?.phase ?? null} />}
+          {activeTab === "reveal" && <RevealTab currentPhase={currentPhase?.phase ?? null} />}
+          {activeTab === "market" && <MarketViewTab epochData={epochData} />}
+          {activeTab === "stats" && <StatsTab epochData={epochData} />}
         </div>
 
         {/* Footer Info */}
@@ -129,9 +124,7 @@ export default function ClearSettleDashboard() {
               <p className="mt-2 text-sm text-slate-600">
                 See how ClearSettle protects against front-running, sandwich attacks, and other DeFi threats
               </p>
-              <div className="mt-4 flex items-center gap-2 text-emerald-600 font-semibold text-sm">
-                Explore →
-              </div>
+              <div className="mt-4 flex items-center gap-2 text-emerald-600 font-semibold text-sm">Explore →</div>
             </Link>
 
             {/* Oracle Dashboard */}
@@ -146,9 +139,7 @@ export default function ClearSettleDashboard() {
               <p className="mt-2 text-sm text-slate-600">
                 Real-time Byzantine-fault-tolerant price oracle aggregation with multi-source verification
               </p>
-              <div className="mt-4 flex items-center gap-2 text-emerald-600 font-semibold text-sm">
-                Monitor →
-              </div>
+              <div className="mt-4 flex items-center gap-2 text-emerald-600 font-semibold text-sm">Monitor →</div>
             </Link>
 
             {/* Finality Tracker */}
@@ -163,9 +154,7 @@ export default function ClearSettleDashboard() {
               <p className="mt-2 text-sm text-slate-600">
                 Track settlement batch finalization and reorg protection mechanisms in real-time
               </p>
-              <div className="mt-4 flex items-center gap-2 text-emerald-600 font-semibold text-sm">
-                Track →
-              </div>
+              <div className="mt-4 flex items-center gap-2 text-emerald-600 font-semibold text-sm">Track →</div>
             </Link>
           </div>
         </div>
