@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePublicClient } from "wagmi";
+import { useChainId, usePublicClient } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
-
-const chainId = 31337;
-const CONTRACT = deployedContracts[chainId]?.ClearSettle;
 
 interface InvariantStatus {
   name: string;
@@ -15,6 +12,9 @@ interface InvariantStatus {
 }
 
 export function InvariantStatusPanel() {
+  const chainId = useChainId();
+  const CONTRACT = deployedContracts[chainId as keyof typeof deployedContracts]?.ClearSettle;
+  
   const [invariants, setInvariants] = useState<InvariantStatus[]>([
     {
       name: "INV-1: Solvency",
@@ -151,7 +151,7 @@ export function InvariantStatusPanel() {
     const interval = setInterval(checkInvariants, 10000); // Refresh every 10s
 
     return () => clearInterval(interval);
-  }, [publicClient]);
+  }, [publicClient, CONTRACT]);
 
   const allPassing = invariants.every(inv => inv.status === "passing");
   const anyLoading = invariants.some(inv => inv.status === "loading");

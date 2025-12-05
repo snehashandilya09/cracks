@@ -1,17 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useClearSettle } from "../../hooks/useClearSettle";
-import { CommitTab } from "./_components/CommitTab";
-import { DevTools } from "./_components/DevTools";
-import { Header } from "./_components/Header";
-import { InvariantStatusPanel } from "./_components/InvariantStatusPanel";
-import { MarketViewTab } from "./_components/MarketViewTab";
 import { Navigation } from "./_components/Navigation";
-import { RevealTab } from "./_components/RevealTab";
-import { StatsTab } from "./_components/StatsTab";
-import { StatusPanel } from "./_components/StatusPanel";
+
+// Dynamic imports for components that use wagmi hooks - prevents SSR issues
+const DevTools = dynamic(() => import("./_components/DevTools").then(mod => ({ default: mod.DevTools })), { ssr: false });
+const Header = dynamic(() => import("./_components/Header").then(mod => ({ default: mod.Header })), { ssr: false });
+const InvariantStatusPanel = dynamic(() => import("./_components/InvariantStatusPanel").then(mod => ({ default: mod.InvariantStatusPanel })), { ssr: false });
+const StatusPanel = dynamic(() => import("./_components/StatusPanel").then(mod => ({ default: mod.StatusPanel })), { ssr: false });
+const CommitTab = dynamic(() => import("./_components/CommitTab").then(mod => ({ default: mod.CommitTab })), { ssr: false });
+const RevealTab = dynamic(() => import("./_components/RevealTab").then(mod => ({ default: mod.RevealTab })), { ssr: false });
+const MarketViewTab = dynamic(() => import("./_components/MarketViewTab").then(mod => ({ default: mod.MarketViewTab })), { ssr: false });
+const StatsTab = dynamic(() => import("./_components/StatsTab").then(mod => ({ default: mod.StatsTab })), { ssr: false });
 
 type TabType = "commit" | "reveal" | "market" | "stats";
 

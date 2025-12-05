@@ -34,8 +34,8 @@ describe("Attack Simulation Suite", function () {
   let eve: HardhatEthersSigner;    // Eavesdropper
 
   const MIN_BOND = ethers.parseEther("0.01");
-  const COMMIT_DURATION = 60; // blocks - matches contract's commitDuration
-  const REVEAL_DURATION = 60; // blocks - matches contract's revealDuration
+  const COMMIT_DURATION = 5; // blocks - matches contract's commitDuration
+  const REVEAL_DURATION = 5; // blocks - matches contract's revealDuration
   const BUY = 0;
   const SELL = 1;
 

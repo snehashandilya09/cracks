@@ -147,22 +147,28 @@ library LibClearStorage {
      * @dev Should only be called once during deployment
      * 
      * DEFAULT VALUES RATIONALE:
-     * - 10 blocks per phase: ~2 minutes on mainnet, instant on local
+     * - 5 blocks per phase: ~1 minute on Sepolia (12s blocks), instant on local
      * - 0.01 ETH min bond: Meaningful anti-griefing, not prohibitive
      * - 30 bps fee: Competitive with Uniswap
-     * - 10 block safety: Adequate for local demo, increase for mainnet
+     * - 3 block safety: Fast for demo, increase for mainnet (64 blocks)
+     * 
+     * DEMO TIMING (Sepolia @ 12s/block):
+     * - Commit phase: ~1 min
+     * - Reveal phase: ~1 min  
+     * - Safety buffer: ~36 sec
+     * - Total epoch: ~3 min
      */
     function initializeConfig(ClearStorage storage s) internal {
         s.config = ProtocolConfig({
-            commitDuration: 60,              // 60 blocks for commits (~3 min with 3s blocks)
-            revealDuration: 60,              // 60 blocks for reveals (~3 min with 3s blocks)
-            safetyBufferDuration: 10,        // 10 blocks safety (increase for mainnet!)
+            commitDuration: 5,               // 5 blocks (~60 sec on Sepolia, ~1 sec localhost)
+            revealDuration: 5,               // 5 blocks (~60 sec on Sepolia)
+            safetyBufferDuration: 3,         // 3 blocks (~36 sec on Sepolia)
             minCommitBond: 0.01 ether,       // 0.01 ETH minimum bond
             settlementFeeRate: 30,           // 0.30% fee
             disputeBondMultiplier: 2,        // 2x bond for disputes
             assertionWindow: 5,              // 5 blocks to assert
             disputeWindow: 10,               // 10 blocks to dispute
-            maxEpochDuration: 100            // Force-advance after 100 blocks
+            maxEpochDuration: 25             // Force-advance after 25 blocks (~5 min)
         });
         
         s.reentrancyStatus = 1;              // Initialize reentrancy guard

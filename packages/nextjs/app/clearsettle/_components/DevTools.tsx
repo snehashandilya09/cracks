@@ -2,215 +2,212 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { usePublicClient, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useChainId, usePublicClient, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-/**
- * DevTools Component - For Testing Only
- *
- * Provides shortcuts for testing the full flow without waiting for blocks:
- * 1. Mine N blocks instantly (localhost only)
- * 2. Skip to next phase
- * 3. Reset epoch
- */
-const chainId = 31337;
-const CONTRACT = deployedContracts[chainId]?.ClearSettle;
+type HexAddress = `0x${string}`;
 
 export function DevTools() {
-  const [blocksToMine, setBlocksToMine] = useState("60");
+  const chainId = useChainId();
+  const isLocalhost = chainId === 31337;
+
+  const [blocksToMine, setBlocksToMine] = useState("10");
   const [isMining, setIsMining] = useState(false);
+  const [currentBlock, setCurrentBlock] = useState<bigint>(0n);
+  const [phaseEndBlock, setPhaseEndBlock] = useState<bigint>(0n);
+  const [phaseName, setPhaseName] = useState<string>("UNKNOWN");
+
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
-  const { writeContract, data: resetTxHash } = useWriteContract();
+  const { writeContract, data: txHash } = useWriteContract();
 
-  // Wait for reset transaction confirmation
-  const { isSuccess: resetConfirmed } = useWaitForTransactionReceipt({
-    hash: resetTxHash,
-  });
+  const CONTRACT = deployedContracts[chainId as keyof typeof deployedContracts]?.ClearSettle;
 
-  // Force page reload when reset is confirmed
+  const { isSuccess: txConfirmed } = useWaitForTransactionReceipt({ hash: txHash });
+
   useEffect(() => {
-    if (resetConfirmed && resetTxHash) {
-      toast.success("✅ Reset complete! Refreshing...");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+    if (txConfirmed && txHash) {
+      toast.success("Transaction confirmed!");
+      setTimeout(() => window.location.reload(), 1000);
     }
-  }, [resetConfirmed, resetTxHash]);
+  }, [txConfirmed, txHash]);
+
+  useEffect(() => {
+    const fetchBlockInfo = async () => {
+      if (!publicClient || !CONTRACT) return;
+      try {
+        const block = await publicClient.getBlockNumber();
+        setCurrentBlock(block);
+
+        const contractAddress = CONTRACT.address as HexAddress;
+
+        const epochId = (await publicClient.readContract({
+          address: contractAddress,
+          abi: CONTRACT.abi,
+          functionName: "getCurrentEpochId",
+        })) as bigint;
+
+        const epochData = (await publicClient.readContract({
+          address: contractAddress,
+          abi: CONTRACT.abi,
+          functionName: "getEpochData",
+          args: [epochId],
+        })) as any;
+
+        const phase = Number(epochData.phase);
+        const PHASE_NAMES = ["UNINITIALIZED", "ACCEPTING_COMMITS", "ACCEPTING_REVEALS", "SETTLING", "IN_TRANSITION", "SAFETY_BUFFER", "FINALIZED", "VOID"];
+        setPhaseName(PHASE_NAMES[phase] || "UNKNOWN");
+
+        if (phase === 1) setPhaseEndBlock(epochData.commitEndBlock);
+        else if (phase === 2) setPhaseEndBlock(epochData.revealEndBlock);
+        else if (phase === 5) setPhaseEndBlock(epochData.safetyEndBlock);
+        else setPhaseEndBlock(0n);
+      } catch (e) {
+        console.error("Error fetching block info:", e);
+      }
+    };
+
+    fetchBlockInfo();
+    const interval = setInterval(fetchBlockInfo, 3000);
+    return () => clearInterval(interval);
+  }, [publicClient, CONTRACT]);
+
+  const blocksRemaining = phaseEndBlock > currentBlock ? Number(phaseEndBlock - currentBlock) : 0;
+  const estimatedSeconds = isLocalhost ? blocksRemaining : blocksRemaining * 12;
 
   const mineBlocks = async (count: number) => {
-    if (!publicClient || !walletClient) {
+    if (!isLocalhost) {
+      toast.error("Mining only works on localhost!");
+      return;
+    }
+    if (!walletClient) {
       toast.error("Wallet not connected");
       return;
     }
-
     setIsMining(true);
     try {
-      // Mine blocks on hardhat localhost
+      const hexCount = "0x" + count.toString(16);
       await walletClient.request({
         method: "hardhat_mine" as any,
-        params: [`0x${count.toString(16)}`], // Convert to hex
+        params: [hexCount],
       });
-
-      toast.success(`Mined ${count} blocks!`);
-
-      // Force UI refresh by getting new block number
-      const newBlock = await publicClient.getBlockNumber();
-      console.log("New block:", newBlock);
+      toast.success("Mined " + count + " blocks!");
+      const newBlock = await publicClient?.getBlockNumber();
+      if (newBlock) setCurrentBlock(newBlock);
     } catch (e: any) {
-      console.error("Mining error:", e);
-      toast.error(`Mining failed: ${e.message || "Are you on localhost?"}`);
+      toast.error("Mining failed: " + e.message);
     } finally {
       setIsMining(false);
     }
   };
 
-  const skipToNextPhase = () => {
-    // Mine 60 blocks to skip one phase
-    mineBlocks(60);
-  };
-
-  const skipToRevealPhase = () => {
-    // Mine 60 blocks to reach reveal phase from commit
-    mineBlocks(60);
-  };
-
-  const skipToSettlePhase = () => {
-    // Mine 120 blocks to reach settle phase
-    mineBlocks(120);
-  };
-
-  const skipToFinalPhase = () => {
-    // Mine 130+ blocks to reach finalized
-    mineBlocks(135);
-  };
-
   const resetToCommitPhase = async () => {
-    if (!CONTRACT) {
-      toast.error("Contract not found");
-      return;
-    }
-
+    if (!CONTRACT) return toast.error("Contract not found");
+    const contractAddress = CONTRACT.address as HexAddress;
     setIsMining(true);
     try {
-      toast("Calling resetForDemo()...", { icon: "🔄" });
+      toast("Resetting epoch...", { icon: "🔄" });
       writeContract({
-        address: CONTRACT.address as `0x${string}`,
+        address: contractAddress,
         abi: CONTRACT.abi,
         functionName: "resetForDemo",
       });
-      // Transaction confirmation handled by useEffect above
     } catch (e: any) {
-      console.error("Reset error:", e);
-      toast.error(`Failed: ${e.message || "Unknown error"}`);
+      toast.error("Failed: " + e.message);
       setIsMining(false);
     }
   };
 
-  // Settle the current epoch (call after reveal phase)
   const settleEpoch = async () => {
-    if (!CONTRACT) {
-      toast.error("Contract not found");
-      return;
-    }
-
+    if (!CONTRACT) return toast.error("Contract not found");
+    const contractAddress = CONTRACT.address as HexAddress;
     setIsMining(true);
     try {
       toast("Settling epoch...", { icon: "⚙️" });
       writeContract({
-        address: CONTRACT.address as `0x${string}`,
+        address: contractAddress,
         abi: CONTRACT.abi,
         functionName: "settleEpoch",
       });
-      toast.success("Settle transaction submitted!");
     } catch (e: any) {
-      console.error("Settle error:", e);
-      toast.error(`Failed: ${e.message || "Unknown error"}`);
-    } finally {
+      toast.error("Failed: " + e.message);
       setIsMining(false);
     }
   };
 
-  // Claim settlement (call after finalized)
   const claimSettlement = async () => {
-    if (!CONTRACT || !publicClient) {
-      toast.error("Contract not found");
-      return;
-    }
-
+    if (!CONTRACT || !publicClient) return toast.error("Contract not found");
+    const contractAddress = CONTRACT.address as HexAddress;
     setIsMining(true);
     try {
-      // Get current epoch ID
       const epochId = await publicClient.readContract({
-        address: CONTRACT.address as `0x${string}`,
+        address: contractAddress,
         abi: CONTRACT.abi,
         functionName: "getCurrentEpochId",
       });
-
       toast("Claiming settlement...", { icon: "💰" });
       writeContract({
-        address: CONTRACT.address as `0x${string}`,
+        address: contractAddress,
         abi: CONTRACT.abi,
         functionName: "claimSettlement",
         args: [epochId],
       });
-      toast.success("Claim transaction submitted!");
     } catch (e: any) {
-      console.error("Claim error:", e);
-      toast.error(`Failed: ${e.message || "Unknown error"}`);
-    } finally {
+      toast.error("Failed: " + e.message);
       setIsMining(false);
     }
   };
 
+  const formatTime = (seconds: number) => {
+    if (seconds < 60) return "~" + seconds + "s";
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return "~" + mins + "m " + secs + "s";
+  };
+
+  const containerClass = isLocalhost
+    ? "rounded-lg border-2 p-4 border-amber-300 bg-amber-50"
+    : "rounded-lg border-2 p-4 border-blue-300 bg-blue-50";
+
+  const titleClass = isLocalhost ? "font-bold text-amber-900" : "font-bold text-blue-900";
+  const badgeClass = isLocalhost
+    ? "rounded px-2 py-1 text-xs bg-amber-200 text-amber-800"
+    : "rounded px-2 py-1 text-xs bg-blue-200 text-blue-800";
+
   return (
-    <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-2xl">🛠️</span>
-        <h3 className="font-bold text-amber-900">Dev Tools (Testing Only)</h3>
+    <div className={containerClass}>
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">{isLocalhost ? "🛠️" : "🌐"}</span>
+          <h3 className={titleClass}>
+            {isLocalhost ? "Dev Tools (Localhost)" : "Protocol Controls (Testnet)"}
+          </h3>
+        </div>
+        <span className={badgeClass}>Chain: {chainId}</span>
       </div>
 
-      <p className="text-xs text-amber-700 mb-4">
-        Only works on localhost. Instantly mine blocks to test phase transitions.
-      </p>
-
-      {/* Quick Skip Buttons */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
-        <button
-          onClick={skipToRevealPhase}
-          disabled={isMining}
-          className="rounded bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-        >
-          ⏭️ Skip to Reveal
-        </button>
-
-        <button
-          onClick={skipToSettlePhase}
-          disabled={isMining}
-          className="rounded bg-purple-600 px-3 py-2 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-50"
-        >
-          ⏭️ Skip to Settle
-        </button>
-
-        <button
-          onClick={skipToFinalPhase}
-          disabled={isMining}
-          className="rounded bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
-        >
-          ⏭️ Skip to Final
-        </button>
-
-        <button
-          onClick={resetToCommitPhase}
-          disabled={isMining}
-          className="rounded bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
-          🔄 Reset to COMMIT
-        </button>
+      <div className="mb-4 rounded-lg border border-slate-200 bg-white/60 p-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <span className="text-xs text-slate-500">Current Phase:</span>
+            <p className="font-bold text-slate-900">{phaseName}</p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500">Current Block:</span>
+            <p className="font-mono font-bold text-slate-900">{currentBlock.toString()}</p>
+          </div>
+          {blocksRemaining > 0 && (
+            <div className="text-right">
+              <span className="text-xs text-slate-500">Next Phase In:</span>
+              <p className="font-bold text-emerald-600">
+                {blocksRemaining} blocks ({formatTime(estimatedSeconds)})
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 mb-4">
+      <div className="mb-4 grid grid-cols-3 gap-2">
         <button
           onClick={settleEpoch}
           disabled={isMining}
@@ -218,47 +215,85 @@ export function DevTools() {
         >
           ⚙️ Settle Epoch
         </button>
-
         <button
           onClick={claimSettlement}
           disabled={isMining}
           className="rounded bg-green-600 px-3 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
         >
-          💰 Claim Settlement
+          💰 Claim
         </button>
-
         <button
-          onClick={skipToNextPhase}
+          onClick={resetToCommitPhase}
           disabled={isMining}
-          className="rounded bg-amber-600 px-3 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+          className="rounded bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
         >
-          ⏭️ Skip +60 Blocks
+          🔄 New Epoch
         </button>
       </div>
 
-      {/* Custom Mine */}
-      <div className="flex gap-2">
-        <input
-          type="number"
-          value={blocksToMine}
-          onChange={e => setBlocksToMine(e.target.value)}
-          placeholder="Number of blocks"
-          className="flex-1 rounded border border-amber-300 px-3 py-2 text-sm"
-        />
-        <button
-          onClick={() => mineBlocks(parseInt(blocksToMine))}
-          disabled={isMining}
-          className="rounded bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
-        >
-          {isMining ? "Mining..." : "Mine Blocks"}
-        </button>
-      </div>
+      {isLocalhost && (
+        <div className="mt-4 border-t border-amber-200 pt-4">
+          <p className="mb-2 text-xs font-semibold text-amber-700">⚡ Fast Forward (Localhost Only)</p>
+          <div className="mb-3 grid grid-cols-4 gap-2">
+            <button
+              onClick={() => mineBlocks(5)}
+              disabled={isMining}
+              className="rounded bg-amber-600 px-2 py-1 text-xs font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+            >
+              +5 Blocks
+            </button>
+            <button
+              onClick={() => mineBlocks(10)}
+              disabled={isMining}
+              className="rounded bg-amber-600 px-2 py-1 text-xs font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+            >
+              +10 Blocks
+            </button>
+            <button
+              onClick={() => mineBlocks(15)}
+              disabled={isMining}
+              className="rounded bg-amber-600 px-2 py-1 text-xs font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+            >
+              +15 Blocks
+            </button>
+            <button
+              onClick={() => mineBlocks(25)}
+              disabled={isMining}
+              className="rounded bg-amber-600 px-2 py-1 text-xs font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+            >
+              +25 Blocks
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="number"
+              value={blocksToMine}
+              onChange={e => setBlocksToMine(e.target.value)}
+              className="flex-1 rounded border border-amber-300 px-3 py-1 text-sm"
+              placeholder="Blocks to mine"
+            />
+            <button
+              onClick={() => mineBlocks(parseInt(blocksToMine) || 1)}
+              disabled={isMining}
+              className="rounded bg-amber-600 px-4 py-1 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+            >
+              {isMining ? "Mining..." : "Mine"}
+            </button>
+          </div>
+        </div>
+      )}
 
-      <div className="mt-3 text-xs text-amber-700">
-        <strong>Phase Durations:</strong> Commit: 60 blocks | Reveal: 60 blocks | Safety: 10 blocks
-        <br />
-        <strong className="text-indigo-700">Tip:</strong> Use Reset to COMMIT Phase to start a fresh epoch anytime!
-      </div>
+      {!isLocalhost && (
+        <div className="mt-2 text-xs text-blue-700">
+          <strong>Note:</strong> On testnet, wait for real blocks (~12 sec each). Phase durations: Commit: 5 blocks | Reveal: 5 blocks | Safety: 3 blocks
+        </div>
+      )}
+
+      {isLocalhost && (
+        <div className="mt-3 text-xs text-amber-700">
+          <strong>Phase Durations:</strong> Commit: 5 blocks | Reveal: 5 blocks | Safety: 3 blocks
+        </div>
+      )}
     </div>
   );
 }

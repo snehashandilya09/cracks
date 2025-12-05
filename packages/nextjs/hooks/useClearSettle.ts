@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
-import { usePublicClient } from "wagmi";
+import { useChainId, usePublicClient } from "wagmi";
 import { getContract, type Abi } from "viem";
 import deployedContracts from "~~/contracts/deployedContracts";
-
-// Get deployed contract info
-const chainId = 31337; // localhost
-const CLEARSETTLE_CONTRACT = deployedContracts[chainId]?.ClearSettle;
-const CLEAR_SETTLE_ADDRESS = CLEARSETTLE_CONTRACT?.address as `0x${string}`;
 
 export interface EpochData {
   epochId: bigint;
@@ -44,10 +39,15 @@ const PHASE_NAMES: { [key: number]: CurrentPhaseInfo["phase"] } = {
   7: "VOID",
 };
 
-// Use complete ABI from deployed contract
-const CLEAR_SETTLE_ABI = CLEARSETTLE_CONTRACT?.abi as Abi;
+// Use complete ABI from deployed contract - will be determined at runtime
+// const CLEAR_SETTLE_ABI = CLEARSETTLE_CONTRACT?.abi as Abi;
 
 export function useClearSettle() {
+  const chainId = useChainId();
+  const CONTRACT = deployedContracts[chainId as keyof typeof deployedContracts]?.ClearSettle;
+  const CLEAR_SETTLE_ADDRESS = CONTRACT?.address as `0x${string}`;
+  const CLEAR_SETTLE_ABI = CONTRACT?.abi as Abi;
+  
   const [currentBlock, setCurrentBlock] = useState<bigint>(0n);
   const [epochData, setEpochData] = useState<EpochData | null>(null);
   const [currentPhase, setCurrentPhase] = useState<CurrentPhaseInfo | null>(null);
@@ -74,7 +74,7 @@ export function useClearSettle() {
   // Fetch epoch data from contract
   useEffect(() => {
     const fetchEpochData = async () => {
-      if (!publicClient) return;
+      if (!publicClient || !CLEAR_SETTLE_ADDRESS || !CLEAR_SETTLE_ABI) return;
 
       try {
         const contract = getContract({
@@ -133,7 +133,7 @@ export function useClearSettle() {
     const interval = setInterval(fetchEpochData, 5000); // Update every 5s
 
     return () => clearInterval(interval);
-  }, [publicClient, currentBlock]);
+  }, [publicClient, currentBlock, CLEAR_SETTLE_ADDRESS, CLEAR_SETTLE_ABI]);
 
   const refetchEpoch = async () => {
     // Trigger re-fetch by updating current block

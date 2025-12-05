@@ -33,9 +33,9 @@ describe("Invariant Proofs", function () {
   let charlie: HardhatEthersSigner;
 
   const MIN_BOND = ethers.parseEther("0.01");
-  const COMMIT_DURATION = 60; // blocks - matches contract's commitDuration
-  const REVEAL_DURATION = 60; // blocks - matches contract's revealDuration
-  const SAFETY_BUFFER = 10;
+  const COMMIT_DURATION = 5; // blocks - matches contract's commitDuration
+  const REVEAL_DURATION = 5; // blocks - matches contract's revealDuration
+  const SAFETY_BUFFER = 3;
   const BUY = 0;
   const SELL = 1;
 
