@@ -79,7 +79,7 @@ Visit the [What's next section of our docs](https://docs.scaffoldeth.io/quick-st
 
 Visit our [docs](https://docs.scaffoldeth.io) to learn all the technical details and guides of Scaffold-ETH 2.
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+To know more about its features, check out our [website](https://scaffoldeth.io)..
 
 ## Contributing to Scaffold-ETH 2
 
