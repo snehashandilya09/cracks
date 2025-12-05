@@ -57,10 +57,32 @@ library SafetyModule {
     using LibClearStorage for LibClearStorage.ClearStorage;
     
     // ============ Events ============
-    
+
     event InvariantViolation(string invariantName, string details);
     event InvariantPassed(string invariantName);
-    
+
+    // ============ Formal Verification - Invariant Masks ============
+
+    /**
+     * @notice Invariant bit masks for formal verification
+     * @dev Used in Hoare Logic modifiers to specify which invariants must hold
+     *
+     * USAGE:
+     * modifier requiresInvariant(uint256 mask) {
+     *     if (mask & INV_SOLVENCY != 0) checkSolvency();
+     *     _;
+     * }
+     *
+     * COMBINATION:
+     * uint256 mask = INV_SOLVENCY | INV_CONSERVATION; // Both must hold
+     */
+    uint256 internal constant INV_SOLVENCY = 1 << 0;        // 0x01
+    uint256 internal constant INV_CONSERVATION = 1 << 1;    // 0x02
+    uint256 internal constant INV_MONOTONICITY = 1 << 2;    // 0x04
+    uint256 internal constant INV_SINGLE_EXEC = 1 << 3;     // 0x08
+    uint256 internal constant INV_VALID_TRANSITION = 1 << 4; // 0x10
+    uint256 internal constant INV_ALL = 0x1F;               // All 5 invariants
+
     // ============ Invariant 1: Solvency ============
     
     /**

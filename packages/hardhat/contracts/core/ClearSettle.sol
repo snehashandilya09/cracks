@@ -281,6 +281,19 @@ contract ClearSettle is EpochManager, IClearSettleCore {
      * - Must be in SETTLING phase
      * - At least one revealed order exists
      * - All invariants must hold before and after
+     *
+     * @custom:hoare-triple {P} settleEpoch() {Q}
+     * @custom:precondition P:
+     *   INV1_SOLVENCY: balance >= totalClaims
+     *   INV2_CONSERVATION: deposits - withdrawals = balance (±1 wei)
+     *   INV3_MONOTONICITY: startBlock < commitEndBlock < revealEndBlock
+     *   phase = SETTLING
+     * @custom:postcondition Q:
+     *   INV1_SOLVENCY: balance' >= totalClaims'
+     *   INV2_CONSERVATION: deposits' - withdrawals' = balance' (±1 wei)
+     *   INV3_MONOTONICITY: ... < settleBlock < safetyEndBlock
+     *   INV4_SINGLE_EXEC: ∀ orders o: executions(o) ≤ 1
+     *   phase' = SAFETY_BUFFER
      */
     function settleEpoch()
         external
@@ -576,10 +589,36 @@ contract ClearSettle is EpochManager, IClearSettleCore {
         // Loop Invariant: Ensure gas doesn't run out (prevent DoS)
         uint256 gas_safety_threshold = 50000; // Reserve ~50k gas for cleanup
 
+        /**
+         * LOOP INVARIANT & VARIANT (Formal Verification):
+         *
+         * INVARIANT (holds at start and end of each iteration):
+         *   I(i) = 0 ≤ i ≤ traders.length ∧
+         *          ∀j < i: orders[j].executed = true ∨ orders[j].amount = 0 ∧
+         *          gasleft() > gas_safety_threshold
+         *
+         * VARIANT (strictly decreases each iteration):
+         *   V(i) = traders.length - i
+         *
+         * PROOF OF TERMINATION:
+         *   - V(0) = traders.length (finite positive integer)
+         *   - Each iteration: i → i+1, therefore V(i+1) = V(i) - 1
+         *   - V strictly decreases: V(i+1) < V(i)
+         *   - Loop terminates when i = traders.length (V = 0)
+         *   - Gas check prevents infinite execution
+         *
+         * PROOF OF CORRECTNESS:
+         *   Base case (i=0): No orders processed yet, invariant holds
+         *   Inductive step: Assume I(i) holds, prove I(i+1) after processing order i
+         *     - Order i is marked executed or skipped
+         *     - ∀j ≤ i: orders[j].executed = true ∨ orders[j].amount = 0
+         *     - Gas check ensures gasleft() > threshold
+         *     - Therefore I(i+1) holds
+         */
         for (uint256 i = 0; i < traders.length; i++) {
             // LOOP INVARIANT CHECK (per Module-1 Section 3.4)
-            // 1. Counter i is strictly increasing
-            // 2. Unprocessed items are strictly decreasing
+            // 1. Counter i is strictly increasing: V(i+1) = V(i) - 1
+            // 2. Unprocessed items strictly decreasing: traders.length - i
             // 3. Gas remaining check prevents infinite loops
 
             // Check gas: must have enough for remaining ops and revert
