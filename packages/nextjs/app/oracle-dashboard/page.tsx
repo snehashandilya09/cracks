@@ -237,8 +237,8 @@ export default function OracleDashboard() {
                 Final price is the <strong>median</strong> of all three sources, not the mean. This ensures:
               </p>
               <ul className="mt-2 space-y-1 text-sm text-slate-700 ml-4">
-                <li>• Outlier prices don't affect the final result</li>
-                <li>• At least one honest oracle's price is always in the result</li>
+                <li>• Outlier prices do not affect the final result</li>
+                <li>• At least one honest oracle price is always in the result</li>
                 <li>• Flash loan attacks targeting one source are neutralized</li>
               </ul>
             </div>
@@ -258,7 +258,7 @@ export default function OracleDashboard() {
             <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
               <h3 className="font-semibold text-emerald-900">Deviation Limits</h3>
               <p className="mt-2 text-sm text-emerald-800">
-                If any oracle price deviates more than 30% from the consensus, it's flagged as suspicious:
+                If any oracle price deviates more than 30% from the consensus, it is flagged as suspicious:
               </p>
               <ul className="mt-2 space-y-1 text-sm text-emerald-800 ml-4">
                 <li>• Protects against temporary oracle glitches</li>

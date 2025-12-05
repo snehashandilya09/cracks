@@ -33,7 +33,7 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
         )
       );
       setCommitmentHash(hash);
-    } catch (e) {
+    } catch {
       setCommitmentHash("");
     }
   }, [amount, side, limitPrice, salt, address]);

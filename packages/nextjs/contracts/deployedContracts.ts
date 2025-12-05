@@ -5,9 +5,9 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  31337: {
+  11155111: {
     ClearSettle: {
-      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      address: "0x03ECDCdC5f558494B126Eee6F195FAA772706EFB",
       abi: [
         {
           inputs: [],
@@ -727,10 +727,10 @@ const deployedContracts = {
         getCurrentPhase: "contracts/core/EpochManager.sol",
         getEpochData: "contracts/core/EpochManager.sol",
       },
-      deployedOnBlock: 3,
+      deployedOnBlock: 9776065,
     },
     YourContract: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      address: "0x6c927bebC93d3d304ddeECE1eF59E0723d5241A1",
       abi: [
         {
           inputs: [
@@ -871,7 +871,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 1,
+      deployedOnBlock: 9776064,
     },
   },
 } as const;

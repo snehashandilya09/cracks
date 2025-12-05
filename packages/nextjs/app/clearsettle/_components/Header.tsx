@@ -1,7 +1,6 @@
 "use client";
 
 import { useAccount, useBalance } from "wagmi";
-import { Address } from "viem";
 
 interface HeaderProps {
   currentBlock: bigint;

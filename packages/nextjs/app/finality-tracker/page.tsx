@@ -154,7 +154,7 @@ export default function FinalityTrackerPage() {
             <div className="rounded-lg bg-white bg-opacity-70 p-4">
               <p className="font-semibold text-slate-900">Stage 3: CHECKPOINTED</p>
               <p className="mt-2 text-xs text-slate-700">
-                After 64 blocks, considered immutable. Reorg would require >50% network hashrate (economically infeasible)
+                After 64 blocks, considered immutable. Reorg would require {">"}50% network hashrate (economically infeasible)
               </p>
             </div>
           </div>
@@ -216,7 +216,7 @@ export default function FinalityTrackerPage() {
                     <div className="text-sm text-slate-700">
                       <p className="font-semibold">⚠️ Reorg Vulnerable</p>
                       <p>
-                        This batch is in the mempool. Any reorg >0 blocks could reverse it.{" "}
+                        This batch is in the mempool. Any reorg {">"}0 blocks could reverse it.{" "}
                         <strong>Wait for LOGGED status</strong>.
                       </p>
                     </div>
@@ -274,7 +274,7 @@ export default function FinalityTrackerPage() {
               protected because:
             </p>
             <ul className="mt-3 space-y-2 text-sm text-slate-700 ml-4">
-              <li>• <strong>Nullifiers:</strong> keccak256(sender || nonce || payload) - doesn't include block number</li>
+              <li>• <strong>Nullifiers:</strong> keccak256(sender || nonce || payload) - does not include block number</li>
               <li>• <strong>Consumed tracking:</strong> Smart contract tracks which nullifiers have been used</li>
               <li>• <strong>Replay prevention:</strong> Using a nullifier twice is rejected onchain</li>
               <li>• <strong>Settlement idempotence:</strong> Settling same orders twice fails gracefully</li>
@@ -300,7 +300,7 @@ export default function FinalityTrackerPage() {
               Ethereum's standard safe reorg distance is 64 blocks. Beyond this:
             </p>
             <ul className="mt-3 space-y-2 text-sm text-slate-700 ml-4">
-              <li>• <strong>Probability:</strong> &lt;0.001% chance of reorg >64 blocks</li>
+              <li>• <strong>Probability:</strong> &lt;0.001% chance of reorg &gt;64 blocks</li>
               <li>• <strong>Cost:</strong> Would require &gt;50% network hashrate attacking</li>
               <li>• <strong>Detection:</strong> Such an attack would be publicly noticed immediately</li>
               <li>• <strong>Recovery:</strong> Even if reorg happens, idempotence protects users</li>
@@ -310,7 +310,7 @@ export default function FinalityTrackerPage() {
           <div className="rounded-lg border border-slate-200 bg-white p-6">
             <h3 className="text-lg font-semibold text-slate-900">Multi-Layer Protection</h3>
             <p className="mt-2 text-sm text-slate-700">
-              ClearSettle doesn't rely on single mechanism. Protection layers:
+              ClearSettle does not rely on single mechanism. Protection layers:
             </p>
             <ul className="mt-3 space-y-2 text-sm text-slate-700 ml-4">
               <li>• <strong>Layer 1:</strong> Commit-reveal hides orders during vulnerability window</li>
@@ -339,13 +339,13 @@ export default function FinalityTrackerPage() {
             </div>
 
             <div className="rounded-lg bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase text-slate-600">Reorg Probability >64 Blocks</p>
+              <p className="text-xs font-semibold uppercase text-slate-600">Reorg Probability &gt;64 Blocks</p>
               <p className="mt-2 text-3xl font-bold text-slate-900">&lt;0.001%</p>
               <p className="mt-1 text-xs text-slate-500">Based on Ethereum security model</p>
             </div>
 
             <div className="rounded-lg bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase text-slate-600">Attack Cost (>50% Hashrate)</p>
+              <p className="text-xs font-semibold uppercase text-slate-600">Attack Cost (&gt;50% Hashrate)</p>
               <p className="mt-2 text-3xl font-bold text-slate-900">$1B+</p>
               <p className="mt-1 text-xs text-slate-500">Economically infeasible for ROI</p>
             </div>

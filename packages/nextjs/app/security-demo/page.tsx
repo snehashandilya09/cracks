@@ -162,7 +162,7 @@ export default function SecurityDemoPage() {
         <div className="mb-8 rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
           <h2 className="text-lg font-semibold text-blue-900">About These Demonstrations</h2>
           <p className="mt-2 text-sm text-blue-800">
-            These are simulated attack scenarios showing how ClearSettle's architecture prevents or mitigates common DeFi attacks.
+            These are simulated attack scenarios showing how ClearSettle architecture prevents or mitigates common DeFi attacks.
             None of these attacks can succeed against our protocol due to its formal invariant verification and multi-layered defenses.
           </p>
         </div>
