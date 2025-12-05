@@ -80,9 +80,9 @@ export function StatusPanel({ epochData, currentPhase }: StatusPanelProps) {
           <p className="mt-2 text-2xl font-bold text-emerald-700">{epochData.totalBuyVolume.toString()} ETH</p>
         </div>
 
-        <div className="rounded-lg bg-rose-50 p-4">
+        <div className="rounded-lg bg-pink-200 p-4">
           <p className="text-xs font-semibold uppercase text-slate-600">Sell Volume</p>
-          <p className="mt-2 text-2xl font-bold text-rose-700">{epochData.totalSellVolume.toString()} ETH</p>
+          <p className="mt-2 text-2xl font-bold text-pink-700">{epochData.totalSellVolume.toString()} ETH</p>
         </div>
 
         <div className="rounded-lg bg-blue-50 p-4">
