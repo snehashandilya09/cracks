@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { keccak256, encodePacked } from "viem";
 import toast from "react-hot-toast";
 import { useCommitments, type CommitmentRecord } from "../../../hooks/useCommitments";
+import { useCommitOrder } from "../../../hooks/useCommitOrder";
 
 export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
   const { address } = useAccount();
@@ -13,9 +14,9 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
   const [limitPrice, setLimitPrice] = useState("");
   const [salt, setSalt] = useState("");
   const [commitmentHash, setCommitmentHash] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { commitments, addCommitment } = useCommitments();
+  const { commitments, saveSalt } = useCommitments();
+  const { commitOrder, isPending, isConfirming, isSuccess, error, hash } = useCommitOrder();
 
   // Calculate hash when inputs change
   useEffect(() => {
@@ -26,10 +27,18 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
 
     try {
       const sideValue = side === "BUY" ? 0 : 1;
+      // Must match contract: keccak256(abi.encodePacked(amount, side, limitPrice, salt, msg.sender))
+      // Side is OrderSide enum which is uint8 in Solidity
       const hash = keccak256(
         encodePacked(
-          ["uint256", "uint256", "uint256", "bytes32", "address"],
-          [BigInt(Math.floor(parseFloat(amount) * 1e18)), BigInt(sideValue), BigInt(Math.floor(parseFloat(limitPrice) * 1e18)), keccak256(encodePacked(["string"], [salt])), address]
+          ["uint256", "uint8", "uint256", "bytes32", "address"],
+          [
+            BigInt(Math.floor(parseFloat(amount) * 1e18)),
+            sideValue,
+            BigInt(Math.floor(parseFloat(limitPrice) * 1e18)),
+            salt as `0x${string}`,
+            address as `0x${string}`,
+          ]
         )
       );
       setCommitmentHash(hash);
@@ -39,8 +48,12 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
   }, [amount, side, limitPrice, salt, address]);
 
   const generateSalt = () => {
-    const newSalt = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    setSalt(newSalt);
+    const randomBytes = Array.from({ length: 32 }, () =>
+      Math.floor(Math.random() * 256)
+        .toString(16)
+        .padStart(2, "0")
+    ).join("");
+    setSalt(`0x${randomBytes}`);
   };
 
   const handleCommit = async () => {
@@ -59,32 +72,40 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
-      addCommitment({
-        hash: commitmentHash,
-        amount,
-        side,
-        price: limitPrice,
-        salt,
-        timestamp: Date.now(),
-        revealed: false,
-      });
-      toast.success("Order committed successfully!");
+      // Call blockchain!
+      await commitOrder(commitmentHash as `0x${string}`);
+
+      // Save salt and metadata locally (SECRET - never send to chain)
+      saveSalt(commitmentHash, salt, amount, side, limitPrice);
+
+      toast.success("Transaction submitted! Waiting for confirmation...");
 
       // Reset form
       setAmount("");
       setLimitPrice("");
       setSalt("");
-    } catch (e) {
-      toast.error(`Commit failed: ${e instanceof Error ? e.message : "Unknown error"}`);
-    } finally {
-      setIsSubmitting(false);
+    } catch (e: any) {
+      console.error("Commit error:", e);
+      toast.error(`Commit failed: ${e.message || "Unknown error"}`);
     }
   };
 
-  const canCommit = amount && limitPrice && salt && currentPhase === "ACCEPTING_COMMITS";
+  // Success notification
+  useEffect(() => {
+    if (isSuccess && hash) {
+      toast.success(`Order confirmed on blockchain! Tx: ${hash.slice(0, 10)}...`);
+    }
+  }, [isSuccess, hash]);
+
+  // Error notification
+  useEffect(() => {
+    if (error) {
+      toast.error(`Transaction failed: ${error.message}`);
+    }
+  }, [error]);
+
+  const canCommit = amount && limitPrice && salt && currentPhase === "ACCEPTING_COMMITS" && !isPending && !isConfirming;
 
   return (
     <div className="space-y-6">
@@ -180,13 +201,30 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
         {/* Submit Button */}
         <button
           onClick={handleCommit}
-          disabled={!canCommit || isSubmitting}
+          disabled={!canCommit}
           className={`mt-4 w-full rounded-lg px-4 py-3 font-semibold text-white transition-colors ${
-            canCommit && !isSubmitting ? "bg-emerald-600 hover:bg-emerald-700 cursor-pointer" : "bg-slate-400 cursor-not-allowed opacity-50"
+            canCommit ? "bg-emerald-600 hover:bg-emerald-700 cursor-pointer" : "bg-slate-400 cursor-not-allowed opacity-50"
           }`}
         >
-          {isSubmitting ? "Committing..." : currentPhase === "ACCEPTING_COMMITS" ? "Commit Order" : `Can only commit during commit phase (Current: ${currentPhase})`}
+          {isPending || isConfirming
+            ? "Committing to blockchain..."
+            : currentPhase === "ACCEPTING_COMMITS"
+            ? "Commit Order (0.01 ETH bond)"
+            : `Can only commit during commit phase (Current: ${currentPhase})`}
         </button>
+
+        {/* Transaction Link */}
+        {hash && (
+          <div className="mt-2 text-xs text-center">
+            <a
+              href={`/blockexplorer/transaction/${hash}`}
+              target="_blank"
+              className="text-emerald-600 hover:underline"
+            >
+              View transaction →
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Committed Orders */}

@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
-import { keccak256, encodePacked } from "viem";
 import toast from "react-hot-toast";
 import { useCommitments, type CommitmentRecord } from "../../../hooks/useCommitments";
+import { useRevealOrder } from "../../../hooks/useRevealOrder";
 
 export function RevealTab({ currentPhase }: { currentPhase: string | null }) {
   const { address } = useAccount();
-  const [isRevealing, setIsRevealing] = useState(false);
-
-  const { commitments, updateCommitment } = useCommitments();
+  const { commitments, getSalt } = useCommitments();
+  const { revealOrder, isPending, isConfirming, isSuccess, error, hash } = useRevealOrder();
 
   const handleReveal = async (commitment: CommitmentRecord) => {
     if (currentPhase !== "ACCEPTING_REVEALS") {
@@ -23,40 +22,47 @@ export function RevealTab({ currentPhase }: { currentPhase: string | null }) {
       return;
     }
 
-    setIsRevealing(true);
+    // Get salt from localStorage
+    const salt = getSalt(commitment.hash);
+    if (!salt) {
+      toast.error("Salt not found! Cannot reveal without the secret salt.");
+      return;
+    }
+
+    if (!commitment.amount || !commitment.side || !commitment.price) {
+      toast.error("Missing order data. Cannot reveal.");
+      return;
+    }
 
     try {
-      // Verify the commitment hash by recalculating it from the stored data
-      const sideValue = commitment.side === "BUY" ? 0 : 1;
-      const recalculatedHash = keccak256(
-        encodePacked(
-          ["uint256", "uint256", "uint256", "bytes32", "address"],
-          [
-            BigInt(Math.floor(parseFloat(commitment.amount) * 1e18)),
-            BigInt(sideValue),
-            BigInt(Math.floor(parseFloat(commitment.price) * 1e18)),
-            keccak256(encodePacked(["string"], [commitment.salt])),
-            address,
-          ]
-        )
+      // Call blockchain!
+      await revealOrder(
+        commitment.amount,
+        commitment.side,
+        commitment.price,
+        salt as `0x${string}`
       );
 
-      // Check if the recalculated hash matches the stored hash
-      if (recalculatedHash !== commitment.hash) {
-        toast.error("Hash verification failed! Data has been tampered with.");
-        setIsRevealing(false);
-        return;
-      }
-
-      // Hash matches, update as revealed
-      updateCommitment(commitment.id, { revealed: true });
-      toast.success("Order revealed successfully!");
-    } catch (e) {
-      toast.error(`Reveal failed: ${e instanceof Error ? e.message : "Unknown error"}`);
-    } finally {
-      setIsRevealing(false);
+      toast.success("Reveal transaction submitted!");
+    } catch (e: any) {
+      console.error("Reveal error:", e);
+      toast.error(`Reveal failed: ${e.message || "Unknown error"}`);
     }
   };
+
+  // Success notification
+  useEffect(() => {
+    if (isSuccess && hash) {
+      toast.success(`Order revealed! Bond returned. Tx: ${hash.slice(0, 10)}...`);
+    }
+  }, [isSuccess, hash]);
+
+  // Error notification
+  useEffect(() => {
+    if (error) {
+      toast.error(`Transaction failed: ${error.message}`);
+    }
+  }, [error]);
 
   const handleClaimSettlement = async () => {
     try {
@@ -109,14 +115,14 @@ export function RevealTab({ currentPhase }: { currentPhase: string | null }) {
 
                 <button
                   onClick={() => handleReveal(c)}
-                  disabled={currentPhase !== "ACCEPTING_REVEALS" || isRevealing}
+                  disabled={currentPhase !== "ACCEPTING_REVEALS" || isPending || isConfirming}
                   className={`whitespace-nowrap rounded-lg px-4 py-2 font-semibold text-white transition-colors ${
-                    currentPhase === "ACCEPTING_REVEALS" && !isRevealing
+                    currentPhase === "ACCEPTING_REVEALS" && !isPending && !isConfirming
                       ? "bg-purple-600 hover:bg-purple-700 cursor-pointer"
                       : "bg-slate-400 cursor-not-allowed opacity-50"
                   }`}
                 >
-                  {isRevealing ? "Revealing..." : "Reveal"}
+                  {isPending || isConfirming ? "Revealing..." : "Reveal"}
                 </button>
               </div>
             ))}

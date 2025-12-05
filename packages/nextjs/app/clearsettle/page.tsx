@@ -9,7 +9,8 @@ import { CommitTab } from "./_components/CommitTab";
 import { RevealTab } from "./_components/RevealTab";
 import { MarketViewTab } from "./_components/MarketViewTab";
 import { StatsTab } from "./_components/StatsTab";
-import { useClearSettle } from "~~/hooks/useClearSettle";
+import { DevTools } from "./_components/DevTools";
+import { useClearSettle } from "../../hooks/useClearSettle";
 
 type TabType = "commit" | "reveal" | "market" | "stats";
 
@@ -44,6 +45,11 @@ export default function ClearSettleDashboard() {
 
       {/* Main Content */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* Dev Tools - For Testing */}
+        <div className="mb-6">
+          <DevTools />
+        </div>
+
         {/* Status Panel */}
         <StatusPanel epochData={epochData} currentPhase={currentPhase} />
 

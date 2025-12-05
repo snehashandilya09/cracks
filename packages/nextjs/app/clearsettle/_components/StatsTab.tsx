@@ -1,6 +1,6 @@
 "use client";
 
-import { EpochData } from "~~/hooks/useClearSettle";
+import { EpochData } from "../../../hooks/useClearSettle";
 
 interface StatsTabProps {
   epochData: EpochData | null;

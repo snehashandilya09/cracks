@@ -1,106 +1,80 @@
-import { useEffect, useState } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useAccount } from "wagmi";
+import { useOrderEvents } from "./useOrderEvents";
+
+const SALT_STORAGE_KEY = "clearsettle_salts";
 
 export interface CommitmentRecord {
   id: string;
   hash: string;
-  amount: string;
-  side: "BUY" | "SELL";
-  price: string;
-  salt: string;
-  timestamp: number;
+  amount?: string;
+  side?: "BUY" | "SELL";
+  price?: string;
+  salt?: string; // Only stored locally (SECRET!)
+  epochId: bigint;
   revealed: boolean;
-  settlementPrice?: string;
+  timestamp: number;
 }
 
-const STORAGE_KEY = "clearsettle_commitments";
-
-// Use a custom event to sync state across tabs
-const createStorageEvent = () => {
-  const event = new CustomEvent("commitments-updated", {
-    detail: { timestamp: Date.now() },
-  });
-  window.dispatchEvent(event);
-};
-
 export function useCommitments() {
-  const [commitments, setCommitments] = useState<CommitmentRecord[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const { address } = useAccount();
+  const { commitments: onChainCommitments } = useOrderEvents(address);
+  const [salts, setSalts] = useState<Record<string, string>>({});
+  const [metadata, setMetadata] = useState<Record<string, { amount: string; side: "BUY" | "SELL"; price: string }>>({});
 
-  // Load from localStorage on mount
+  // Load salts and metadata from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
+    const savedSalts = localStorage.getItem(SALT_STORAGE_KEY);
+    if (savedSalts) {
       try {
-        setCommitments(JSON.parse(saved));
+        setSalts(JSON.parse(savedSalts));
       } catch (e) {
-        console.error("Failed to parse commitments:", e);
+        console.error("Failed to parse salts:", e);
       }
     }
-    setIsLoaded(true);
+
+    const savedMetadata = localStorage.getItem("clearsettle_metadata");
+    if (savedMetadata) {
+      try {
+        setMetadata(JSON.parse(savedMetadata));
+      } catch (e) {
+        console.error("Failed to parse metadata:", e);
+      }
+    }
   }, []);
 
-  // Listen for storage changes from other tabs
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY && e.newValue) {
-        try {
-          setCommitments(JSON.parse(e.newValue));
-        } catch (e) {
-          console.error("Failed to parse commitments:", e);
-        }
-      }
-    };
+  // Save salt (SECRET - never send to blockchain!)
+  const saveSalt = (hash: string, salt: string, amount: string, side: "BUY" | "SELL", price: string) => {
+    const updatedSalts = { ...salts, [hash]: salt };
+    setSalts(updatedSalts);
+    localStorage.setItem(SALT_STORAGE_KEY, JSON.stringify(updatedSalts));
 
-    const handleCustomEvent = () => {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try {
-          setCommitments(JSON.parse(saved));
-        } catch (e) {
-          console.error("Failed to parse commitments:", e);
-        }
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("commitments-updated", handleCustomEvent);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("commitments-updated", handleCustomEvent);
-    };
-  }, []);
-
-  const addCommitment = (commitment: Omit<CommitmentRecord, "id">) => {
-    const newCommitment: CommitmentRecord = {
-      ...commitment,
-      id: `${Date.now()}-${Math.random()}`,
-    };
-    const updated = [newCommitment, ...commitments];
-    setCommitments(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    createStorageEvent();
-    return newCommitment;
+    const updatedMetadata = { ...metadata, [hash]: { amount, side, price } };
+    setMetadata(updatedMetadata);
+    localStorage.setItem("clearsettle_metadata", JSON.stringify(updatedMetadata));
   };
 
-  const updateCommitment = (id: string, updates: Partial<CommitmentRecord>) => {
-    const updated = commitments.map((c) =>
-      c.id === id ? { ...c, ...updates } : c
-    );
-    setCommitments(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    createStorageEvent();
-  };
+  // Get salt for a commitment
+  const getSalt = (hash: string) => salts[hash];
 
-  const getCommitmentByHash = (hash: string) => {
-    return commitments.find((c) => c.hash === hash);
-  };
+  // Merge on-chain data with local salts and metadata
+  const commitments: CommitmentRecord[] = onChainCommitments.map((c) => ({
+    id: c.hash,
+    hash: c.hash,
+    amount: c.amount || metadata[c.hash]?.amount,
+    side: c.side || metadata[c.hash]?.side,
+    price: metadata[c.hash]?.price,
+    salt: salts[c.hash], // Only available locally
+    epochId: c.epochId,
+    revealed: c.revealed,
+    timestamp: Number(c.blockNumber) * 12, // Convert block number to approximate timestamp
+  }));
 
   return {
     commitments,
-    isLoaded,
-    addCommitment,
-    updateCommitment,
-    getCommitmentByHash,
+    saveSalt,
+    getSalt,
   };
 }

@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 import { usePublicClient } from "wagmi";
+import { getContract, type Abi } from "viem";
+import deployedContracts from "~~/contracts/deployedContracts";
+
+// Get deployed contract info
+const chainId = 31337; // localhost
+const CLEARSETTLE_CONTRACT = deployedContracts[chainId]?.ClearSettle;
+const CLEAR_SETTLE_ADDRESS = CLEARSETTLE_CONTRACT?.address as `0x${string}`;
 
 export interface EpochData {
   epochId: bigint;
@@ -17,65 +24,34 @@ export interface EpochData {
 }
 
 export interface CurrentPhaseInfo {
-  phase: "ACCEPTING_COMMITS" | "ACCEPTING_REVEALS" | "SETTLING" | "IN_TRANSITION" | "SAFETY_BUFFER" | "FINALIZED" | "VOID";
+  phase: "UNINITIALIZED" | "ACCEPTING_COMMITS" | "ACCEPTING_REVEALS" | "SETTLING" | "IN_TRANSITION" | "SAFETY_BUFFER" | "FINALIZED" | "VOID";
   phaseNumber: number;
   blocksRemaining: number;
   percentComplete: number;
 }
 
+// Must match contract enum exactly:
+// enum EpochPhase { UNINITIALIZED=0, ACCEPTING_COMMITS=1, ACCEPTING_REVEALS=2, 
+//                   SETTLING=3, IN_TRANSITION=4, SAFETY_BUFFER=5, FINALIZED=6, VOID=7 }
 const PHASE_NAMES: { [key: number]: CurrentPhaseInfo["phase"] } = {
-  0: "ACCEPTING_COMMITS",
-  1: "ACCEPTING_REVEALS",
-  2: "SETTLING",
-  3: "IN_TRANSITION",
-  4: "SAFETY_BUFFER",
-  5: "FINALIZED",
-  6: "VOID",
+  0: "UNINITIALIZED",
+  1: "ACCEPTING_COMMITS",
+  2: "ACCEPTING_REVEALS",
+  3: "SETTLING",
+  4: "IN_TRANSITION",
+  5: "SAFETY_BUFFER",
+  6: "FINALIZED",
+  7: "VOID",
 };
 
+// Use complete ABI from deployed contract
+const CLEAR_SETTLE_ABI = CLEARSETTLE_CONTRACT?.abi as Abi;
+
 export function useClearSettle() {
-  const [currentBlock, setCurrentBlock] = useState<bigint>(100n);
+  const [currentBlock, setCurrentBlock] = useState<bigint>(0n);
   const [epochData, setEpochData] = useState<EpochData | null>(null);
   const [currentPhase, setCurrentPhase] = useState<CurrentPhaseInfo | null>(null);
   const publicClient = usePublicClient();
-  const [demoTime, setDemoTime] = useState<number>(0); // For phase simulation
-
-  // Simulated time progression - advances phases for demo
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDemoTime((prev) => prev + 1);
-      // Progress 1 "block" every 5 seconds for demo
-      setCurrentBlock((prev) => prev + 1n);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Create dynamic epoch data based on current block
-  const createEpochData = (block: bigint): EpochData => {
-    const startBlock = 100n;
-    const commitEndBlock = 110n;
-    const revealEndBlock = 120n;
-    const settleBlock = 130n;
-    const safetyEndBlock = 140n;
-
-    return {
-      epochId: 1n,
-      phase: 0,
-      startBlock,
-      commitEndBlock,
-      revealEndBlock,
-      settleBlock,
-      safetyEndBlock,
-      clearingPrice: block > settleBlock ? BigInt(Math.floor(2500 * 1e18)) : 0n,
-      totalBuyVolume: BigInt(Math.floor(10.5 * 1e18)),
-      totalSellVolume: BigInt(Math.floor(9.8 * 1e18)),
-      matchedVolume: BigInt(Math.floor(9.8 * 1e18)),
-      disputed: false,
-    };
-  };
-
-  const mockEpochData = createEpochData(currentBlock);
 
   // Fetch current block number periodically
   useEffect(() => {
@@ -90,60 +66,80 @@ export function useClearSettle() {
     };
 
     updateBlockNumber();
-    const interval = setInterval(updateBlockNumber, 12000); // Update every block (~12s)
+    const interval = setInterval(updateBlockNumber, 12000); // Update every ~12s
 
     return () => clearInterval(interval);
   }, [publicClient]);
 
-  // Update epoch data and calculate phase
+  // Fetch epoch data from contract
   useEffect(() => {
-    const data = mockEpochData;
-    setEpochData(data);
+    const fetchEpochData = async () => {
+      if (!publicClient) return;
 
-    // Calculate current phase
-    if (currentBlock > 0n) {
-      let phase: CurrentPhaseInfo["phase"] = "VOID";
-      let phaseNumber = 6;
-      let endBlock = data.startBlock;
+      try {
+        const contract = getContract({
+          address: CLEAR_SETTLE_ADDRESS,
+          abi: CLEAR_SETTLE_ABI,
+          client: publicClient,
+        });
 
-      if (currentBlock < data.commitEndBlock) {
-        phase = "ACCEPTING_COMMITS";
-        phaseNumber = 0;
-        endBlock = data.commitEndBlock;
-      } else if (currentBlock < data.revealEndBlock) {
-        phase = "ACCEPTING_REVEALS";
-        phaseNumber = 1;
-        endBlock = data.revealEndBlock;
-      } else if (currentBlock < data.settleBlock) {
-        phase = "SETTLING";
-        phaseNumber = 2;
-        endBlock = data.settleBlock;
-      } else if (currentBlock < data.safetyEndBlock) {
-        phase = "SAFETY_BUFFER";
-        phaseNumber = 4;
-        endBlock = data.safetyEndBlock;
-      } else {
-        phase = "FINALIZED";
-        phaseNumber = 5;
-        endBlock = data.safetyEndBlock;
+        // Get current epoch ID
+        const epochId = await contract.read.getCurrentEpochId();
+
+        // Get epoch data - this returns a tuple which viem converts to an object
+        const data = await contract.read.getEpochData([epochId]);
+
+        // Extract values from the returned object/tuple
+        const epochDataObj = data as any;
+
+        setEpochData({
+          epochId: BigInt(epochDataObj.epochId || 0),
+          phase: Number(epochDataObj.phase || 0),
+          startBlock: BigInt(epochDataObj.startBlock || 0),
+          commitEndBlock: BigInt(epochDataObj.commitEndBlock || 0),
+          revealEndBlock: BigInt(epochDataObj.revealEndBlock || 0),
+          settleBlock: BigInt(epochDataObj.settleBlock || 0),
+          safetyEndBlock: BigInt(epochDataObj.safetyEndBlock || 0),
+          clearingPrice: BigInt(epochDataObj.clearingPrice || 0),
+          totalBuyVolume: BigInt(epochDataObj.totalBuyVolume || 0),
+          totalSellVolume: BigInt(epochDataObj.totalSellVolume || 0),
+          matchedVolume: BigInt(epochDataObj.matchedVolume || 0),
+          disputed: Boolean(epochDataObj.disputed || false),
+        });
+
+        // Get current phase
+        const phaseNum = await contract.read.getCalculatedPhase();
+        const blocksRemaining = await contract.read.getBlocksRemaining();
+
+        const phase: CurrentPhaseInfo["phase"] = PHASE_NAMES[Number(phaseNum)] || "VOID";
+        const safetyEndBlock = BigInt(epochDataObj.safetyEndBlock || 0);
+        const startBlock = BigInt(epochDataObj.startBlock || 0);
+        const totalBlocks = safetyEndBlock - startBlock;
+        const blocksUsed = currentBlock - startBlock;
+        const percentComplete = totalBlocks > 0n ? Math.min(100, Number((blocksUsed * 100n) / totalBlocks)) : 0;
+
+        setCurrentPhase({
+          phase,
+          phaseNumber: Number(phaseNum),
+          blocksRemaining: Number(blocksRemaining),
+          percentComplete,
+        });
+      } catch (e) {
+        console.error("Failed to fetch epoch data:", e);
       }
+    };
 
-      const blocksRemaining = Number(endBlock - currentBlock);
-      const totalBlocks = Number(endBlock - data.startBlock);
-      const percentComplete = Math.max(0, Math.min(100, ((totalBlocks - blocksRemaining) / totalBlocks) * 100));
+    fetchEpochData();
+    const interval = setInterval(fetchEpochData, 5000); // Update every 5s
 
-      setCurrentPhase({
-        phase,
-        phaseNumber,
-        blocksRemaining: Math.max(0, blocksRemaining),
-        percentComplete,
-      });
-    }
-  }, [currentBlock]);
+    return () => clearInterval(interval);
+  }, [publicClient, currentBlock]);
 
-  const refetchEpoch = () => {
-    // In a real implementation, this would refetch from the contract
-    // For demo purposes, it's a no-op
+  const refetchEpoch = async () => {
+    // Trigger re-fetch by updating current block
+    if (!publicClient) return;
+    const block = await publicClient.getBlockNumber();
+    setCurrentBlock(block);
   };
 
   return {

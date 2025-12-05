@@ -1,6 +1,6 @@
 "use client";
 
-import { EpochData, CurrentPhaseInfo } from "~~/hooks/useClearSettle";
+import { EpochData, CurrentPhaseInfo } from "../../../hooks/useClearSettle";
 
 interface StatusPanelProps {
   epochData: EpochData | null;
@@ -8,18 +8,22 @@ interface StatusPanelProps {
 }
 
 const PHASE_COLORS: { [key: string]: string } = {
+  UNINITIALIZED: "bg-slate-50 border-slate-200 text-slate-900",
   ACCEPTING_COMMITS: "bg-blue-50 border-blue-200 text-blue-900",
   ACCEPTING_REVEALS: "bg-purple-50 border-purple-200 text-purple-900",
   SETTLING: "bg-yellow-50 border-yellow-200 text-yellow-900",
+  IN_TRANSITION: "bg-amber-50 border-amber-200 text-amber-900",
   SAFETY_BUFFER: "bg-orange-50 border-orange-200 text-orange-900",
   FINALIZED: "bg-green-50 border-green-200 text-green-900",
   VOID: "bg-red-50 border-red-200 text-red-900",
 };
 
 const PHASE_BADGES: { [key: string]: string } = {
+  UNINITIALIZED: "bg-slate-100 text-slate-800",
   ACCEPTING_COMMITS: "bg-blue-100 text-blue-800",
   ACCEPTING_REVEALS: "bg-purple-100 text-purple-800",
   SETTLING: "bg-yellow-100 text-yellow-800",
+  IN_TRANSITION: "bg-amber-100 text-amber-800",
   SAFETY_BUFFER: "bg-orange-100 text-orange-800",
   FINALIZED: "bg-emerald-100 text-emerald-800",
   VOID: "bg-red-100 text-red-800",
