@@ -1,24 +1,19 @@
 "use client";
 
-import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useChainId, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-const chainId = 31337; // localhost
-const CONTRACT = deployedContracts[chainId]?.ClearSettle;
-
 export function useRevealOrder() {
+  const chainId = useChainId();
+  const CONTRACT = deployedContracts[chainId as keyof typeof deployedContracts]?.ClearSettle;
+
   const { data: hash, writeContract, isPending, error } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
   });
 
-  const revealOrder = async (
-    amount: string,
-    side: "BUY" | "SELL",
-    limitPrice: string,
-    salt: `0x${string}`
-  ) => {
+  const revealOrder = async (amount: string, side: "BUY" | "SELL", limitPrice: string, salt: `0x${string}`) => {
     if (!CONTRACT) {
       throw new Error("Contract not deployed on this network");
     }

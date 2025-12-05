@@ -1,12 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useWatchContractEvent, usePublicClient } from "wagmi";
+import { useEffect, useState } from "react";
 import type { Address } from "viem";
+import { useChainId, usePublicClient, useWatchContractEvent } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
-
-const chainId = 31337; // localhost
-const CONTRACT = deployedContracts[chainId]?.ClearSettle;
 
 export interface OnChainCommitment {
   hash: string;
@@ -19,6 +16,9 @@ export interface OnChainCommitment {
 }
 
 export function useOrderEvents(userAddress: Address | undefined) {
+  const chainId = useChainId();
+  const CONTRACT = deployedContracts[chainId as keyof typeof deployedContracts]?.ClearSettle;
+
   const [commitments, setCommitments] = useState<OnChainCommitment[]>([]);
   const publicClient = usePublicClient();
 
@@ -34,11 +34,11 @@ export function useOrderEvents(userAddress: Address | undefined) {
     args: userAddress ? { trader: userAddress } : undefined,
     onLogs(logs) {
       logs.forEach((log: any) => {
-        const { epochId, trader, commitmentHash } = log.args;
+        const { epochId, commitmentHash } = log.args;
 
-        setCommitments((prev) => {
+        setCommitments(prev => {
           // Avoid duplicates
-          if (prev.some((c) => c.hash === commitmentHash)) return prev;
+          if (prev.some(c => c.hash === commitmentHash)) return prev;
 
           return [
             ...prev,
@@ -62,10 +62,10 @@ export function useOrderEvents(userAddress: Address | undefined) {
     args: userAddress ? { trader: userAddress } : undefined,
     onLogs(logs) {
       logs.forEach((log: any) => {
-        const { epochId, trader, amount, side } = log.args;
+        const { epochId, amount, side } = log.args;
 
-        setCommitments((prev) =>
-          prev.map((c) =>
+        setCommitments(prev =>
+          prev.map(c =>
             c.epochId === epochId
               ? {
                   ...c,
@@ -73,8 +73,8 @@ export function useOrderEvents(userAddress: Address | undefined) {
                   amount: amount?.toString(),
                   side: side === 0 ? ("BUY" as const) : ("SELL" as const),
                 }
-              : c
-          )
+              : c,
+          ),
         );
       });
     },
@@ -157,7 +157,7 @@ export function useOrderEvents(userAddress: Address | undefined) {
     };
 
     fetchPastEvents();
-  }, [userAddress, publicClient]);
+  }, [userAddress, publicClient, CONTRACT]);
 
   return { commitments };
 }

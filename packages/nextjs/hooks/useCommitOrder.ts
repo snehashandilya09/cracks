@@ -1,13 +1,13 @@
 "use client";
 
-import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseEther } from "viem";
+import { useChainId, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-const chainId = 31337; // localhost
-const CONTRACT = deployedContracts[chainId]?.ClearSettle;
-
 export function useCommitOrder() {
+  const chainId = useChainId();
+  const CONTRACT = deployedContracts[chainId as keyof typeof deployedContracts]?.ClearSettle;
+
   const { data: hash, writeContract, isPending, error } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({

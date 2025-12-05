@@ -140,7 +140,7 @@ export default function FinalityTrackerPage() {
             <div className="rounded-lg bg-white bg-opacity-70 p-4">
               <p className="font-semibold text-slate-900">Stage 3: CHECKPOINTED</p>
               <p className="mt-2 text-xs text-slate-700">
-                After 64 blocks, considered immutable. Reorg would require over 50% network hashrate (economically
+                After 64 blocks, considered immutable. Reorg would require {">"}50% network hashrate (economically
                 infeasible)
               </p>
             </div>
@@ -199,7 +199,7 @@ export default function FinalityTrackerPage() {
                     <div className="text-sm text-slate-700">
                       <p className="font-semibold">⚠️ Reorg Vulnerable</p>
                       <p>
-                        This batch is in the mempool. Any reorg of more than 0 blocks could reverse it.{" "}
+                        This batch is in the mempool. Any reorg {">"}0 blocks could reverse it.{" "}
                         <strong>Wait for LOGGED status</strong>.
                       </p>
                     </div>
@@ -296,11 +296,11 @@ export default function FinalityTrackerPage() {
           <div className="rounded-lg border border-slate-200 bg-white p-6">
             <h3 className="text-lg font-semibold text-slate-900">Safety Buffer (64 Blocks)</h3>
             <p className="mt-2 text-sm text-slate-700">
-              The Ethereum standard safe reorg distance is 64 blocks. Beyond this:
+              Ethereum&#39;s standard safe reorg distance is 64 blocks. Beyond this:
             </p>
             <ul className="mt-3 space-y-2 text-sm text-slate-700 ml-4">
               <li>
-                • <strong>Probability:</strong> Under 0.001% chance of reorg beyond 64 blocks
+                • <strong>Probability:</strong> &lt;0.001% chance of reorg &gt;64 blocks
               </li>
               <li>
                 • <strong>Cost:</strong> Would require &gt;50% network hashrate attacking
@@ -317,7 +317,7 @@ export default function FinalityTrackerPage() {
           <div className="rounded-lg border border-slate-200 bg-white p-6">
             <h3 className="text-lg font-semibold text-slate-900">Multi-Layer Protection</h3>
             <p className="mt-2 text-sm text-slate-700">
-              ClearSettle does not rely on a single mechanism. Protection layers:
+              ClearSettle does not rely on single mechanism. Protection layers:
             </p>
             <ul className="mt-3 space-y-2 text-sm text-slate-700 ml-4">
               <li>
@@ -354,13 +354,13 @@ export default function FinalityTrackerPage() {
             </div>
 
             <div className="rounded-lg bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase text-slate-600">Reorg Probability Beyond 64 Blocks</p>
+              <p className="text-xs font-semibold uppercase text-slate-600">Reorg Probability &gt;64 Blocks</p>
               <p className="mt-2 text-3xl font-bold text-slate-900">&lt;0.001%</p>
               <p className="mt-1 text-xs text-slate-500">Based on Ethereum security model</p>
             </div>
 
             <div className="rounded-lg bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase text-slate-600">Attack Cost (Over 50% Hashrate)</p>
+              <p className="text-xs font-semibold uppercase text-slate-600">Attack Cost (&gt;50% Hashrate)</p>
               <p className="mt-2 text-3xl font-bold text-slate-900">$1B+</p>
               <p className="mt-1 text-xs text-slate-500">Economically infeasible for ROI</p>
             </div>
