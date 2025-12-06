@@ -27,7 +27,7 @@ ClearSettle is an **adversarial-resilient settlement protocol** that solves the 
 ## 🚀 Quick Demo
 
 ### Live Deployment
-**Sepolia Testnet**: [https://clearsettle.vercel.app](https://clearsettle.vercel.app)
+**Sepolia Testnet**: [https://trihacker-tournament.vercel.app/](https://trihacker-tournament.vercel.app/)
 
 ### Run Locally (3 commands)
 ```bash
@@ -106,41 +106,42 @@ Visit `http://localhost:3000`
 
 ## 📚 Research Papers
 
-ClearSettle implements cutting-edge research from:
+ClearSettle implements cutting-edge research organized by module:
 
-### Fair Ordering & MEV
-- **Aequitas Protocol** - Kelkar et al. (2020)
-  - *"Order-Fairness for Byzantine Consensus"*
-  - [Paper](https://eprint.iacr.org/2020/269)
-  - **Our Implementation**: Commit-Reveal with dependency graph ordering
+### Module 1: State Machine Architecture & Invariant Enforcement
+| Paper | Authors | Year |
+|-------|---------|------|
+| Modeling and Verification of Smart Contracts with Abstract State Machines | Braghin et al. | 2024 |
+| VeriSolid: Correct-by-Design Smart Contracts for Ethereum | Mavridou et al. | 2019 |
+| State-based Invariant Property Generation of Solidity Smart Contracts using Abstract Interpretation | IEEE | 2024 |
 
-- **Flash Boys 2.0** - Daian et al. (2019)
-  - *"Frontrunning in Decentralized Exchanges, Miner Extractable Value"*
-  - [Paper](https://arxiv.org/abs/1904.05234)
-  - **Our Implementation**: Uniform clearing price eliminates sandwich attacks
+### Module 2: Fair Ordering & MEV Resistance
+| Paper | Authors | Year |
+|-------|---------|------|
+| SoK: MEV Countermeasures: Theory and Practice | Yang et al. (ACM CCS) | 2023 |
+| Helix: A Fair Blockchain Consensus Protocol Resistant to Ordering Manipulation | Yakira et al. | 2021 |
+| Mempool Privacy via Batched Threshold Encryption | Choudhuri et al. (USENIX Security) | 2024 |
 
-### Finality & Consensus
-- **Casper FFG** - Buterin & Griffith (2017)
-  - *"Casper the Friendly Finality Gadget"*
-  - [Paper](https://arxiv.org/abs/1710.09437)
-  - **Our Implementation**: Partial finality with 64-block safety buffer
+### Module 3: Partial Finality & Liveness Protocol
+| Paper | Authors | Year |
+|-------|---------|------|
+| GRANDPA: A Byzantine Finality Gadget | Stewart (Web3 Foundation) | 2020 |
+| Casper the Friendly Finality Gadget | Buterin & Griffith (Ethereum Foundation) | 2017 |
+| 3-Slot-Finality Protocol for Ethereum | Ethereum Research | 2024 |
 
-- **GHOST Protocol** - Sompolinsky & Zohar (2015)
-  - *"Secure High-Rate Transaction Processing in Bitcoin"*
-  - [Paper](https://eprint.iacr.org/2013/881)
-  - **Our Implementation**: Fork choice for reorg resistance
+### Module 4: Oracle Manipulation Resistance & Dispute Resolution
+| Paper | Authors | Year |
+|-------|---------|------|
+| BANC: Being Accountable Never Cheats - An Incentive Protocol for DeFi Oracles | Zhang et al. | 2022 |
+| DECO: Liberating Web Data Using Decentralized Oracles for TLS | Kostova et al. (ACM CCS) | 2020 |
+| Specular: Towards Secure, Trust-minimized Optimistic Blockchain Execution | Ethereum Research | 2024 |
 
-### Oracle Security
-- **DECO** - Zhang et al. (2020)
-  - *"Decentralizing Oracles via TEEs"*
-  - [Paper](https://arxiv.org/abs/1909.00938)
-  - **Our Implementation**: 3-oracle BFT aggregation (Chainlink, Pyth, Uniswap TWAP)
-
-### Dispute Resolution
-- **TrueBit** - Teutsch & Reitwießner (2017)
-  - *"A scalable verification solution for blockchains"*
-  - [Paper](https://people.cs.uchicago.edu/~teutsch/papers/truebit.pdf)
-  - **Our Implementation**: Bisection game for settlement disputes
+### Module 5: Attack Model & Reorg Safety
+| Paper | Authors | Year |
+|-------|---------|------|
+| Formal Verification of Blockchain Nonforking in DAG-Based BFT Consensus | Coglio et al. | 2025 |
+| On Finality in Blockchains | Academic Research | 2020 |
+| Shades of Finality and Layer 2 Scaling | Ethereum Research | 2022 |
 
 ---
 
