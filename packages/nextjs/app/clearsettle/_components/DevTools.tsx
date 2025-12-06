@@ -54,13 +54,28 @@ export function DevTools() {
           args: [epochId],
         })) as any;
 
-        const phase = Number(epochData.phase);
-        const PHASE_NAMES = ["UNINITIALIZED", "ACCEPTING_COMMITS", "ACCEPTING_REVEALS", "SETTLING", "IN_TRANSITION", "SAFETY_BUFFER", "FINALIZED", "VOID"];
-        setPhaseName(PHASE_NAMES[phase] || "UNKNOWN");
+        // Use getCalculatedPhase for correct phase (not stored phase which may be stale)
+        const calculatedPhase = (await publicClient.readContract({
+          address: contractAddress,
+          abi: CONTRACT.abi,
+          functionName: "getCalculatedPhase",
+        })) as number;
 
-        if (phase === 1) setPhaseEndBlock(epochData.commitEndBlock);
-        else if (phase === 2) setPhaseEndBlock(epochData.revealEndBlock);
-        else if (phase === 5) setPhaseEndBlock(epochData.safetyEndBlock);
+        const PHASE_NAMES = [
+          "UNINITIALIZED",
+          "ACCEPTING_COMMITS",
+          "ACCEPTING_REVEALS",
+          "SETTLING",
+          "IN_TRANSITION",
+          "SAFETY_BUFFER",
+          "FINALIZED",
+          "VOID",
+        ];
+        setPhaseName(PHASE_NAMES[calculatedPhase] || "UNKNOWN");
+
+        if (calculatedPhase === 1) setPhaseEndBlock(epochData.commitEndBlock);
+        else if (calculatedPhase === 2) setPhaseEndBlock(epochData.revealEndBlock);
+        else if (calculatedPhase === 5) setPhaseEndBlock(epochData.safetyEndBlock);
         else setPhaseEndBlock(0n);
       } catch (e) {
         console.error("Error fetching block info:", e);
@@ -179,9 +194,7 @@ export function DevTools() {
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-2xl">{isLocalhost ? "🛠️" : "🌐"}</span>
-          <h3 className={titleClass}>
-            {isLocalhost ? "Dev Tools (Localhost)" : "Protocol Controls (Testnet)"}
-          </h3>
+          <h3 className={titleClass}>{isLocalhost ? "Dev Tools (Localhost)" : "Protocol Controls (Testnet)"}</h3>
         </div>
         <span className={badgeClass}>Chain: {chainId}</span>
       </div>
@@ -285,7 +298,8 @@ export function DevTools() {
 
       {!isLocalhost && (
         <div className="mt-2 text-xs text-blue-700">
-          <strong>Note:</strong> On testnet, wait for real blocks (~12 sec each). Phase durations: Commit: 5 blocks | Reveal: 5 blocks | Safety: 3 blocks
+          <strong>Note:</strong> On testnet, wait for real blocks (~12 sec each). Phase durations: Commit: 5 blocks |
+          Reveal: 5 blocks | Safety: 3 blocks
         </div>
       )}
 
