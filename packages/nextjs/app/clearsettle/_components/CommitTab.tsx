@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useClearSettle } from "../../../hooks/useClearSettle";
 import { useCommitOrder } from "../../../hooks/useCommitOrder";
 import { type CommitmentRecord, useCommitments } from "../../../hooks/useCommitments";
 import toast from "react-hot-toast";
@@ -15,7 +16,8 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
   const [salt, setSalt] = useState("");
   const [commitmentHash, setCommitmentHash] = useState("");
 
-  const { commitments, saveSalt } = useCommitments();
+  const { commitments, saveOrder } = useCommitments();
+  const { epochData } = useClearSettle();
   const { commitOrder, isPending, isConfirming, isSuccess, error, hash } = useCommitOrder();
 
   // Calculate hash when inputs change
@@ -76,8 +78,9 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
       // Call blockchain!
       await commitOrder(commitmentHash as `0x${string}`);
 
-      // Save salt and metadata locally (SECRET - never send to chain)
-      saveSalt(commitmentHash, salt, amount, side, limitPrice);
+      // Save order locally with epochId (salt is SECRET - never send to chain)
+      const currentEpochId = epochData?.epochId ?? 0n;
+      saveOrder(commitmentHash, salt, amount, side, limitPrice, currentEpochId);
 
       toast.success("Transaction submitted! Waiting for confirmation...");
 
@@ -246,7 +249,7 @@ export function CommitTab({ currentPhase }: { currentPhase: string | null }) {
                       <p className="text-sm font-semibold text-slate-900">
                         {c.amount} ETH @ ${c.price}
                       </p>
-                      <p className="text-xs text-slate-500">{new Date(c.timestamp).toLocaleTimeString()}</p>
+                      <p className="text-xs text-slate-500">Epoch #{c.epochId.toString()}</p>
                     </div>
                   </div>
                   <span className={`text-xs font-semibold ${c.revealed ? "text-emerald-600" : "text-amber-600"}`}>
