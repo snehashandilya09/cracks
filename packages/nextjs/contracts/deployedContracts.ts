@@ -876,7 +876,7 @@ const deployedContracts = {
   },
   11155111: {
     ChainlinkOracleAdapter: {
-      address: "0xa8dBDa42f882140eF0f1ca48435441dCba635C4a",
+      address: "0xF9723B91371fa48a99704fb19dF8D5C699B78061",
       abi: [
         {
           inputs: [],
@@ -1125,7 +1125,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 9778081,
+      deployedOnBlock: 9778562,
     },
     ClearSettle: {
       address: "0x03ECDCdC5f558494B126Eee6F195FAA772706EFB",
@@ -1851,7 +1851,7 @@ const deployedContracts = {
       deployedOnBlock: 9776065,
     },
     OracleAggregator: {
-      address: "0xa7b8405Ac7e7f350D80Bb86F8807192be7244Ddb",
+      address: "0x4F67bEd28120458fc418C10Fad403d594A57fdB0",
       abi: [
         {
           inputs: [
@@ -2193,10 +2193,10 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 9778084,
+      deployedOnBlock: 9778565,
     },
     PythOracleAdapter: {
-      address: "0xb036C992911C98C7BcfcA5f7630829D74e17F270",
+      address: "0x2C6f934825D61677a42546F1E62d7c61E731f96A",
       abi: [
         {
           inputs: [],
@@ -2447,10 +2447,10 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 9778082,
+      deployedOnBlock: 9778563,
     },
     UniswapV3TWAPAdapter: {
-      address: "0x6BD710D43929dba6b2E384734E81f3f3BD0A464a",
+      address: "0x48d818288E1486eb70e8362f43DD30FdE08Ba261",
       abi: [
         {
           inputs: [],
@@ -2715,7 +2715,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 9778083,
+      deployedOnBlock: 9778564,
     },
     YourContract: {
       address: "0x6c927bebC93d3d304ddeECE1eF59E0723d5241A1",
