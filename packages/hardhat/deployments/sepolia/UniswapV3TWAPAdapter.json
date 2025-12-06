@@ -1,0 +1,472 @@
+{
+  "address": "0x6BD710D43929dba6b2E384734E81f3f3BD0A464a",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "poolAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "twapPeriod",
+          "type": "uint32"
+        }
+      ],
+      "name": "PoolRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "TWAPCalculated",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "USDC",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "USDC_WETH_POOL_03",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "WETH",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getLatestPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getPoolConfig",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "pool",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "baseToken",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "quoteToken",
+              "type": "address"
+            },
+            {
+              "internalType": "uint8",
+              "name": "baseDecimals",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "quoteDecimals",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "twapPeriod",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isToken0Base",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct UniswapV3TWAPAdapter.PoolConfig",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isPoolHealthy",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isPoolRegistered",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "pools",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "baseToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "quoteToken",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "baseDecimals",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "quoteDecimals",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint32",
+          "name": "twapPeriod",
+          "type": "uint32"
+        },
+        {
+          "internalType": "bool",
+          "name": "isToken0Base",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x6fe522a87ae6af4b1a92da9e5d77bcb51b5adde06635bed8ae16a094ff4cb19c",
+  "receipt": {
+    "to": null,
+    "from": "0x2f729eD2EFd4AE0fc0Bb3d5e9Ba5F77c0b6d8374",
+    "contractAddress": "0x6BD710D43929dba6b2E384734E81f3f3BD0A464a",
+    "transactionIndex": 28,
+    "gasUsed": "1203294",
+    "logsBloom": "0x00000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000010000000000000000000000000000000000000c00080000000000000000200000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x33dfc56da4421089ab63784c7e122e30f3b3927827bc62ac28d15d2692e185b0",
+    "transactionHash": "0x6fe522a87ae6af4b1a92da9e5d77bcb51b5adde06635bed8ae16a094ff4cb19c",
+    "logs": [
+      {
+        "transactionIndex": 28,
+        "blockNumber": 9778083,
+        "transactionHash": "0x6fe522a87ae6af4b1a92da9e5d77bcb51b5adde06635bed8ae16a094ff4cb19c",
+        "address": "0x6BD710D43929dba6b2E384734E81f3f3BD0A464a",
+        "topics": [
+          "0x16f616fd27fd946b7a81b74eb3f1b343c650ae9b723c02ced6568412ed7a09e9",
+          "0x0b43555ace6b39aae1b894097d0a9fc17f504c62fea598fa206cc6f5088e6e45"
+        ],
+        "data": "0x0000000000000000000000009799b5edc1aa7d3fad350309b08df3f64914e2440000000000000000000000000000000000000000000000000000000000000708",
+        "logIndex": 55,
+        "blockHash": "0x33dfc56da4421089ab63784c7e122e30f3b3927827bc62ac28d15d2692e185b0"
+      }
+    ],
+    "blockNumber": 9778083,
+    "cumulativeGasUsed": "5741004",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "20e66f7e65a4f172b8ebc2d9e2726c9d",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"poolAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"twapPeriod\",\"type\":\"uint32\"}],\"name\":\"PoolRegistered\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"TWAPCalculated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"USDC\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"USDC_WETH_POOL_03\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"WETH\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"}],\"name\":\"getLatestPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"}],\"name\":\"getPoolConfig\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"quoteToken\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"baseDecimals\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"quoteDecimals\",\"type\":\"uint8\"},{\"internalType\":\"uint32\",\"name\":\"twapPeriod\",\"type\":\"uint32\"},{\"internalType\":\"bool\",\"name\":\"isToken0Base\",\"type\":\"bool\"}],\"internalType\":\"struct UniswapV3TWAPAdapter.PoolConfig\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"}],\"name\":\"isPoolHealthy\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"}],\"name\":\"isPoolRegistered\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"pools\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"quoteToken\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"baseDecimals\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"quoteDecimals\",\"type\":\"uint8\"},{\"internalType\":\"uint32\",\"name\":\"twapPeriod\",\"type\":\"uint32\"},{\"internalType\":\"bool\",\"name\":\"isToken0Base\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Provides on-chain price oracle resistant to flash loan manipulationPool addresses from https://www.geckoterminal.com/sepolia-testnet\",\"kind\":\"dev\",\"methods\":{\"getLatestPrice(bytes32)\":{\"params\":{\"pairId\":\"Asset pair identifier (e.g., keccak256(\\\"ETH/USD\\\"))\"},\"returns\":{\"price\":\"TWAP price (normalized to 18 decimals)\",\"timestamp\":\"Current block timestamp (TWAP is current)\"}},\"getPoolConfig(bytes32)\":{\"params\":{\"pairId\":\"Asset pair to query\"},\"returns\":{\"_0\":\"config Pool configuration struct\"}},\"isPoolHealthy(bytes32)\":{\"details\":\"Verifies pool has observations covering the TWAP period\",\"params\":{\"pairId\":\"Asset pair to check\"},\"returns\":{\"_0\":\"True if pool is healthy and has sufficient data\"}},\"isPoolRegistered(bytes32)\":{\"params\":{\"pairId\":\"Asset pair to check\"},\"returns\":{\"_0\":\"True if pool registered\"}}},\"title\":\"UniswapV3TWAPAdapter\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getLatestPrice(bytes32)\":{\"notice\":\"Get time-weighted average price from Uniswap V3\"},\"getPoolConfig(bytes32)\":{\"notice\":\"Get pool configuration\"},\"isPoolHealthy(bytes32)\":{\"notice\":\"Check if pool has sufficient history for TWAP\"},\"isPoolRegistered(bytes32)\":{\"notice\":\"Check if pool is registered\"}},\"notice\":\"Fetches time-weighted average price from Uniswap V3 pools\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/oracles/UniswapV3TWAPAdapter.sol\":\"UniswapV3TWAPAdapter\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-2.0-or-later\\npragma solidity >=0.5.0;\\n\\nimport './pool/IUniswapV3PoolImmutables.sol';\\nimport './pool/IUniswapV3PoolState.sol';\\nimport './pool/IUniswapV3PoolDerivedState.sol';\\nimport './pool/IUniswapV3PoolActions.sol';\\nimport './pool/IUniswapV3PoolOwnerActions.sol';\\nimport './pool/IUniswapV3PoolEvents.sol';\\n\\n/// @title The interface for a Uniswap V3 Pool\\n/// @notice A Uniswap pool facilitates swapping and automated market making between any two assets that strictly conform\\n/// to the ERC20 specification\\n/// @dev The pool interface is broken up into many smaller pieces\\ninterface IUniswapV3Pool is\\n    IUniswapV3PoolImmutables,\\n    IUniswapV3PoolState,\\n    IUniswapV3PoolDerivedState,\\n    IUniswapV3PoolActions,\\n    IUniswapV3PoolOwnerActions,\\n    IUniswapV3PoolEvents\\n{\\n\\n}\\n\",\"keccak256\":\"0xfe6113d518466cd6652c85b111e01f33eb62157f49ae5ed7d5a3947a2044adb1\",\"license\":\"GPL-2.0-or-later\"},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-2.0-or-later\\npragma solidity >=0.5.0;\\n\\n/// @title Permissionless pool actions\\n/// @notice Contains pool methods that can be called by anyone\\ninterface IUniswapV3PoolActions {\\n    /// @notice Sets the initial price for the pool\\n    /// @dev Price is represented as a sqrt(amountToken1/amountToken0) Q64.96 value\\n    /// @param sqrtPriceX96 the initial sqrt price of the pool as a Q64.96\\n    function initialize(uint160 sqrtPriceX96) external;\\n\\n    /// @notice Adds liquidity for the given recipient/tickLower/tickUpper position\\n    /// @dev The caller of this method receives a callback in the form of IUniswapV3MintCallback#uniswapV3MintCallback\\n    /// in which they must pay any token0 or token1 owed for the liquidity. The amount of token0/token1 due depends\\n    /// on tickLower, tickUpper, the amount of liquidity, and the current price.\\n    /// @param recipient The address for which the liquidity will be created\\n    /// @param tickLower The lower tick of the position in which to add liquidity\\n    /// @param tickUpper The upper tick of the position in which to add liquidity\\n    /// @param amount The amount of liquidity to mint\\n    /// @param data Any data that should be passed through to the callback\\n    /// @return amount0 The amount of token0 that was paid to mint the given amount of liquidity. Matches the value in the callback\\n    /// @return amount1 The amount of token1 that was paid to mint the given amount of liquidity. Matches the value in the callback\\n    function mint(\\n        address recipient,\\n        int24 tickLower,\\n        int24 tickUpper,\\n        uint128 amount,\\n        bytes calldata data\\n    ) external returns (uint256 amount0, uint256 amount1);\\n\\n    /// @notice Collects tokens owed to a position\\n    /// @dev Does not recompute fees earned, which must be done either via mint or burn of any amount of liquidity.\\n    /// Collect must be called by the position owner. To withdraw only token0 or only token1, amount0Requested or\\n    /// amount1Requested may be set to zero. To withdraw all tokens owed, caller may pass any value greater than the\\n    /// actual tokens owed, e.g. type(uint128).max. Tokens owed may be from accumulated swap fees or burned liquidity.\\n    /// @param recipient The address which should receive the fees collected\\n    /// @param tickLower The lower tick of the position for which to collect fees\\n    /// @param tickUpper The upper tick of the position for which to collect fees\\n    /// @param amount0Requested How much token0 should be withdrawn from the fees owed\\n    /// @param amount1Requested How much token1 should be withdrawn from the fees owed\\n    /// @return amount0 The amount of fees collected in token0\\n    /// @return amount1 The amount of fees collected in token1\\n    function collect(\\n        address recipient,\\n        int24 tickLower,\\n        int24 tickUpper,\\n        uint128 amount0Requested,\\n        uint128 amount1Requested\\n    ) external returns (uint128 amount0, uint128 amount1);\\n\\n    /// @notice Burn liquidity from the sender and account tokens owed for the liquidity to the position\\n    /// @dev Can be used to trigger a recalculation of fees owed to a position by calling with an amount of 0\\n    /// @dev Fees must be collected separately via a call to #collect\\n    /// @param tickLower The lower tick of the position for which to burn liquidity\\n    /// @param tickUpper The upper tick of the position for which to burn liquidity\\n    /// @param amount How much liquidity to burn\\n    /// @return amount0 The amount of token0 sent to the recipient\\n    /// @return amount1 The amount of token1 sent to the recipient\\n    function burn(\\n        int24 tickLower,\\n        int24 tickUpper,\\n        uint128 amount\\n    ) external returns (uint256 amount0, uint256 amount1);\\n\\n    /// @notice Swap token0 for token1, or token1 for token0\\n    /// @dev The caller of this method receives a callback in the form of IUniswapV3SwapCallback#uniswapV3SwapCallback\\n    /// @param recipient The address to receive the output of the swap\\n    /// @param zeroForOne The direction of the swap, true for token0 to token1, false for token1 to token0\\n    /// @param amountSpecified The amount of the swap, which implicitly configures the swap as exact input (positive), or exact output (negative)\\n    /// @param sqrtPriceLimitX96 The Q64.96 sqrt price limit. If zero for one, the price cannot be less than this\\n    /// value after the swap. If one for zero, the price cannot be greater than this value after the swap\\n    /// @param data Any data to be passed through to the callback\\n    /// @return amount0 The delta of the balance of token0 of the pool, exact when negative, minimum when positive\\n    /// @return amount1 The delta of the balance of token1 of the pool, exact when negative, minimum when positive\\n    function swap(\\n        address recipient,\\n        bool zeroForOne,\\n        int256 amountSpecified,\\n        uint160 sqrtPriceLimitX96,\\n        bytes calldata data\\n    ) external returns (int256 amount0, int256 amount1);\\n\\n    /// @notice Receive token0 and/or token1 and pay it back, plus a fee, in the callback\\n    /// @dev The caller of this method receives a callback in the form of IUniswapV3FlashCallback#uniswapV3FlashCallback\\n    /// @dev Can be used to donate underlying tokens pro-rata to currently in-range liquidity providers by calling\\n    /// with 0 amount{0,1} and sending the donation amount(s) from the callback\\n    /// @param recipient The address which will receive the token0 and token1 amounts\\n    /// @param amount0 The amount of token0 to send\\n    /// @param amount1 The amount of token1 to send\\n    /// @param data Any data to be passed through to the callback\\n    function flash(\\n        address recipient,\\n        uint256 amount0,\\n        uint256 amount1,\\n        bytes calldata data\\n    ) external;\\n\\n    /// @notice Increase the maximum number of price and liquidity observations that this pool will store\\n    /// @dev This method is no-op if the pool already has an observationCardinalityNext greater than or equal to\\n    /// the input observationCardinalityNext.\\n    /// @param observationCardinalityNext The desired minimum number of observations for the pool to store\\n    function increaseObservationCardinalityNext(uint16 observationCardinalityNext) external;\\n}\\n\",\"keccak256\":\"0x9453dd0e7442188667d01d9b65de3f1e14e9511ff3e303179a15f6fc267f7634\",\"license\":\"GPL-2.0-or-later\"},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-2.0-or-later\\npragma solidity >=0.5.0;\\n\\n/// @title Pool state that is not stored\\n/// @notice Contains view functions to provide information about the pool that is computed rather than stored on the\\n/// blockchain. The functions here may have variable gas costs.\\ninterface IUniswapV3PoolDerivedState {\\n    /// @notice Returns the cumulative tick and liquidity as of each timestamp `secondsAgo` from the current block timestamp\\n    /// @dev To get a time weighted average tick or liquidity-in-range, you must call this with two values, one representing\\n    /// the beginning of the period and another for the end of the period. E.g., to get the last hour time-weighted average tick,\\n    /// you must call it with secondsAgos = [3600, 0].\\n    /// @dev The time weighted average tick represents the geometric time weighted average price of the pool, in\\n    /// log base sqrt(1.0001) of token1 / token0. The TickMath library can be used to go from a tick value to a ratio.\\n    /// @param secondsAgos From how long ago each cumulative tick and liquidity value should be returned\\n    /// @return tickCumulatives Cumulative tick values as of each `secondsAgos` from the current block timestamp\\n    /// @return secondsPerLiquidityCumulativeX128s Cumulative seconds per liquidity-in-range value as of each `secondsAgos` from the current block\\n    /// timestamp\\n    function observe(uint32[] calldata secondsAgos)\\n        external\\n        view\\n        returns (int56[] memory tickCumulatives, uint160[] memory secondsPerLiquidityCumulativeX128s);\\n\\n    /// @notice Returns a snapshot of the tick cumulative, seconds per liquidity and seconds inside a tick range\\n    /// @dev Snapshots must only be compared to other snapshots, taken over a period for which a position existed.\\n    /// I.e., snapshots cannot be compared if a position is not held for the entire period between when the first\\n    /// snapshot is taken and the second snapshot is taken.\\n    /// @param tickLower The lower tick of the range\\n    /// @param tickUpper The upper tick of the range\\n    /// @return tickCumulativeInside The snapshot of the tick accumulator for the range\\n    /// @return secondsPerLiquidityInsideX128 The snapshot of seconds per liquidity for the range\\n    /// @return secondsInside The snapshot of seconds per liquidity for the range\\n    function snapshotCumulativesInside(int24 tickLower, int24 tickUpper)\\n        external\\n        view\\n        returns (\\n            int56 tickCumulativeInside,\\n            uint160 secondsPerLiquidityInsideX128,\\n            uint32 secondsInside\\n        );\\n}\\n\",\"keccak256\":\"0xe603ac5b17ecdee73ba2b27efdf386c257a19c14206e87eee77e2017b742d9e5\",\"license\":\"GPL-2.0-or-later\"},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-2.0-or-later\\npragma solidity >=0.5.0;\\n\\n/// @title Events emitted by a pool\\n/// @notice Contains all events emitted by the pool\\ninterface IUniswapV3PoolEvents {\\n    /// @notice Emitted exactly once by a pool when #initialize is first called on the pool\\n    /// @dev Mint/Burn/Swap cannot be emitted by the pool before Initialize\\n    /// @param sqrtPriceX96 The initial sqrt price of the pool, as a Q64.96\\n    /// @param tick The initial tick of the pool, i.e. log base 1.0001 of the starting price of the pool\\n    event Initialize(uint160 sqrtPriceX96, int24 tick);\\n\\n    /// @notice Emitted when liquidity is minted for a given position\\n    /// @param sender The address that minted the liquidity\\n    /// @param owner The owner of the position and recipient of any minted liquidity\\n    /// @param tickLower The lower tick of the position\\n    /// @param tickUpper The upper tick of the position\\n    /// @param amount The amount of liquidity minted to the position range\\n    /// @param amount0 How much token0 was required for the minted liquidity\\n    /// @param amount1 How much token1 was required for the minted liquidity\\n    event Mint(\\n        address sender,\\n        address indexed owner,\\n        int24 indexed tickLower,\\n        int24 indexed tickUpper,\\n        uint128 amount,\\n        uint256 amount0,\\n        uint256 amount1\\n    );\\n\\n    /// @notice Emitted when fees are collected by the owner of a position\\n    /// @dev Collect events may be emitted with zero amount0 and amount1 when the caller chooses not to collect fees\\n    /// @param owner The owner of the position for which fees are collected\\n    /// @param tickLower The lower tick of the position\\n    /// @param tickUpper The upper tick of the position\\n    /// @param amount0 The amount of token0 fees collected\\n    /// @param amount1 The amount of token1 fees collected\\n    event Collect(\\n        address indexed owner,\\n        address recipient,\\n        int24 indexed tickLower,\\n        int24 indexed tickUpper,\\n        uint128 amount0,\\n        uint128 amount1\\n    );\\n\\n    /// @notice Emitted when a position's liquidity is removed\\n    /// @dev Does not withdraw any fees earned by the liquidity position, which must be withdrawn via #collect\\n    /// @param owner The owner of the position for which liquidity is removed\\n    /// @param tickLower The lower tick of the position\\n    /// @param tickUpper The upper tick of the position\\n    /// @param amount The amount of liquidity to remove\\n    /// @param amount0 The amount of token0 withdrawn\\n    /// @param amount1 The amount of token1 withdrawn\\n    event Burn(\\n        address indexed owner,\\n        int24 indexed tickLower,\\n        int24 indexed tickUpper,\\n        uint128 amount,\\n        uint256 amount0,\\n        uint256 amount1\\n    );\\n\\n    /// @notice Emitted by the pool for any swaps between token0 and token1\\n    /// @param sender The address that initiated the swap call, and that received the callback\\n    /// @param recipient The address that received the output of the swap\\n    /// @param amount0 The delta of the token0 balance of the pool\\n    /// @param amount1 The delta of the token1 balance of the pool\\n    /// @param sqrtPriceX96 The sqrt(price) of the pool after the swap, as a Q64.96\\n    /// @param liquidity The liquidity of the pool after the swap\\n    /// @param tick The log base 1.0001 of price of the pool after the swap\\n    event Swap(\\n        address indexed sender,\\n        address indexed recipient,\\n        int256 amount0,\\n        int256 amount1,\\n        uint160 sqrtPriceX96,\\n        uint128 liquidity,\\n        int24 tick\\n    );\\n\\n    /// @notice Emitted by the pool for any flashes of token0/token1\\n    /// @param sender The address that initiated the swap call, and that received the callback\\n    /// @param recipient The address that received the tokens from flash\\n    /// @param amount0 The amount of token0 that was flashed\\n    /// @param amount1 The amount of token1 that was flashed\\n    /// @param paid0 The amount of token0 paid for the flash, which can exceed the amount0 plus the fee\\n    /// @param paid1 The amount of token1 paid for the flash, which can exceed the amount1 plus the fee\\n    event Flash(\\n        address indexed sender,\\n        address indexed recipient,\\n        uint256 amount0,\\n        uint256 amount1,\\n        uint256 paid0,\\n        uint256 paid1\\n    );\\n\\n    /// @notice Emitted by the pool for increases to the number of observations that can be stored\\n    /// @dev observationCardinalityNext is not the observation cardinality until an observation is written at the index\\n    /// just before a mint/swap/burn.\\n    /// @param observationCardinalityNextOld The previous value of the next observation cardinality\\n    /// @param observationCardinalityNextNew The updated value of the next observation cardinality\\n    event IncreaseObservationCardinalityNext(\\n        uint16 observationCardinalityNextOld,\\n        uint16 observationCardinalityNextNew\\n    );\\n\\n    /// @notice Emitted when the protocol fee is changed by the pool\\n    /// @param feeProtocol0Old The previous value of the token0 protocol fee\\n    /// @param feeProtocol1Old The previous value of the token1 protocol fee\\n    /// @param feeProtocol0New The updated value of the token0 protocol fee\\n    /// @param feeProtocol1New The updated value of the token1 protocol fee\\n    event SetFeeProtocol(uint8 feeProtocol0Old, uint8 feeProtocol1Old, uint8 feeProtocol0New, uint8 feeProtocol1New);\\n\\n    /// @notice Emitted when the collected protocol fees are withdrawn by the factory owner\\n    /// @param sender The address that collects the protocol fees\\n    /// @param recipient The address that receives the collected protocol fees\\n    /// @param amount0 The amount of token0 protocol fees that is withdrawn\\n    /// @param amount0 The amount of token1 protocol fees that is withdrawn\\n    event CollectProtocol(address indexed sender, address indexed recipient, uint128 amount0, uint128 amount1);\\n}\\n\",\"keccak256\":\"0x8071514d0fe5d17d6fbd31c191cdfb703031c24e0ece3621d88ab10e871375cd\",\"license\":\"GPL-2.0-or-later\"},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-2.0-or-later\\npragma solidity >=0.5.0;\\n\\n/// @title Pool state that never changes\\n/// @notice These parameters are fixed for a pool forever, i.e., the methods will always return the same values\\ninterface IUniswapV3PoolImmutables {\\n    /// @notice The contract that deployed the pool, which must adhere to the IUniswapV3Factory interface\\n    /// @return The contract address\\n    function factory() external view returns (address);\\n\\n    /// @notice The first of the two tokens of the pool, sorted by address\\n    /// @return The token contract address\\n    function token0() external view returns (address);\\n\\n    /// @notice The second of the two tokens of the pool, sorted by address\\n    /// @return The token contract address\\n    function token1() external view returns (address);\\n\\n    /// @notice The pool's fee in hundredths of a bip, i.e. 1e-6\\n    /// @return The fee\\n    function fee() external view returns (uint24);\\n\\n    /// @notice The pool tick spacing\\n    /// @dev Ticks can only be used at multiples of this value, minimum of 1 and always positive\\n    /// e.g.: a tickSpacing of 3 means ticks can be initialized every 3rd tick, i.e., ..., -6, -3, 0, 3, 6, ...\\n    /// This value is an int24 to avoid casting even though it is always positive.\\n    /// @return The tick spacing\\n    function tickSpacing() external view returns (int24);\\n\\n    /// @notice The maximum amount of position liquidity that can use any tick in the range\\n    /// @dev This parameter is enforced per tick to prevent liquidity from overflowing a uint128 at any point, and\\n    /// also prevents out-of-range liquidity from being used to prevent adding in-range liquidity to a pool\\n    /// @return The max amount of liquidity per tick\\n    function maxLiquidityPerTick() external view returns (uint128);\\n}\\n\",\"keccak256\":\"0xf6e5d2cd1139c4c276bdbc8e1d2b256e456c866a91f1b868da265c6d2685c3f7\",\"license\":\"GPL-2.0-or-later\"},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-2.0-or-later\\npragma solidity >=0.5.0;\\n\\n/// @title Permissioned pool actions\\n/// @notice Contains pool methods that may only be called by the factory owner\\ninterface IUniswapV3PoolOwnerActions {\\n    /// @notice Set the denominator of the protocol's % share of the fees\\n    /// @param feeProtocol0 new protocol fee for token0 of the pool\\n    /// @param feeProtocol1 new protocol fee for token1 of the pool\\n    function setFeeProtocol(uint8 feeProtocol0, uint8 feeProtocol1) external;\\n\\n    /// @notice Collect the protocol fee accrued to the pool\\n    /// @param recipient The address to which collected protocol fees should be sent\\n    /// @param amount0Requested The maximum amount of token0 to send, can be 0 to collect fees in only token1\\n    /// @param amount1Requested The maximum amount of token1 to send, can be 0 to collect fees in only token0\\n    /// @return amount0 The protocol fee collected in token0\\n    /// @return amount1 The protocol fee collected in token1\\n    function collectProtocol(\\n        address recipient,\\n        uint128 amount0Requested,\\n        uint128 amount1Requested\\n    ) external returns (uint128 amount0, uint128 amount1);\\n}\\n\",\"keccak256\":\"0x759b78a2918af9e99e246dc3af084f654e48ef32bb4e4cb8a966aa3dcaece235\",\"license\":\"GPL-2.0-or-later\"},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-2.0-or-later\\npragma solidity >=0.5.0;\\n\\n/// @title Pool state that can change\\n/// @notice These methods compose the pool's state, and can change with any frequency including multiple times\\n/// per transaction\\ninterface IUniswapV3PoolState {\\n    /// @notice The 0th storage slot in the pool stores many values, and is exposed as a single method to save gas\\n    /// when accessed externally.\\n    /// @return sqrtPriceX96 The current price of the pool as a sqrt(token1/token0) Q64.96 value\\n    /// tick The current tick of the pool, i.e. according to the last tick transition that was run.\\n    /// This value may not always be equal to SqrtTickMath.getTickAtSqrtRatio(sqrtPriceX96) if the price is on a tick\\n    /// boundary.\\n    /// observationIndex The index of the last oracle observation that was written,\\n    /// observationCardinality The current maximum number of observations stored in the pool,\\n    /// observationCardinalityNext The next maximum number of observations, to be updated when the observation.\\n    /// feeProtocol The protocol fee for both tokens of the pool.\\n    /// Encoded as two 4 bit values, where the protocol fee of token1 is shifted 4 bits and the protocol fee of token0\\n    /// is the lower 4 bits. Used as the denominator of a fraction of the swap fee, e.g. 4 means 1/4th of the swap fee.\\n    /// unlocked Whether the pool is currently locked to reentrancy\\n    function slot0()\\n        external\\n        view\\n        returns (\\n            uint160 sqrtPriceX96,\\n            int24 tick,\\n            uint16 observationIndex,\\n            uint16 observationCardinality,\\n            uint16 observationCardinalityNext,\\n            uint8 feeProtocol,\\n            bool unlocked\\n        );\\n\\n    /// @notice The fee growth as a Q128.128 fees of token0 collected per unit of liquidity for the entire life of the pool\\n    /// @dev This value can overflow the uint256\\n    function feeGrowthGlobal0X128() external view returns (uint256);\\n\\n    /// @notice The fee growth as a Q128.128 fees of token1 collected per unit of liquidity for the entire life of the pool\\n    /// @dev This value can overflow the uint256\\n    function feeGrowthGlobal1X128() external view returns (uint256);\\n\\n    /// @notice The amounts of token0 and token1 that are owed to the protocol\\n    /// @dev Protocol fees will never exceed uint128 max in either token\\n    function protocolFees() external view returns (uint128 token0, uint128 token1);\\n\\n    /// @notice The currently in range liquidity available to the pool\\n    /// @dev This value has no relationship to the total liquidity across all ticks\\n    function liquidity() external view returns (uint128);\\n\\n    /// @notice Look up information about a specific tick in the pool\\n    /// @param tick The tick to look up\\n    /// @return liquidityGross the total amount of position liquidity that uses the pool either as tick lower or\\n    /// tick upper,\\n    /// liquidityNet how much liquidity changes when the pool price crosses the tick,\\n    /// feeGrowthOutside0X128 the fee growth on the other side of the tick from the current tick in token0,\\n    /// feeGrowthOutside1X128 the fee growth on the other side of the tick from the current tick in token1,\\n    /// tickCumulativeOutside the cumulative tick value on the other side of the tick from the current tick\\n    /// secondsPerLiquidityOutsideX128 the seconds spent per liquidity on the other side of the tick from the current tick,\\n    /// secondsOutside the seconds spent on the other side of the tick from the current tick,\\n    /// initialized Set to true if the tick is initialized, i.e. liquidityGross is greater than 0, otherwise equal to false.\\n    /// Outside values can only be used if the tick is initialized, i.e. if liquidityGross is greater than 0.\\n    /// In addition, these values are only relative and must be used only in comparison to previous snapshots for\\n    /// a specific position.\\n    function ticks(int24 tick)\\n        external\\n        view\\n        returns (\\n            uint128 liquidityGross,\\n            int128 liquidityNet,\\n            uint256 feeGrowthOutside0X128,\\n            uint256 feeGrowthOutside1X128,\\n            int56 tickCumulativeOutside,\\n            uint160 secondsPerLiquidityOutsideX128,\\n            uint32 secondsOutside,\\n            bool initialized\\n        );\\n\\n    /// @notice Returns 256 packed tick initialized boolean values. See TickBitmap for more information\\n    function tickBitmap(int16 wordPosition) external view returns (uint256);\\n\\n    /// @notice Returns the information about a position by the position's key\\n    /// @param key The position's key is a hash of a preimage composed by the owner, tickLower and tickUpper\\n    /// @return _liquidity The amount of liquidity in the position,\\n    /// Returns feeGrowthInside0LastX128 fee growth of token0 inside the tick range as of the last mint/burn/poke,\\n    /// Returns feeGrowthInside1LastX128 fee growth of token1 inside the tick range as of the last mint/burn/poke,\\n    /// Returns tokensOwed0 the computed amount of token0 owed to the position as of the last mint/burn/poke,\\n    /// Returns tokensOwed1 the computed amount of token1 owed to the position as of the last mint/burn/poke\\n    function positions(bytes32 key)\\n        external\\n        view\\n        returns (\\n            uint128 _liquidity,\\n            uint256 feeGrowthInside0LastX128,\\n            uint256 feeGrowthInside1LastX128,\\n            uint128 tokensOwed0,\\n            uint128 tokensOwed1\\n        );\\n\\n    /// @notice Returns data about a specific observation index\\n    /// @param index The element of the observations array to fetch\\n    /// @dev You most likely want to use #observe() instead of this method to get an observation as of some amount of time\\n    /// ago, rather than at a specific index in the array.\\n    /// @return blockTimestamp The timestamp of the observation,\\n    /// Returns tickCumulative the tick multiplied by seconds elapsed for the life of the pool as of the observation timestamp,\\n    /// Returns secondsPerLiquidityCumulativeX128 the seconds per in range liquidity for the life of the pool as of the observation timestamp,\\n    /// Returns initialized whether the observation has been initialized and the values are safe to use\\n    function observations(uint256 index)\\n        external\\n        view\\n        returns (\\n            uint32 blockTimestamp,\\n            int56 tickCumulative,\\n            uint160 secondsPerLiquidityCumulativeX128,\\n            bool initialized\\n        );\\n}\\n\",\"keccak256\":\"0x852dc1f5df7dcf7f11e7bb3eed79f0cea72ad4b25f6a9d2c35aafb48925fd49f\",\"license\":\"GPL-2.0-or-later\"},\"contracts/oracles/UniswapV3TWAPAdapter.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport \\\"@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol\\\";\\n\\n/// @title UniswapV3TWAPAdapter\\n/// @notice Fetches time-weighted average price from Uniswap V3 pools\\n/// @dev Provides on-chain price oracle resistant to flash loan manipulation\\n/// @dev Pool addresses from https://www.geckoterminal.com/sepolia-testnet\\ncontract UniswapV3TWAPAdapter {\\n\\n    struct PoolConfig {\\n        address pool;\\n        address baseToken;  // Token being priced (e.g., WETH)\\n        address quoteToken; // Token price is quoted in (e.g., USDC)\\n        uint8 baseDecimals;\\n        uint8 quoteDecimals;\\n        uint32 twapPeriod;  // Time window for TWAP (seconds)\\n        bool isToken0Base;  // True if baseToken is token0 in the pool\\n    }\\n\\n    mapping(bytes32 => PoolConfig) public pools;\\n\\n    // Uniswap V3 pool addresses (Sepolia testnet)\\n    // Source: https://www.geckoterminal.com/sepolia-testnet/pools/0x9799b5edc1aa7d3fad350309b08df3f64914e244\\n    address public constant USDC_WETH_POOL_03 = 0x9799b5EDC1aA7D3FAd350309B08df3F64914E244; // 0.3% fee\\n\\n    // Token addresses on Sepolia (need to verify these)\\n    address public constant WETH = 0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14; // WETH on Sepolia\\n    address public constant USDC = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238; // USDC on Sepolia\\n\\n    event PoolRegistered(bytes32 indexed pairId, address poolAddress, uint32 twapPeriod);\\n    event TWAPCalculated(bytes32 indexed pairId, uint256 price, uint256 timestamp);\\n\\n    constructor() {\\n        // Register WETH/USDC pool\\n        // Note: This gives price of WETH in USDC, we map it to ETH/USD\\n        pools[keccak256(\\\"ETH/USD\\\")] = PoolConfig({\\n            pool: USDC_WETH_POOL_03,\\n            baseToken: WETH,\\n            quoteToken: USDC,\\n            baseDecimals: 18,  // WETH has 18 decimals\\n            quoteDecimals: 6,  // USDC has 6 decimals\\n            twapPeriod: 1800,  // 30 minute TWAP (balance between freshness and security)\\n            isToken0Base: false // WETH is typically token1, USDC is token0 (lower address)\\n        });\\n\\n        emit PoolRegistered(keccak256(\\\"ETH/USD\\\"), USDC_WETH_POOL_03, 1800);\\n    }\\n\\n    /// @notice Get time-weighted average price from Uniswap V3\\n    /// @param pairId Asset pair identifier (e.g., keccak256(\\\"ETH/USD\\\"))\\n    /// @return price TWAP price (normalized to 18 decimals)\\n    /// @return timestamp Current block timestamp (TWAP is current)\\n    function getLatestPrice(bytes32 pairId)\\n        external\\n        view\\n        returns (\\n            uint256 price,\\n            uint256 timestamp\\n        )\\n    {\\n        PoolConfig memory config = pools[pairId];\\n        require(config.pool != address(0), \\\"UniswapAdapter: Pool not configured\\\");\\n\\n        IUniswapV3Pool pool = IUniswapV3Pool(config.pool);\\n\\n        // Get TWAP tick (arithmetic mean over the period)\\n        int24 arithmeticMeanTick = _getTWAPTick(pool, config.twapPeriod);\\n\\n        // Convert tick to price\\n        uint256 quoteAmount = _getQuoteAtTick(\\n            arithmeticMeanTick,\\n            uint128(10 ** config.baseDecimals), // 1 unit of base token (e.g., 1 WETH)\\n            config.isToken0Base\\n        );\\n\\n        // Normalize to 18 decimals\\n        uint256 normalizedPrice;\\n        if (config.quoteDecimals < 18) {\\n            // Scale up (e.g., USDC has 6 decimals, multiply by 10^12)\\n            normalizedPrice = quoteAmount * (10 ** (18 - config.quoteDecimals));\\n        } else {\\n            // Scale down (rare case)\\n            normalizedPrice = quoteAmount / (10 ** (config.quoteDecimals - 18));\\n        }\\n\\n        return (normalizedPrice, block.timestamp);\\n    }\\n\\n    /// @notice Calculate TWAP tick from Uniswap V3 pool observations\\n    /// @dev Queries pool's oracle observations and calculates arithmetic mean tick\\n    /// @param pool Uniswap V3 pool contract\\n    /// @param period TWAP period in seconds\\n    /// @return arithmeticMeanTick The time-weighted average tick\\n    function _getTWAPTick(IUniswapV3Pool pool, uint32 period)\\n        internal\\n        view\\n        returns (int24 arithmeticMeanTick)\\n    {\\n        uint32[] memory secondsAgos = new uint32[](2);\\n        secondsAgos[0] = period; // Start of TWAP window\\n        secondsAgos[1] = 0;      // Current time\\n\\n        // Get cumulative tick data from pool\\n        (int56[] memory tickCumulatives, ) = pool.observe(secondsAgos);\\n\\n        // Calculate arithmetic mean tick over the period\\n        int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];\\n        arithmeticMeanTick = int24(tickCumulativesDelta / int56(uint56(period)));\\n\\n        // Round down for negative ticks\\n        if (tickCumulativesDelta < 0 && (tickCumulativesDelta % int56(uint56(period)) != 0)) {\\n            arithmeticMeanTick--;\\n        }\\n    }\\n\\n    /// @notice Convert Uniswap V3 tick to quote amount\\n    /// @dev Simplified version of OracleLibrary.getQuoteAtTick for Solidity 0.8\\n    /// @param tick The tick to convert\\n    /// @param baseAmount Amount of base token (with decimals)\\n    /// @param isToken0Base True if base token is token0\\n    /// @return quoteAmount The corresponding amount of quote token\\n    function _getQuoteAtTick(\\n        int24 tick,\\n        uint128 baseAmount,\\n        bool isToken0Base\\n    ) internal pure returns (uint256 quoteAmount) {\\n        // Get sqrtPrice from tick\\n        uint160 sqrtPriceX96 = _getSqrtRatioAtTick(tick);\\n\\n        // Calculate price from sqrtPriceX96\\n        // sqrtPriceX96 = sqrt(token1/token0) * 2^96\\n        // price = (sqrtPriceX96 / 2^96)^2\\n\\n        if (sqrtPriceX96 <= type(uint128).max) {\\n            uint256 priceX192 = uint256(sqrtPriceX96) * sqrtPriceX96;\\n            quoteAmount = isToken0Base\\n                ? _mulDiv(priceX192, baseAmount, 1 << 192)\\n                : _mulDiv(1 << 192, baseAmount, priceX192);\\n        } else {\\n            uint256 priceX128 = _mulDiv(sqrtPriceX96, sqrtPriceX96, 1 << 64);\\n            quoteAmount = isToken0Base\\n                ? _mulDiv(priceX128, baseAmount, 1 << 128)\\n                : _mulDiv(1 << 128, baseAmount, priceX128);\\n        }\\n    }\\n\\n    /// @notice Get sqrtPriceX96 from tick\\n    /// @dev Simplified implementation for common tick ranges\\n    /// @param tick The tick to convert\\n    /// @return sqrtPriceX96 The sqrt price encoded as a Q64.96\\n    function _getSqrtRatioAtTick(int24 tick) internal pure returns (uint160 sqrtPriceX96) {\\n        uint256 absTick = tick < 0 ? uint256(-int256(tick)) : uint256(int256(tick));\\n        require(absTick <= uint256(int256(type(int24).max)), \\\"T\\\");\\n\\n        uint256 ratio = absTick & 0x1 != 0\\n            ? 0xfffcb933bd6fad37aa2d162d1a594001\\n            : 0x100000000000000000000000000000000;\\n        if (absTick & 0x2 != 0) ratio = (ratio * 0xfff97272373d413259a46990580e213a) >> 128;\\n        if (absTick & 0x4 != 0) ratio = (ratio * 0xfff2e50f5f656932ef12357cf3c7fdcc) >> 128;\\n        if (absTick & 0x8 != 0) ratio = (ratio * 0xffe5caca7e10e4e61c3624eaa0941cd0) >> 128;\\n        if (absTick & 0x10 != 0) ratio = (ratio * 0xffcb9843d60f6159c9db58835c926644) >> 128;\\n        if (absTick & 0x20 != 0) ratio = (ratio * 0xff973b41fa98c081472e6896dfb254c0) >> 128;\\n        if (absTick & 0x40 != 0) ratio = (ratio * 0xff2ea16466c96a3843ec78b326b52861) >> 128;\\n        if (absTick & 0x80 != 0) ratio = (ratio * 0xfe5dee046a99a2a811c461f1969c3053) >> 128;\\n        if (absTick & 0x100 != 0) ratio = (ratio * 0xfcbe86c7900a88aedcffc83b479aa3a4) >> 128;\\n        if (absTick & 0x200 != 0) ratio = (ratio * 0xf987a7253ac413176f2b074cf7815e54) >> 128;\\n        if (absTick & 0x400 != 0) ratio = (ratio * 0xf3392b0822b70005940c7a398e4b70f3) >> 128;\\n        if (absTick & 0x800 != 0) ratio = (ratio * 0xe7159475a2c29b7443b29c7fa6e889d9) >> 128;\\n        if (absTick & 0x1000 != 0) ratio = (ratio * 0xd097f3bdfd2022b8845ad8f792aa5825) >> 128;\\n        if (absTick & 0x2000 != 0) ratio = (ratio * 0xa9f746462d870fdf8a65dc1f90e061e5) >> 128;\\n        if (absTick & 0x4000 != 0) ratio = (ratio * 0x70d869a156d2a1b890bb3df62baf32f7) >> 128;\\n        if (absTick & 0x8000 != 0) ratio = (ratio * 0x31be135f97d08fd981231505542fcfa6) >> 128;\\n        if (absTick & 0x10000 != 0) ratio = (ratio * 0x9aa508b5b7a84e1c677de54f3e99bc9) >> 128;\\n        if (absTick & 0x20000 != 0) ratio = (ratio * 0x5d6af8dedb81196699c329225ee604) >> 128;\\n        if (absTick & 0x40000 != 0) ratio = (ratio * 0x2216e584f5fa1ea926041bedfe98) >> 128;\\n        if (absTick & 0x80000 != 0) ratio = (ratio * 0x48a170391f7dc42444e8fa2) >> 128;\\n\\n        if (tick > 0) ratio = type(uint256).max / ratio;\\n\\n        sqrtPriceX96 = uint160((ratio >> 32) + (ratio % (1 << 32) == 0 ? 0 : 1));\\n    }\\n\\n    /// @notice Full precision multiplication\\n    /// @dev Calculates floor(a\\u00d7b\\u00f7denominator) with full precision\\n    /// @param a The multiplicand\\n    /// @param b The multiplier\\n    /// @param denominator The divisor\\n    /// @return result The 256-bit result\\n    function _mulDiv(\\n        uint256 a,\\n        uint256 b,\\n        uint256 denominator\\n    ) internal pure returns (uint256 result) {\\n        uint256 prod0;\\n        uint256 prod1;\\n        assembly {\\n            let mm := mulmod(a, b, not(0))\\n            prod0 := mul(a, b)\\n            prod1 := sub(sub(mm, prod0), lt(mm, prod0))\\n        }\\n\\n        if (prod1 == 0) {\\n            require(denominator > 0);\\n            assembly {\\n                result := div(prod0, denominator)\\n            }\\n            return result;\\n        }\\n\\n        require(denominator > prod1);\\n\\n        uint256 remainder;\\n        assembly {\\n            remainder := mulmod(a, b, denominator)\\n        }\\n        assembly {\\n            prod1 := sub(prod1, gt(remainder, prod0))\\n            prod0 := sub(prod0, remainder)\\n        }\\n\\n        uint256 twos = denominator & (~denominator + 1);\\n        assembly {\\n            denominator := div(denominator, twos)\\n        }\\n\\n        assembly {\\n            prod0 := div(prod0, twos)\\n        }\\n        assembly {\\n            twos := add(div(sub(0, twos), twos), 1)\\n        }\\n        prod0 |= prod1 * twos;\\n\\n        uint256 inv = (3 * denominator) ^ 2;\\n        inv *= 2 - denominator * inv;\\n        inv *= 2 - denominator * inv;\\n        inv *= 2 - denominator * inv;\\n        inv *= 2 - denominator * inv;\\n        inv *= 2 - denominator * inv;\\n        inv *= 2 - denominator * inv;\\n\\n        result = prod0 * inv;\\n        return result;\\n    }\\n\\n    /// @notice Check if pool has sufficient history for TWAP\\n    /// @dev Verifies pool has observations covering the TWAP period\\n    /// @param pairId Asset pair to check\\n    /// @return True if pool is healthy and has sufficient data\\n    function isPoolHealthy(bytes32 pairId) external view returns (bool) {\\n        PoolConfig memory config = pools[pairId];\\n        if (config.pool == address(0)) return false;\\n\\n        IUniswapV3Pool pool = IUniswapV3Pool(config.pool);\\n\\n        uint32[] memory secondsAgos = new uint32[](2);\\n        secondsAgos[0] = config.twapPeriod;\\n        secondsAgos[1] = 0;\\n\\n        // Check if pool has observations for TWAP period\\n        try pool.observe(secondsAgos) returns (\\n            int56[] memory,\\n            uint160[] memory\\n        ) {\\n            return true;\\n        } catch {\\n            return false;\\n        }\\n    }\\n\\n    /// @notice Get pool configuration\\n    /// @param pairId Asset pair to query\\n    /// @return config Pool configuration struct\\n    function getPoolConfig(bytes32 pairId) external view returns (PoolConfig memory) {\\n        return pools[pairId];\\n    }\\n\\n    /// @notice Check if pool is registered\\n    /// @param pairId Asset pair to check\\n    /// @return True if pool registered\\n    function isPoolRegistered(bytes32 pairId) external view returns (bool) {\\n        return pools[pairId].pool != address(0);\\n    }\\n}\\n\",\"keccak256\":\"0x32e1cf24c9783cdaed79468d034d1d9658eb9ee178bcff6da4460dfdcc4fc09c\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506040805160e081018252739799b5edc1aa7d3fad350309b08df3f64914e24480825273fff9976782d46cc05630d1f6ebab18b2324d6b146020808401918252731c7d4b196cb0c7b01d743fbc6116a902379c723884860190815260126060860190815260066080870190815261070860a08801818152600060c08a018181527f0b43555ace6b39aae1b894097d0a9fc17f504c62fea598fa206cc6f5088e6e4580835291885299517f05d85690a7c5141a43ee4adc4a1e5d6f3e58a86c5e9402ec0db989da3fec320380546001600160a01b03199081166001600160a01b039384161790915598517f05d85690a7c5141a43ee4adc4a1e5d6f3e58a86c5e9402ec0db989da3fec32048054909a169082161790985594517f05d85690a7c5141a43ee4adc4a1e5d6f3e58a86c5e9402ec0db989da3fec320580549551945192519a51919098166001600160a81b031990951694909417600160a01b60ff948516021764ffffffffff60a81b1916600160a81b939091169290920263ffffffff60b01b191691909117600160b01b63ffffffff909816979097029690961760ff60d01b1916600160d01b9115159190910217909255845192835282019290925290917f16f616fd27fd946b7a81b74eb3f1b343c650ae9b723c02ced6568412ed7a09e9910160405180910390a261136a8061020c6000396000f3fe608060405234801561001057600080fd5b50600436106100885760003560e01c8063ad5c46481161005b578063ad5c464814610259578063b2ee2f0114610274578063b5217bb41461029c578063f286101f1461035557600080fd5b8063037aadbe1461008d5780632b5a9118146101d857806389a30271146101fb5780639789ae801461022e575b600080fd5b61015d61009b366004610e98565b6040805160e081018252600080825260208201819052918101829052606081018290526080810182905260a0810182905260c08101919091525060009081526020818152604091829020825160e08101845281546001600160a01b03908116825260018301548116938201939093526002909101549182169281019290925260ff600160a01b820481166060840152600160a81b82048116608084015263ffffffff600160b01b83041660a0840152600160d01b90910416151560c082015290565b6040516101cf9190600060e08201905060018060a01b038084511683528060208501511660208401528060408501511660408401525060ff606084015116606083015260ff608084015116608083015263ffffffff60a08401511660a083015260c0830151151560c083015292915050565b60405180910390f35b6101eb6101e6366004610e98565b610370565b60405190151581526020016101cf565b610216731c7d4b196cb0c7b01d743fbc6116a902379c723881565b6040516001600160a01b0390911681526020016101cf565b6101eb61023c366004610e98565b6000908152602081905260409020546001600160a01b0316151590565b61021673fff9976782d46cc05630d1f6ebab18b2324d6b1481565b610287610282366004610e98565b610508565b604080519283526020830191909152016101cf565b6103066102aa366004610e98565b6000602081905290815260409020805460018201546002909201546001600160a01b039182169282169181169060ff600160a01b8204811691600160a81b810482169163ffffffff600160b01b83041691600160d01b90041687565b604080516001600160a01b0398891681529688166020880152949096169385019390935260ff918216606085015216608083015263ffffffff1660a082015290151560c082015260e0016101cf565b610216739799b5edc1aa7d3fad350309b08df3f64914e24481565b600081815260208181526040808320815160e08101835281546001600160a01b0390811680835260018401548216958301959095526002909201549182169281019290925260ff600160a01b820481166060840152600160a81b82048116608084015263ffffffff600160b01b83041660a0840152600160d01b90910416151560c0820152906104035750600092915050565b80516040805160028082526060820183526000926020830190803683370190505090508260a001518160008151811061043e5761043e610ec7565b602002602001019063ffffffff16908163ffffffff168152505060008160018151811061046d5761046d610ec7565b63ffffffff9092166020928302919091019091015260405163883bdbfd60e01b81526001600160a01b0383169063883bdbfd906104ae908490600401610edd565b600060405180830381865afa9250505080156104ec57506040513d6000823e601f3d908101601f191682016040526104e99190810190610ffd565b60015b6104fb57506000949350505050565b5060019695505050505050565b600081815260208181526040808320815160e08101835281546001600160a01b0390811680835260018401548216958301959095526002909201549182169281019290925260ff600160a01b820481166060840152600160a81b82048116608084015263ffffffff600160b01b83041660a0840152600160d01b90910416151560c082015282916105ec5760405162461bcd60e51b815260206004820152602360248201527f556e6973776170416461707465723a20506f6f6c206e6f7420636f6e666967756044820152621c995960ea1b60648201526084015b60405180910390fd5b805160a082015160009061060190839061069a565b90506000610624828560600151600a61061a91906111c5565b8660c00151610824565b905060006012856080015160ff1610156106645760808501516106489060126111d4565b61065390600a6111c5565b61065d90836111ed565b905061068d565b6012856080015161067591906111d4565b61068090600a6111c5565b61068a908361121a565b90505b9742975095505050505050565b6040805160028082526060820183526000928392919060208301908036833701905050905082816000815181106106d3576106d3610ec7565b602002602001019063ffffffff16908163ffffffff168152505060008160018151811061070257610702610ec7565b63ffffffff9092166020928302919091019091015260405163883bdbfd60e01b81526000906001600160a01b0386169063883bdbfd90610746908590600401610edd565b600060405180830381865afa158015610763573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f1916820160405261078b9190810190610ffd565b5090506000816000815181106107a3576107a3610ec7565b6020026020010151826001815181106107be576107be610ec7565b60200260200101516107d0919061122e565b90506107e263ffffffff86168261125b565b935060008160060b128015610808575061080263ffffffff861682611299565b60060b15155b1561081b5783610817816112bb565b9450505b50505092915050565b60008061083085610909565b90506001600160801b036001600160a01b038216116108a257600061085e6001600160a01b038316806111ed565b9050836108825761087d600160c01b866001600160801b031683610d1d565b61089a565b61089a81866001600160801b0316600160c01b610d1d565b925050610901565b60006108c16001600160a01b0383168068010000000000000000610d1d565b9050836108e5576108e0600160801b866001600160801b031683610d1d565b6108fd565b6108fd81866001600160801b0316600160801b610d1d565b9250505b509392505050565b60008060008360020b12610920578260020b61092d565b8260020b61092d906112de565b9050627fffff8111156109665760405162461bcd60e51b81526020600482015260016024820152601560fa1b60448201526064016105e3565b60008160011660000361097d57600160801b61098f565b6ffffcb933bd6fad37aa2d162d1a5940015b70ffffffffffffffffffffffffffffffffff16905060028216156109ce5760806109c9826ffff97272373d413259a46990580e213a6111ed565b901c90505b60048216156109f85760806109f3826ffff2e50f5f656932ef12357cf3c7fdcc6111ed565b901c90505b6008821615610a22576080610a1d826fffe5caca7e10e4e61c3624eaa0941cd06111ed565b901c90505b6010821615610a4c576080610a47826fffcb9843d60f6159c9db58835c9266446111ed565b901c90505b6020821615610a76576080610a71826fff973b41fa98c081472e6896dfb254c06111ed565b901c90505b6040821615610aa0576080610a9b826fff2ea16466c96a3843ec78b326b528616111ed565b901c90505b6080821615610aca576080610ac5826ffe5dee046a99a2a811c461f1969c30536111ed565b901c90505b610100821615610af5576080610af0826ffcbe86c7900a88aedcffc83b479aa3a46111ed565b901c90505b610200821615610b20576080610b1b826ff987a7253ac413176f2b074cf7815e546111ed565b901c90505b610400821615610b4b576080610b46826ff3392b0822b70005940c7a398e4b70f36111ed565b901c90505b610800821615610b76576080610b71826fe7159475a2c29b7443b29c7fa6e889d96111ed565b901c90505b611000821615610ba1576080610b9c826fd097f3bdfd2022b8845ad8f792aa58256111ed565b901c90505b612000821615610bcc576080610bc7826fa9f746462d870fdf8a65dc1f90e061e56111ed565b901c90505b614000821615610bf7576080610bf2826f70d869a156d2a1b890bb3df62baf32f76111ed565b901c90505b618000821615610c22576080610c1d826f31be135f97d08fd981231505542fcfa66111ed565b901c90505b62010000821615610c4e576080610c49826f09aa508b5b7a84e1c677de54f3e99bc96111ed565b901c90505b62020000821615610c79576080610c74826e5d6af8dedb81196699c329225ee6046111ed565b901c90505b62040000821615610ca3576080610c9e826d2216e584f5fa1ea926041bedfe986111ed565b901c90505b62080000821615610ccb576080610cc6826b048a170391f7dc42444e8fa26111ed565b901c90505b60008460020b1315610ce657610ce38160001961121a565b90505b610cf5640100000000826112fa565b15610d01576001610d04565b60005b610d159060ff16602083901c61130e565b949350505050565b6000808060001985870985870292508281108382030391505080600003610d565760008411610d4b57600080fd5b508290049050610e91565b808411610d6257600080fd5b6000848688098084039381119092039190506000610d828619600161130e565b8616958690049593849004936000819003046001019050610da381846111ed565b909317926000610db48760036111ed565b6002189050610dc381886111ed565b610dce906002611321565b610dd890826111ed565b9050610de481886111ed565b610def906002611321565b610df990826111ed565b9050610e0581886111ed565b610e10906002611321565b610e1a90826111ed565b9050610e2681886111ed565b610e31906002611321565b610e3b90826111ed565b9050610e4781886111ed565b610e52906002611321565b610e5c90826111ed565b9050610e6881886111ed565b610e73906002611321565b610e7d90826111ed565b9050610e8981866111ed565b955050505050505b9392505050565b600060208284031215610eaa57600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b634e487b7160e01b600052603260045260246000fd5b6020808252825182820181905260009190848201906040850190845b81811015610f1b57835163ffffffff1683529284019291840191600101610ef9565b50909695505050505050565b604051601f8201601f1916810167ffffffffffffffff81118282101715610f5057610f50610eb1565b604052919050565b600067ffffffffffffffff821115610f7257610f72610eb1565b5060051b60200190565b600082601f830112610f8d57600080fd5b81516020610fa2610f9d83610f58565b610f27565b82815260059290921b84018101918181019086841115610fc157600080fd5b8286015b84811015610ff25780516001600160a01b0381168114610fe55760008081fd5b8352918301918301610fc5565b509695505050505050565b6000806040838503121561101057600080fd5b825167ffffffffffffffff8082111561102857600080fd5b818501915085601f83011261103c57600080fd5b8151602061104c610f9d83610f58565b82815260059290921b8401810191818101908984111561106b57600080fd5b948201945b838610156110995785518060060b811461108a5760008081fd5b82529482019490820190611070565b918801519196509093505050808211156110b257600080fd5b506110bf85828601610f7c565b9150509250929050565b634e487b7160e01b600052601160045260246000fd5b600181815b8085111561111a578160001904821115611100576111006110c9565b8085161561110d57918102915b93841c93908002906110e4565b509250929050565b600082611131575060016111bf565b8161113e575060006111bf565b8160018114611154576002811461115e5761117a565b60019150506111bf565b60ff84111561116f5761116f6110c9565b50506001821b6111bf565b5060208310610133831016604e8410600b841016171561119d575081810a6111bf565b6111a783836110df565b80600019048211156111bb576111bb6110c9565b0290505b92915050565b6000610e9160ff841683611122565b60ff82811682821603908111156111bf576111bf6110c9565b80820281158282048414176111bf576111bf6110c9565b634e487b7160e01b600052601260045260246000fd5b60008261122957611229611204565b500490565b600682810b9082900b03667fffffffffffff198112667fffffffffffff821317156111bf576111bf6110c9565b60008160060b8360060b8061127257611272611204565b667fffffffffffff19821460001982141615611290576112906110c9565b90059392505050565b60008260060b806112ac576112ac611204565b808360060b0791505092915050565b60008160020b627fffff1981036112d4576112d46110c9565b6000190192915050565b6000600160ff1b82016112f3576112f36110c9565b5060000390565b60008261130957611309611204565b500690565b808201808211156111bf576111bf6110c9565b818103818111156111bf576111bf6110c956fea264697066735822122040b90dd381eec530ae97b13af84243504cb153bf86d74d784d3d980829ab805d64736f6c63430008140033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100885760003560e01c8063ad5c46481161005b578063ad5c464814610259578063b2ee2f0114610274578063b5217bb41461029c578063f286101f1461035557600080fd5b8063037aadbe1461008d5780632b5a9118146101d857806389a30271146101fb5780639789ae801461022e575b600080fd5b61015d61009b366004610e98565b6040805160e081018252600080825260208201819052918101829052606081018290526080810182905260a0810182905260c08101919091525060009081526020818152604091829020825160e08101845281546001600160a01b03908116825260018301548116938201939093526002909101549182169281019290925260ff600160a01b820481166060840152600160a81b82048116608084015263ffffffff600160b01b83041660a0840152600160d01b90910416151560c082015290565b6040516101cf9190600060e08201905060018060a01b038084511683528060208501511660208401528060408501511660408401525060ff606084015116606083015260ff608084015116608083015263ffffffff60a08401511660a083015260c0830151151560c083015292915050565b60405180910390f35b6101eb6101e6366004610e98565b610370565b60405190151581526020016101cf565b610216731c7d4b196cb0c7b01d743fbc6116a902379c723881565b6040516001600160a01b0390911681526020016101cf565b6101eb61023c366004610e98565b6000908152602081905260409020546001600160a01b0316151590565b61021673fff9976782d46cc05630d1f6ebab18b2324d6b1481565b610287610282366004610e98565b610508565b604080519283526020830191909152016101cf565b6103066102aa366004610e98565b6000602081905290815260409020805460018201546002909201546001600160a01b039182169282169181169060ff600160a01b8204811691600160a81b810482169163ffffffff600160b01b83041691600160d01b90041687565b604080516001600160a01b0398891681529688166020880152949096169385019390935260ff918216606085015216608083015263ffffffff1660a082015290151560c082015260e0016101cf565b610216739799b5edc1aa7d3fad350309b08df3f64914e24481565b600081815260208181526040808320815160e08101835281546001600160a01b0390811680835260018401548216958301959095526002909201549182169281019290925260ff600160a01b820481166060840152600160a81b82048116608084015263ffffffff600160b01b83041660a0840152600160d01b90910416151560c0820152906104035750600092915050565b80516040805160028082526060820183526000926020830190803683370190505090508260a001518160008151811061043e5761043e610ec7565b602002602001019063ffffffff16908163ffffffff168152505060008160018151811061046d5761046d610ec7565b63ffffffff9092166020928302919091019091015260405163883bdbfd60e01b81526001600160a01b0383169063883bdbfd906104ae908490600401610edd565b600060405180830381865afa9250505080156104ec57506040513d6000823e601f3d908101601f191682016040526104e99190810190610ffd565b60015b6104fb57506000949350505050565b5060019695505050505050565b600081815260208181526040808320815160e08101835281546001600160a01b0390811680835260018401548216958301959095526002909201549182169281019290925260ff600160a01b820481166060840152600160a81b82048116608084015263ffffffff600160b01b83041660a0840152600160d01b90910416151560c082015282916105ec5760405162461bcd60e51b815260206004820152602360248201527f556e6973776170416461707465723a20506f6f6c206e6f7420636f6e666967756044820152621c995960ea1b60648201526084015b60405180910390fd5b805160a082015160009061060190839061069a565b90506000610624828560600151600a61061a91906111c5565b8660c00151610824565b905060006012856080015160ff1610156106645760808501516106489060126111d4565b61065390600a6111c5565b61065d90836111ed565b905061068d565b6012856080015161067591906111d4565b61068090600a6111c5565b61068a908361121a565b90505b9742975095505050505050565b6040805160028082526060820183526000928392919060208301908036833701905050905082816000815181106106d3576106d3610ec7565b602002602001019063ffffffff16908163ffffffff168152505060008160018151811061070257610702610ec7565b63ffffffff9092166020928302919091019091015260405163883bdbfd60e01b81526000906001600160a01b0386169063883bdbfd90610746908590600401610edd565b600060405180830381865afa158015610763573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f1916820160405261078b9190810190610ffd565b5090506000816000815181106107a3576107a3610ec7565b6020026020010151826001815181106107be576107be610ec7565b60200260200101516107d0919061122e565b90506107e263ffffffff86168261125b565b935060008160060b128015610808575061080263ffffffff861682611299565b60060b15155b1561081b5783610817816112bb565b9450505b50505092915050565b60008061083085610909565b90506001600160801b036001600160a01b038216116108a257600061085e6001600160a01b038316806111ed565b9050836108825761087d600160c01b866001600160801b031683610d1d565b61089a565b61089a81866001600160801b0316600160c01b610d1d565b925050610901565b60006108c16001600160a01b0383168068010000000000000000610d1d565b9050836108e5576108e0600160801b866001600160801b031683610d1d565b6108fd565b6108fd81866001600160801b0316600160801b610d1d565b9250505b509392505050565b60008060008360020b12610920578260020b61092d565b8260020b61092d906112de565b9050627fffff8111156109665760405162461bcd60e51b81526020600482015260016024820152601560fa1b60448201526064016105e3565b60008160011660000361097d57600160801b61098f565b6ffffcb933bd6fad37aa2d162d1a5940015b70ffffffffffffffffffffffffffffffffff16905060028216156109ce5760806109c9826ffff97272373d413259a46990580e213a6111ed565b901c90505b60048216156109f85760806109f3826ffff2e50f5f656932ef12357cf3c7fdcc6111ed565b901c90505b6008821615610a22576080610a1d826fffe5caca7e10e4e61c3624eaa0941cd06111ed565b901c90505b6010821615610a4c576080610a47826fffcb9843d60f6159c9db58835c9266446111ed565b901c90505b6020821615610a76576080610a71826fff973b41fa98c081472e6896dfb254c06111ed565b901c90505b6040821615610aa0576080610a9b826fff2ea16466c96a3843ec78b326b528616111ed565b901c90505b6080821615610aca576080610ac5826ffe5dee046a99a2a811c461f1969c30536111ed565b901c90505b610100821615610af5576080610af0826ffcbe86c7900a88aedcffc83b479aa3a46111ed565b901c90505b610200821615610b20576080610b1b826ff987a7253ac413176f2b074cf7815e546111ed565b901c90505b610400821615610b4b576080610b46826ff3392b0822b70005940c7a398e4b70f36111ed565b901c90505b610800821615610b76576080610b71826fe7159475a2c29b7443b29c7fa6e889d96111ed565b901c90505b611000821615610ba1576080610b9c826fd097f3bdfd2022b8845ad8f792aa58256111ed565b901c90505b612000821615610bcc576080610bc7826fa9f746462d870fdf8a65dc1f90e061e56111ed565b901c90505b614000821615610bf7576080610bf2826f70d869a156d2a1b890bb3df62baf32f76111ed565b901c90505b618000821615610c22576080610c1d826f31be135f97d08fd981231505542fcfa66111ed565b901c90505b62010000821615610c4e576080610c49826f09aa508b5b7a84e1c677de54f3e99bc96111ed565b901c90505b62020000821615610c79576080610c74826e5d6af8dedb81196699c329225ee6046111ed565b901c90505b62040000821615610ca3576080610c9e826d2216e584f5fa1ea926041bedfe986111ed565b901c90505b62080000821615610ccb576080610cc6826b048a170391f7dc42444e8fa26111ed565b901c90505b60008460020b1315610ce657610ce38160001961121a565b90505b610cf5640100000000826112fa565b15610d01576001610d04565b60005b610d159060ff16602083901c61130e565b949350505050565b6000808060001985870985870292508281108382030391505080600003610d565760008411610d4b57600080fd5b508290049050610e91565b808411610d6257600080fd5b6000848688098084039381119092039190506000610d828619600161130e565b8616958690049593849004936000819003046001019050610da381846111ed565b909317926000610db48760036111ed565b6002189050610dc381886111ed565b610dce906002611321565b610dd890826111ed565b9050610de481886111ed565b610def906002611321565b610df990826111ed565b9050610e0581886111ed565b610e10906002611321565b610e1a90826111ed565b9050610e2681886111ed565b610e31906002611321565b610e3b90826111ed565b9050610e4781886111ed565b610e52906002611321565b610e5c90826111ed565b9050610e6881886111ed565b610e73906002611321565b610e7d90826111ed565b9050610e8981866111ed565b955050505050505b9392505050565b600060208284031215610eaa57600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b634e487b7160e01b600052603260045260246000fd5b6020808252825182820181905260009190848201906040850190845b81811015610f1b57835163ffffffff1683529284019291840191600101610ef9565b50909695505050505050565b604051601f8201601f1916810167ffffffffffffffff81118282101715610f5057610f50610eb1565b604052919050565b600067ffffffffffffffff821115610f7257610f72610eb1565b5060051b60200190565b600082601f830112610f8d57600080fd5b81516020610fa2610f9d83610f58565b610f27565b82815260059290921b84018101918181019086841115610fc157600080fd5b8286015b84811015610ff25780516001600160a01b0381168114610fe55760008081fd5b8352918301918301610fc5565b509695505050505050565b6000806040838503121561101057600080fd5b825167ffffffffffffffff8082111561102857600080fd5b818501915085601f83011261103c57600080fd5b8151602061104c610f9d83610f58565b82815260059290921b8401810191818101908984111561106b57600080fd5b948201945b838610156110995785518060060b811461108a5760008081fd5b82529482019490820190611070565b918801519196509093505050808211156110b257600080fd5b506110bf85828601610f7c565b9150509250929050565b634e487b7160e01b600052601160045260246000fd5b600181815b8085111561111a578160001904821115611100576111006110c9565b8085161561110d57918102915b93841c93908002906110e4565b509250929050565b600082611131575060016111bf565b8161113e575060006111bf565b8160018114611154576002811461115e5761117a565b60019150506111bf565b60ff84111561116f5761116f6110c9565b50506001821b6111bf565b5060208310610133831016604e8410600b841016171561119d575081810a6111bf565b6111a783836110df565b80600019048211156111bb576111bb6110c9565b0290505b92915050565b6000610e9160ff841683611122565b60ff82811682821603908111156111bf576111bf6110c9565b80820281158282048414176111bf576111bf6110c9565b634e487b7160e01b600052601260045260246000fd5b60008261122957611229611204565b500490565b600682810b9082900b03667fffffffffffff198112667fffffffffffff821317156111bf576111bf6110c9565b60008160060b8360060b8061127257611272611204565b667fffffffffffff19821460001982141615611290576112906110c9565b90059392505050565b60008260060b806112ac576112ac611204565b808360060b0791505092915050565b60008160020b627fffff1981036112d4576112d46110c9565b6000190192915050565b6000600160ff1b82016112f3576112f36110c9565b5060000390565b60008261130957611309611204565b500690565b808201808211156111bf576111bf6110c9565b818103818111156111bf576111bf6110c956fea264697066735822122040b90dd381eec530ae97b13af84243504cb153bf86d74d784d3d980829ab805d64736f6c63430008140033",
+  "devdoc": {
+    "details": "Provides on-chain price oracle resistant to flash loan manipulationPool addresses from https://www.geckoterminal.com/sepolia-testnet",
+    "kind": "dev",
+    "methods": {
+      "getLatestPrice(bytes32)": {
+        "params": {
+          "pairId": "Asset pair identifier (e.g., keccak256(\"ETH/USD\"))"
+        },
+        "returns": {
+          "price": "TWAP price (normalized to 18 decimals)",
+          "timestamp": "Current block timestamp (TWAP is current)"
+        }
+      },
+      "getPoolConfig(bytes32)": {
+        "params": {
+          "pairId": "Asset pair to query"
+        },
+        "returns": {
+          "_0": "config Pool configuration struct"
+        }
+      },
+      "isPoolHealthy(bytes32)": {
+        "details": "Verifies pool has observations covering the TWAP period",
+        "params": {
+          "pairId": "Asset pair to check"
+        },
+        "returns": {
+          "_0": "True if pool is healthy and has sufficient data"
+        }
+      },
+      "isPoolRegistered(bytes32)": {
+        "params": {
+          "pairId": "Asset pair to check"
+        },
+        "returns": {
+          "_0": "True if pool registered"
+        }
+      }
+    },
+    "title": "UniswapV3TWAPAdapter",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "getLatestPrice(bytes32)": {
+        "notice": "Get time-weighted average price from Uniswap V3"
+      },
+      "getPoolConfig(bytes32)": {
+        "notice": "Get pool configuration"
+      },
+      "isPoolHealthy(bytes32)": {
+        "notice": "Check if pool has sufficient history for TWAP"
+      },
+      "isPoolRegistered(bytes32)": {
+        "notice": "Check if pool is registered"
+      }
+    },
+    "notice": "Fetches time-weighted average price from Uniswap V3 pools",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 11897,
+        "contract": "contracts/oracles/UniswapV3TWAPAdapter.sol:UniswapV3TWAPAdapter",
+        "label": "pools",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_bytes32,t_struct(PoolConfig)11892_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_mapping(t_bytes32,t_struct(PoolConfig)11892_storage)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => struct UniswapV3TWAPAdapter.PoolConfig)",
+        "numberOfBytes": "32",
+        "value": "t_struct(PoolConfig)11892_storage"
+      },
+      "t_struct(PoolConfig)11892_storage": {
+        "encoding": "inplace",
+        "label": "struct UniswapV3TWAPAdapter.PoolConfig",
+        "members": [
+          {
+            "astId": 11879,
+            "contract": "contracts/oracles/UniswapV3TWAPAdapter.sol:UniswapV3TWAPAdapter",
+            "label": "pool",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 11881,
+            "contract": "contracts/oracles/UniswapV3TWAPAdapter.sol:UniswapV3TWAPAdapter",
+            "label": "baseToken",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address"
+          },
+          {
+            "astId": 11883,
+            "contract": "contracts/oracles/UniswapV3TWAPAdapter.sol:UniswapV3TWAPAdapter",
+            "label": "quoteToken",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address"
+          },
+          {
+            "astId": 11885,
+            "contract": "contracts/oracles/UniswapV3TWAPAdapter.sol:UniswapV3TWAPAdapter",
+            "label": "baseDecimals",
+            "offset": 20,
+            "slot": "2",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 11887,
+            "contract": "contracts/oracles/UniswapV3TWAPAdapter.sol:UniswapV3TWAPAdapter",
+            "label": "quoteDecimals",
+            "offset": 21,
+            "slot": "2",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 11889,
+            "contract": "contracts/oracles/UniswapV3TWAPAdapter.sol:UniswapV3TWAPAdapter",
+            "label": "twapPeriod",
+            "offset": 22,
+            "slot": "2",
+            "type": "t_uint32"
+          },
+          {
+            "astId": 11891,
+            "contract": "contracts/oracles/UniswapV3TWAPAdapter.sol:UniswapV3TWAPAdapter",
+            "label": "isToken0Base",
+            "offset": 26,
+            "slot": "2",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_uint32": {
+        "encoding": "inplace",
+        "label": "uint32",
+        "numberOfBytes": "4"
+      },
+      "t_uint8": {
+        "encoding": "inplace",
+        "label": "uint8",
+        "numberOfBytes": "1"
+      }
+    }
+  }
+}

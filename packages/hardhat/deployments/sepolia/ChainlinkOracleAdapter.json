@@ -1,0 +1,464 @@
+{
+  "address": "0xa8dBDa42f882140eF0f1ca48435441dCba635C4a",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "feedAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        }
+      ],
+      "name": "PriceFeedRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint80",
+          "name": "roundId",
+          "type": "uint80"
+        }
+      ],
+      "name": "PriceFetched",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "BTC_USD_FEED",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ETH_USD_FEED",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "LINK_USD_FEED",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getFeedInfo",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "feedAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "decimals",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "heartbeat",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint80",
+          "name": "roundId",
+          "type": "uint80"
+        }
+      ],
+      "name": "getHistoricalPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getLatestPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint80",
+          "name": "roundId",
+          "type": "uint80"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "pairId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isFeedRegistered",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "priceFeeds",
+      "outputs": [
+        {
+          "internalType": "contract AggregatorV3Interface",
+          "name": "feed",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "decimals",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "heartbeat",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x8df359cab86a2fd66b008955646651e27152988e93c187fbf910aad7d0255a66",
+  "receipt": {
+    "to": null,
+    "from": "0x2f729eD2EFd4AE0fc0Bb3d5e9Ba5F77c0b6d8374",
+    "contractAddress": "0xa8dBDa42f882140eF0f1ca48435441dCba635C4a",
+    "transactionIndex": 45,
+    "gasUsed": "919260",
+    "logsBloom": "0x00000000008000000000000000000400000000000000000000040000000000000000000000000000000000000000000000000000000000000000010000000800000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000400000000000000000000000000000000010000000200000000002000000000000000000000000001000000000400000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000",
+    "blockHash": "0xf1f3c5e8b14860087563ae24a4a70391cd17a4ef800eeb06efbff0d9b08274a6",
+    "transactionHash": "0x8df359cab86a2fd66b008955646651e27152988e93c187fbf910aad7d0255a66",
+    "logs": [
+      {
+        "transactionIndex": 45,
+        "blockNumber": 9778081,
+        "transactionHash": "0x8df359cab86a2fd66b008955646651e27152988e93c187fbf910aad7d0255a66",
+        "address": "0xa8dBDa42f882140eF0f1ca48435441dCba635C4a",
+        "topics": [
+          "0x4ab918bd94f3aae4bb5e788abf7ba5468b3654c8f508a08a273fd581f257a3f4",
+          "0x0b43555ace6b39aae1b894097d0a9fc17f504c62fea598fa206cc6f5088e6e45"
+        ],
+        "data": "0x000000000000000000000000694aa1769357215de4fac081bf1f309adc325306000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000114554482f55534420436861696e6c696e6b000000000000000000000000000000",
+        "logIndex": 91,
+        "blockHash": "0xf1f3c5e8b14860087563ae24a4a70391cd17a4ef800eeb06efbff0d9b08274a6"
+      },
+      {
+        "transactionIndex": 45,
+        "blockNumber": 9778081,
+        "transactionHash": "0x8df359cab86a2fd66b008955646651e27152988e93c187fbf910aad7d0255a66",
+        "address": "0xa8dBDa42f882140eF0f1ca48435441dCba635C4a",
+        "topics": [
+          "0x4ab918bd94f3aae4bb5e788abf7ba5468b3654c8f508a08a273fd581f257a3f4",
+          "0xee62665949c883f9e0f6f002eac32e00bd59dfe6c34e92a91c37d6a8322d6489"
+        ],
+        "data": "0x0000000000000000000000001b44f3514812d835eb1bdb0acb33d3fa3351ee43000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000114254432f55534420436861696e6c696e6b000000000000000000000000000000",
+        "logIndex": 92,
+        "blockHash": "0xf1f3c5e8b14860087563ae24a4a70391cd17a4ef800eeb06efbff0d9b08274a6"
+      },
+      {
+        "transactionIndex": 45,
+        "blockNumber": 9778081,
+        "transactionHash": "0x8df359cab86a2fd66b008955646651e27152988e93c187fbf910aad7d0255a66",
+        "address": "0xa8dBDa42f882140eF0f1ca48435441dCba635C4a",
+        "topics": [
+          "0x4ab918bd94f3aae4bb5e788abf7ba5468b3654c8f508a08a273fd581f257a3f4",
+          "0x062e57bcf79ec1579df888e32a3f07cc899dc60a904a55e6d5b9d83e5bfb7564"
+        ],
+        "data": "0x000000000000000000000000c59e3633baac79493d908e63626716e204a45edf000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000124c494e4b2f55534420436861696e6c696e6b0000000000000000000000000000",
+        "logIndex": 93,
+        "blockHash": "0xf1f3c5e8b14860087563ae24a4a70391cd17a4ef800eeb06efbff0d9b08274a6"
+      }
+    ],
+    "blockNumber": 9778081,
+    "cumulativeGasUsed": "6622517",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "20e66f7e65a4f172b8ebc2d9e2726c9d",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"feedAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"}],\"name\":\"PriceFeedRegistered\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint80\",\"name\":\"roundId\",\"type\":\"uint80\"}],\"name\":\"PriceFetched\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"BTC_USD_FEED\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ETH_USD_FEED\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"LINK_USD_FEED\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"}],\"name\":\"getFeedInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"feedAddress\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"heartbeat\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"},{\"internalType\":\"uint80\",\"name\":\"roundId\",\"type\":\"uint80\"}],\"name\":\"getHistoricalPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"}],\"name\":\"getLatestPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint80\",\"name\":\"roundId\",\"type\":\"uint80\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"pairId\",\"type\":\"bytes32\"}],\"name\":\"isFeedRegistered\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"priceFeeds\",\"outputs\":[{\"internalType\":\"contract AggregatorV3Interface\",\"name\":\"feed\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"heartbeat\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Official Sepolia testnet addresses from https://docs.chain.link/data-feeds/price-feeds/addresses\",\"kind\":\"dev\",\"methods\":{\"getFeedInfo(bytes32)\":{\"params\":{\"pairId\":\"Asset pair to query\"},\"returns\":{\"decimals\":\"Feed decimals\",\"description\":\"Feed description\",\"feedAddress\":\"Chainlink aggregator address\",\"heartbeat\":\"Max staleness in seconds\"}},\"getHistoricalPrice(bytes32,uint80)\":{\"details\":\"Used for dispute resolution (verify historical claim)\",\"params\":{\"pairId\":\"Asset pair identifier\",\"roundId\":\"Historical round ID to query\"},\"returns\":{\"price\":\"Historical price (normalized to 18 decimals)\",\"timestamp\":\"When that round was finalized\"}},\"getLatestPrice(bytes32)\":{\"params\":{\"pairId\":\"Asset pair identifier (e.g., keccak256(\\\"ETH/USD\\\"))\"},\"returns\":{\"price\":\"Latest price (normalized to 18 decimals)\",\"roundId\":\"Chainlink round ID for verification\",\"timestamp\":\"When price was last updated\"}},\"isFeedRegistered(bytes32)\":{\"params\":{\"pairId\":\"Asset pair to check\"},\"returns\":{\"_0\":\"True if feed exists\"}}},\"title\":\"ChainlinkOracleAdapter\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getFeedInfo(bytes32)\":{\"notice\":\"Get feed information\"},\"getHistoricalPrice(bytes32,uint80)\":{\"notice\":\"Get price from specific historical round\"},\"getLatestPrice(bytes32)\":{\"notice\":\"Fetch latest price from Chainlink\"},\"isFeedRegistered(bytes32)\":{\"notice\":\"Check if a feed is registered\"}},\"notice\":\"Fetches price data from Chainlink decentralized oracle network\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/oracles/ChainlinkOracleAdapter.sol\":\"ChainlinkOracleAdapter\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\n// solhint-disable-next-line interface-starts-with-i\\ninterface AggregatorV3Interface {\\n  function decimals() external view returns (uint8);\\n\\n  function description() external view returns (string memory);\\n\\n  function version() external view returns (uint256);\\n\\n  function getRoundData(\\n    uint80 _roundId\\n  ) external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);\\n\\n  function latestRoundData()\\n    external\\n    view\\n    returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);\\n}\\n\",\"keccak256\":\"0x257a8d28fa83d3d942547c8e129ef465e4b5f3f31171e7be4739a4c98da6b4f0\",\"license\":\"MIT\"},\"contracts/oracles/ChainlinkOracleAdapter.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport \\\"@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol\\\";\\n\\n/// @title ChainlinkOracleAdapter\\n/// @notice Fetches price data from Chainlink decentralized oracle network\\n/// @dev Official Sepolia testnet addresses from https://docs.chain.link/data-feeds/price-feeds/addresses\\ncontract ChainlinkOracleAdapter {\\n\\n    struct PriceFeed {\\n        AggregatorV3Interface feed;\\n        uint8 decimals;\\n        string description;\\n        uint256 heartbeat; // Max acceptable staleness (seconds)\\n    }\\n\\n    // Feed registry: asset pair => Chainlink aggregator\\n    mapping(bytes32 => PriceFeed) public priceFeeds;\\n\\n    // Chainlink aggregator addresses (Sepolia testnet)\\n    // Source: https://docs.chain.link/data-feeds/price-feeds/addresses\\n    address public constant ETH_USD_FEED = 0x694AA1769357215DE4FAC081bf1f309aDC325306;\\n    address public constant BTC_USD_FEED = 0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43;\\n    address public constant LINK_USD_FEED = 0xc59E3633BAAC79493d908e63626716e204A45EdF;\\n\\n    event PriceFeedRegistered(bytes32 indexed pairId, address feedAddress, string description);\\n    event PriceFetched(bytes32 indexed pairId, uint256 price, uint256 timestamp, uint80 roundId);\\n\\n    constructor() {\\n        // Register ETH/USD feed\\n        _registerFeed(\\n            keccak256(\\\"ETH/USD\\\"),\\n            ETH_USD_FEED,\\n            8,\\n            \\\"ETH/USD Chainlink\\\",\\n            3600 // 1 hour max staleness\\n        );\\n\\n        // Register BTC/USD feed\\n        _registerFeed(\\n            keccak256(\\\"BTC/USD\\\"),\\n            BTC_USD_FEED,\\n            8,\\n            \\\"BTC/USD Chainlink\\\",\\n            3600\\n        );\\n\\n        // Register LINK/USD feed\\n        _registerFeed(\\n            keccak256(\\\"LINK/USD\\\"),\\n            LINK_USD_FEED,\\n            8,\\n            \\\"LINK/USD Chainlink\\\",\\n            3600\\n        );\\n    }\\n\\n    /// @notice Register a new price feed\\n    /// @param pairId Identifier for the trading pair\\n    /// @param feedAddress Chainlink aggregator address\\n    /// @param decimals Number of decimals in the feed\\n    /// @param description Human-readable description\\n    /// @param heartbeat Maximum acceptable staleness in seconds\\n    function _registerFeed(\\n        bytes32 pairId,\\n        address feedAddress,\\n        uint8 decimals,\\n        string memory description,\\n        uint256 heartbeat\\n    ) internal {\\n        priceFeeds[pairId] = PriceFeed({\\n            feed: AggregatorV3Interface(feedAddress),\\n            decimals: decimals,\\n            description: description,\\n            heartbeat: heartbeat\\n        });\\n\\n        emit PriceFeedRegistered(pairId, feedAddress, description);\\n    }\\n\\n    /// @notice Fetch latest price from Chainlink\\n    /// @param pairId Asset pair identifier (e.g., keccak256(\\\"ETH/USD\\\"))\\n    /// @return price Latest price (normalized to 18 decimals)\\n    /// @return timestamp When price was last updated\\n    /// @return roundId Chainlink round ID for verification\\n    function getLatestPrice(bytes32 pairId)\\n        external\\n        view\\n        returns (\\n            uint256 price,\\n            uint256 timestamp,\\n            uint80 roundId\\n        )\\n    {\\n        PriceFeed memory feed = priceFeeds[pairId];\\n        require(address(feed.feed) != address(0), \\\"ChainlinkAdapter: Feed not registered\\\");\\n\\n        (\\n            uint80 _roundId,\\n            int256 answer,\\n            ,\\n            uint256 updatedAt,\\n            uint80 answeredInRound\\n        ) = feed.feed.latestRoundData();\\n\\n        // Validation checks\\n        require(answer > 0, \\\"ChainlinkAdapter: Invalid price (non-positive)\\\");\\n        require(updatedAt > 0, \\\"ChainlinkAdapter: Invalid timestamp\\\");\\n        require(answeredInRound >= _roundId, \\\"ChainlinkAdapter: Stale price (round mismatch)\\\");\\n\\n        // Staleness check\\n        require(\\n            block.timestamp - updatedAt <= feed.heartbeat,\\n            \\\"ChainlinkAdapter: Price too stale\\\"\\n        );\\n\\n        // Normalize to 18 decimals (Chainlink uses 8)\\n        uint256 normalizedPrice = uint256(answer) * 1e10;\\n\\n        return (normalizedPrice, updatedAt, _roundId);\\n    }\\n\\n    /// @notice Get price from specific historical round\\n    /// @dev Used for dispute resolution (verify historical claim)\\n    /// @param pairId Asset pair identifier\\n    /// @param roundId Historical round ID to query\\n    /// @return price Historical price (normalized to 18 decimals)\\n    /// @return timestamp When that round was finalized\\n    function getHistoricalPrice(bytes32 pairId, uint80 roundId)\\n        external\\n        view\\n        returns (\\n            uint256 price,\\n            uint256 timestamp\\n        )\\n    {\\n        PriceFeed memory feed = priceFeeds[pairId];\\n        require(address(feed.feed) != address(0), \\\"ChainlinkAdapter: Feed not registered\\\");\\n\\n        (\\n            ,\\n            int256 answer,\\n            ,\\n            uint256 updatedAt,\\n            uint80 answeredInRound\\n        ) = feed.feed.getRoundData(roundId);\\n\\n        require(answer > 0, \\\"ChainlinkAdapter: Invalid historical price\\\");\\n        require(answeredInRound == roundId, \\\"ChainlinkAdapter: Round not finalized\\\");\\n\\n        uint256 normalizedPrice = uint256(answer) * 1e10;\\n        return (normalizedPrice, updatedAt);\\n    }\\n\\n    /// @notice Check if a feed is registered\\n    /// @param pairId Asset pair to check\\n    /// @return True if feed exists\\n    function isFeedRegistered(bytes32 pairId) external view returns (bool) {\\n        return address(priceFeeds[pairId].feed) != address(0);\\n    }\\n\\n    /// @notice Get feed information\\n    /// @param pairId Asset pair to query\\n    /// @return feedAddress Chainlink aggregator address\\n    /// @return decimals Feed decimals\\n    /// @return description Feed description\\n    /// @return heartbeat Max staleness in seconds\\n    function getFeedInfo(bytes32 pairId)\\n        external\\n        view\\n        returns (\\n            address feedAddress,\\n            uint8 decimals,\\n            string memory description,\\n            uint256 heartbeat\\n        )\\n    {\\n        PriceFeed memory feed = priceFeeds[pairId];\\n        return (\\n            address(feed.feed),\\n            feed.decimals,\\n            feed.description,\\n            feed.heartbeat\\n        );\\n    }\\n}\\n\",\"keccak256\":\"0xe290a0dcaf42515f9bc0e444a6adfb80488c784699ab7f75853117c944ce0bd5\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60806040523480156200001157600080fd5b50620000877f0b43555ace6b39aae1b894097d0a9fc17f504c62fea598fa206cc6f5088e6e4573694aa1769357215de4fac081bf1f309adc3253066008604051806040016040528060118152602001704554482f55534420436861696e6c696e6b60781b815250610e106200017860201b60201c565b620000fc7fee62665949c883f9e0f6f002eac32e00bd59dfe6c34e92a91c37d6a8322d6489731b44f3514812d835eb1bdb0acb33d3fa3351ee436008604051806040016040528060118152602001704254432f55534420436861696e6c696e6b60781b815250610e106200017860201b60201c565b620001727f062e57bcf79ec1579df888e32a3f07cc899dc60a904a55e6d5b9d83e5bfb756473c59e3633baac79493d908e63626716e204a45edf6008604051806040016040528060128152602001714c494e4b2f55534420436861696e6c696e6b60701b815250610e106200017860201b60201c565b62000413565b604080516080810182526001600160a01b03808716825260ff80871660208085019182528486018881526060860188905260008c815291829052959020845181549251909316600160a01b026001600160a81b0319909216929093169190911717815591519091906001820190620001f19082620002e7565b5060608201518160020155905050847f4ab918bd94f3aae4bb5e788abf7ba5468b3654c8f508a08a273fd581f257a3f4858460405162000233929190620003b3565b60405180910390a25050505050565b634e487b7160e01b600052604160045260246000fd5b600181811c908216806200026d57607f821691505b6020821081036200028e57634e487b7160e01b600052602260045260246000fd5b50919050565b601f821115620002e257600081815260208120601f850160051c81016020861015620002bd5750805b601f850160051c820191505b81811015620002de57828155600101620002c9565b5050505b505050565b81516001600160401b0381111562000303576200030362000242565b6200031b8162000314845462000258565b8462000294565b602080601f8311600181146200035357600084156200033a5750858301515b600019600386901b1c1916600185901b178555620002de565b600085815260208120601f198616915b82811015620003845788860151825594840194600190910190840162000363565b5085821015620003a35787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b60018060a01b038316815260006020604081840152835180604085015260005b81811015620003f157858101830151858201606001528201620003d3565b506000606082860101526060601f19601f830116850101925050509392505050565b610b9880620004236000396000f3fe608060405234801561001057600080fd5b50600436106100885760003560e01c80638b85bad51161005b5780638b85bad51461012f57806394d8572a1461016a578063b2ee2f0114610185578063c6c3f71e146101bc57600080fd5b8063020068f71461008d578063088ccd6a146100b95780633dc2c7eb146100e15780637e8bf08e14610114575b600080fd5b6100a061009b366004610960565b6101cf565b6040516100b094939291906109bf565b60405180910390f35b6100cc6100c7366004610a15565b6102d5565b604080519283526020830191909152016100b0565b6100fc73c59e3633baac79493d908e63626716e204a45edf81565b6040516001600160a01b0390911681526020016100b0565b6100fc731b44f3514812d835eb1bdb0acb33d3fa3351ee4381565b61015a61013d366004610960565b6000908152602081905260409020546001600160a01b0316151590565b60405190151581526020016100b0565b6100fc73694aa1769357215de4fac081bf1f309adc32530681565b610198610193366004610960565b610559565b6040805193845260208401929092526001600160501b0316908201526060016100b0565b6100a06101ca366004610960565b61089f565b600081815260208181526040808320815160808101835281546001600160a01b0381168252600160a01b900460ff169381019390935260018101805485946060948694859492939092918401919061022690610a45565b80601f016020809104026020016040519081016040528092919081815260200182805461025290610a45565b801561029f5780601f106102745761010080835404028352916020019161029f565b820191906000526020600020905b81548152906001019060200180831161028257829003601f168201915b50505091835250506002919091015460209182015281519082015160408301516060909301519199909850919650945092505050565b600082815260208181526040808320815160808101835281546001600160a01b0381168252600160a01b900460ff1693810193909352600181018054859485949093929084019161032590610a45565b80601f016020809104026020016040519081016040528092919081815260200182805461035190610a45565b801561039e5780601f106103735761010080835404028352916020019161039e565b820191906000526020600020905b81548152906001019060200180831161038157829003601f168201915b50505091835250506002919091015460209091015280519091506001600160a01b03166103e65760405162461bcd60e51b81526004016103dd90610a7f565b60405180910390fd5b8051604051639a6fc8f560e01b81526001600160501b0386166004820152600091829182916001600160a01b031690639a6fc8f59060240160a060405180830381865afa15801561043b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061045f9190610ac4565b9450945050935050600083136104ca5760405162461bcd60e51b815260206004820152602a60248201527f436861696e6c696e6b416461707465723a20496e76616c696420686973746f726044820152696963616c20707269636560b01b60648201526084016103dd565b866001600160501b0316816001600160501b0316146105395760405162461bcd60e51b815260206004820152602560248201527f436861696e6c696e6b416461707465723a20526f756e64206e6f742066696e616044820152641b1a5e995960da1b60648201526084016103dd565b600061054a846402540be400610b32565b99929850919650505050505050565b600081815260208181526040808320815160808101835281546001600160a01b0381168252600160a01b900460ff16938101939093526001810180548594859485949193919290840191906105ad90610a45565b80601f01602080910402602001604051908101604052809291908181526020018280546105d990610a45565b80156106265780601f106105fb57610100808354040283529160200191610626565b820191906000526020600020905b81548152906001019060200180831161060957829003601f168201915b50505091835250506002919091015460209091015280519091506001600160a01b03166106655760405162461bcd60e51b81526004016103dd90610a7f565b60008060008084600001516001600160a01b031663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa1580156106ad573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906106d19190610ac4565b945094505093509350600083136107415760405162461bcd60e51b815260206004820152602e60248201527f436861696e6c696e6b416461707465723a20496e76616c69642070726963652060448201526d286e6f6e2d706f7369746976652960901b60648201526084016103dd565b6000821161079d5760405162461bcd60e51b815260206004820152602360248201527f436861696e6c696e6b416461707465723a20496e76616c69642074696d6573746044820152620616d760ec1b60648201526084016103dd565b836001600160501b0316816001600160501b031610156108165760405162461bcd60e51b815260206004820152602e60248201527f436861696e6c696e6b416461707465723a205374616c6520707269636520287260448201526d6f756e64206d69736d617463682960901b60648201526084016103dd565b60608501516108258342610b4f565b111561087d5760405162461bcd60e51b815260206004820152602160248201527f436861696e6c696e6b416461707465723a20507269636520746f6f207374616c6044820152606560f81b60648201526084016103dd565b600061088e846402540be400610b32565b9a9299509397509095505050505050565b600060208190529081526040902080546001820180546001600160a01b03831693600160a01b90930460ff169291906108d790610a45565b80601f016020809104026020016040519081016040528092919081815260200182805461090390610a45565b80156109505780601f1061092557610100808354040283529160200191610950565b820191906000526020600020905b81548152906001019060200180831161093357829003601f168201915b5050505050908060020154905084565b60006020828403121561097257600080fd5b5035919050565b6000815180845260005b8181101561099f57602081850181015186830182015201610983565b506000602082860101526020601f19601f83011685010191505092915050565b6001600160a01b038516815260ff841660208201526080604082018190526000906109ec90830185610979565b905082606083015295945050505050565b6001600160501b0381168114610a1257600080fd5b50565b60008060408385031215610a2857600080fd5b823591506020830135610a3a816109fd565b809150509250929050565b600181811c90821680610a5957607f821691505b602082108103610a7957634e487b7160e01b600052602260045260246000fd5b50919050565b60208082526025908201527f436861696e6c696e6b416461707465723a2046656564206e6f742072656769736040820152641d195c995960da1b606082015260800190565b600080600080600060a08688031215610adc57600080fd5b8551610ae7816109fd565b809550506020860151935060408601519250606086015191506080860151610b0e816109fd565b809150509295509295909350565b634e487b7160e01b600052601160045260246000fd5b8082028115828204841417610b4957610b49610b1c565b92915050565b81810381811115610b4957610b49610b1c56fea26469706673582212200595be381a9ac1b705f5c893155d148e133245ed39108b4d5c4c32fedcce0b6364736f6c63430008140033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100885760003560e01c80638b85bad51161005b5780638b85bad51461012f57806394d8572a1461016a578063b2ee2f0114610185578063c6c3f71e146101bc57600080fd5b8063020068f71461008d578063088ccd6a146100b95780633dc2c7eb146100e15780637e8bf08e14610114575b600080fd5b6100a061009b366004610960565b6101cf565b6040516100b094939291906109bf565b60405180910390f35b6100cc6100c7366004610a15565b6102d5565b604080519283526020830191909152016100b0565b6100fc73c59e3633baac79493d908e63626716e204a45edf81565b6040516001600160a01b0390911681526020016100b0565b6100fc731b44f3514812d835eb1bdb0acb33d3fa3351ee4381565b61015a61013d366004610960565b6000908152602081905260409020546001600160a01b0316151590565b60405190151581526020016100b0565b6100fc73694aa1769357215de4fac081bf1f309adc32530681565b610198610193366004610960565b610559565b6040805193845260208401929092526001600160501b0316908201526060016100b0565b6100a06101ca366004610960565b61089f565b600081815260208181526040808320815160808101835281546001600160a01b0381168252600160a01b900460ff169381019390935260018101805485946060948694859492939092918401919061022690610a45565b80601f016020809104026020016040519081016040528092919081815260200182805461025290610a45565b801561029f5780601f106102745761010080835404028352916020019161029f565b820191906000526020600020905b81548152906001019060200180831161028257829003601f168201915b50505091835250506002919091015460209182015281519082015160408301516060909301519199909850919650945092505050565b600082815260208181526040808320815160808101835281546001600160a01b0381168252600160a01b900460ff1693810193909352600181018054859485949093929084019161032590610a45565b80601f016020809104026020016040519081016040528092919081815260200182805461035190610a45565b801561039e5780601f106103735761010080835404028352916020019161039e565b820191906000526020600020905b81548152906001019060200180831161038157829003601f168201915b50505091835250506002919091015460209091015280519091506001600160a01b03166103e65760405162461bcd60e51b81526004016103dd90610a7f565b60405180910390fd5b8051604051639a6fc8f560e01b81526001600160501b0386166004820152600091829182916001600160a01b031690639a6fc8f59060240160a060405180830381865afa15801561043b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061045f9190610ac4565b9450945050935050600083136104ca5760405162461bcd60e51b815260206004820152602a60248201527f436861696e6c696e6b416461707465723a20496e76616c696420686973746f726044820152696963616c20707269636560b01b60648201526084016103dd565b866001600160501b0316816001600160501b0316146105395760405162461bcd60e51b815260206004820152602560248201527f436861696e6c696e6b416461707465723a20526f756e64206e6f742066696e616044820152641b1a5e995960da1b60648201526084016103dd565b600061054a846402540be400610b32565b99929850919650505050505050565b600081815260208181526040808320815160808101835281546001600160a01b0381168252600160a01b900460ff16938101939093526001810180548594859485949193919290840191906105ad90610a45565b80601f01602080910402602001604051908101604052809291908181526020018280546105d990610a45565b80156106265780601f106105fb57610100808354040283529160200191610626565b820191906000526020600020905b81548152906001019060200180831161060957829003601f168201915b50505091835250506002919091015460209091015280519091506001600160a01b03166106655760405162461bcd60e51b81526004016103dd90610a7f565b60008060008084600001516001600160a01b031663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa1580156106ad573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906106d19190610ac4565b945094505093509350600083136107415760405162461bcd60e51b815260206004820152602e60248201527f436861696e6c696e6b416461707465723a20496e76616c69642070726963652060448201526d286e6f6e2d706f7369746976652960901b60648201526084016103dd565b6000821161079d5760405162461bcd60e51b815260206004820152602360248201527f436861696e6c696e6b416461707465723a20496e76616c69642074696d6573746044820152620616d760ec1b60648201526084016103dd565b836001600160501b0316816001600160501b031610156108165760405162461bcd60e51b815260206004820152602e60248201527f436861696e6c696e6b416461707465723a205374616c6520707269636520287260448201526d6f756e64206d69736d617463682960901b60648201526084016103dd565b60608501516108258342610b4f565b111561087d5760405162461bcd60e51b815260206004820152602160248201527f436861696e6c696e6b416461707465723a20507269636520746f6f207374616c6044820152606560f81b60648201526084016103dd565b600061088e846402540be400610b32565b9a9299509397509095505050505050565b600060208190529081526040902080546001820180546001600160a01b03831693600160a01b90930460ff169291906108d790610a45565b80601f016020809104026020016040519081016040528092919081815260200182805461090390610a45565b80156109505780601f1061092557610100808354040283529160200191610950565b820191906000526020600020905b81548152906001019060200180831161093357829003601f168201915b5050505050908060020154905084565b60006020828403121561097257600080fd5b5035919050565b6000815180845260005b8181101561099f57602081850181015186830182015201610983565b506000602082860101526020601f19601f83011685010191505092915050565b6001600160a01b038516815260ff841660208201526080604082018190526000906109ec90830185610979565b905082606083015295945050505050565b6001600160501b0381168114610a1257600080fd5b50565b60008060408385031215610a2857600080fd5b823591506020830135610a3a816109fd565b809150509250929050565b600181811c90821680610a5957607f821691505b602082108103610a7957634e487b7160e01b600052602260045260246000fd5b50919050565b60208082526025908201527f436861696e6c696e6b416461707465723a2046656564206e6f742072656769736040820152641d195c995960da1b606082015260800190565b600080600080600060a08688031215610adc57600080fd5b8551610ae7816109fd565b809550506020860151935060408601519250606086015191506080860151610b0e816109fd565b809150509295509295909350565b634e487b7160e01b600052601160045260246000fd5b8082028115828204841417610b4957610b49610b1c565b92915050565b81810381811115610b4957610b49610b1c56fea26469706673582212200595be381a9ac1b705f5c893155d148e133245ed39108b4d5c4c32fedcce0b6364736f6c63430008140033",
+  "devdoc": {
+    "details": "Official Sepolia testnet addresses from https://docs.chain.link/data-feeds/price-feeds/addresses",
+    "kind": "dev",
+    "methods": {
+      "getFeedInfo(bytes32)": {
+        "params": {
+          "pairId": "Asset pair to query"
+        },
+        "returns": {
+          "decimals": "Feed decimals",
+          "description": "Feed description",
+          "feedAddress": "Chainlink aggregator address",
+          "heartbeat": "Max staleness in seconds"
+        }
+      },
+      "getHistoricalPrice(bytes32,uint80)": {
+        "details": "Used for dispute resolution (verify historical claim)",
+        "params": {
+          "pairId": "Asset pair identifier",
+          "roundId": "Historical round ID to query"
+        },
+        "returns": {
+          "price": "Historical price (normalized to 18 decimals)",
+          "timestamp": "When that round was finalized"
+        }
+      },
+      "getLatestPrice(bytes32)": {
+        "params": {
+          "pairId": "Asset pair identifier (e.g., keccak256(\"ETH/USD\"))"
+        },
+        "returns": {
+          "price": "Latest price (normalized to 18 decimals)",
+          "roundId": "Chainlink round ID for verification",
+          "timestamp": "When price was last updated"
+        }
+      },
+      "isFeedRegistered(bytes32)": {
+        "params": {
+          "pairId": "Asset pair to check"
+        },
+        "returns": {
+          "_0": "True if feed exists"
+        }
+      }
+    },
+    "title": "ChainlinkOracleAdapter",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "getFeedInfo(bytes32)": {
+        "notice": "Get feed information"
+      },
+      "getHistoricalPrice(bytes32,uint80)": {
+        "notice": "Get price from specific historical round"
+      },
+      "getLatestPrice(bytes32)": {
+        "notice": "Fetch latest price from Chainlink"
+      },
+      "isFeedRegistered(bytes32)": {
+        "notice": "Check if a feed is registered"
+      }
+    },
+    "notice": "Fetches price data from Chainlink decentralized oracle network",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 9728,
+        "contract": "contracts/oracles/ChainlinkOracleAdapter.sol:ChainlinkOracleAdapter",
+        "label": "priceFeeds",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_bytes32,t_struct(PriceFeed)9723_storage)"
+      }
+    ],
+    "types": {
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_contract(AggregatorV3Interface)45": {
+        "encoding": "inplace",
+        "label": "contract AggregatorV3Interface",
+        "numberOfBytes": "20"
+      },
+      "t_mapping(t_bytes32,t_struct(PriceFeed)9723_storage)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => struct ChainlinkOracleAdapter.PriceFeed)",
+        "numberOfBytes": "32",
+        "value": "t_struct(PriceFeed)9723_storage"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_struct(PriceFeed)9723_storage": {
+        "encoding": "inplace",
+        "label": "struct ChainlinkOracleAdapter.PriceFeed",
+        "members": [
+          {
+            "astId": 9716,
+            "contract": "contracts/oracles/ChainlinkOracleAdapter.sol:ChainlinkOracleAdapter",
+            "label": "feed",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_contract(AggregatorV3Interface)45"
+          },
+          {
+            "astId": 9718,
+            "contract": "contracts/oracles/ChainlinkOracleAdapter.sol:ChainlinkOracleAdapter",
+            "label": "decimals",
+            "offset": 20,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 9720,
+            "contract": "contracts/oracles/ChainlinkOracleAdapter.sol:ChainlinkOracleAdapter",
+            "label": "description",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 9722,
+            "contract": "contracts/oracles/ChainlinkOracleAdapter.sol:ChainlinkOracleAdapter",
+            "label": "heartbeat",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      },
+      "t_uint8": {
+        "encoding": "inplace",
+        "label": "uint8",
+        "numberOfBytes": "1"
+      }
+    }
+  }
+}

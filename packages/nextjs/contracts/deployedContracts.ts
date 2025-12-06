@@ -5,7 +5,1128 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
+  31337: {
+    ClearSettle: {
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "BondSlashed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+          ],
+          name: "EmergencyTriggered",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "startBlock",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "commitEnd",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "revealEnd",
+              type: "uint256",
+            },
+          ],
+          name: "EpochInitialized",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "clearingPrice",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "matchedVolume",
+              type: "uint256",
+            },
+          ],
+          name: "EpochSettled",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "startBlock",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "commitEndBlock",
+              type: "uint256",
+            },
+          ],
+          name: "EpochStarted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+          ],
+          name: "EpochVoided",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "string",
+              name: "invariantName",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "passed",
+              type: "bool",
+            },
+          ],
+          name: "InvariantChecked",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "commitmentHash",
+              type: "bytes32",
+            },
+          ],
+          name: "OrderCommitted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "enum OrderSide",
+              name: "side",
+              type: "uint8",
+            },
+          ],
+          name: "OrderRevealed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "enum EpochPhase",
+              name: "fromPhase",
+              type: "uint8",
+            },
+            {
+              indexed: false,
+              internalType: "enum EpochPhase",
+              name: "toPhase",
+              type: "uint8",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "blockNumber",
+              type: "uint256",
+            },
+          ],
+          name: "PhaseTransition",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "tokensReceived",
+              type: "uint256",
+            },
+          ],
+          name: "SettlementClaimed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "disputer",
+              type: "address",
+            },
+          ],
+          name: "SettlementDisputed",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+          ],
+          name: "claimSettlement",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "commitmentHash",
+              type: "bytes32",
+            },
+          ],
+          name: "commitOrder",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "forceAdvanceEpoch",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getBlocksRemaining",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "blocks",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCalculatedPhase",
+          outputs: [
+            {
+              internalType: "enum EpochPhase",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+          ],
+          name: "getCommitment",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "bytes32",
+                  name: "hash",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint40",
+                  name: "commitBlock",
+                  type: "uint40",
+                },
+                {
+                  internalType: "uint96",
+                  name: "bondAmount",
+                  type: "uint96",
+                },
+                {
+                  internalType: "bool",
+                  name: "revealed",
+                  type: "bool",
+                },
+                {
+                  internalType: "bool",
+                  name: "slashed",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct Commitment",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getConfig",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "commitDuration",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "revealDuration",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "safetyBufferDuration",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "minCommitBond",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "settlementFeeRate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "disputeBondMultiplier",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "assertionWindow",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "disputeWindow",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "maxEpochDuration",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct LibClearStorage.ProtocolConfig",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCurrentEpoch",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCurrentEpochId",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getCurrentPhase",
+          outputs: [
+            {
+              internalType: "enum EpochPhase",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+          ],
+          name: "getEpochData",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "epochId",
+                  type: "uint256",
+                },
+                {
+                  internalType: "enum EpochPhase",
+                  name: "phase",
+                  type: "uint8",
+                },
+                {
+                  internalType: "uint256",
+                  name: "startBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "commitEndBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "revealEndBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "settleBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "safetyEndBlock",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "clearingPrice",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "totalBuyVolume",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "totalSellVolume",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "matchedVolume",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "disputed",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct EpochData",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "epochId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "trader",
+              type: "address",
+            },
+          ],
+          name: "getSettlementResult",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "tokensReceived",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "tokensPaid",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "bondReturned",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "claimed",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct SettlementResult",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getStats",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "totalDeposits",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "totalWithdrawals",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "treasuryBalance",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "emergencyMode",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "resetForDemo",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              internalType: "enum OrderSide",
+              name: "side",
+              type: "uint8",
+            },
+            {
+              internalType: "uint256",
+              name: "limitPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "salt",
+              type: "bytes32",
+            },
+          ],
+          name: "revealOrder",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "settleEpoch",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {
+        getBlocksRemaining: "contracts/core/EpochManager.sol",
+        getCalculatedPhase: "contracts/core/EpochManager.sol",
+        getConfig: "contracts/core/EpochManager.sol",
+        getCurrentEpochId: "contracts/core/EpochManager.sol",
+        getCurrentPhase: "contracts/core/EpochManager.sol",
+        getEpochData: "contracts/core/EpochManager.sol",
+      },
+      deployedOnBlock: 23,
+    },
+    YourContract: {
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "greetingSetter",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "newGreeting",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "premium",
+              type: "bool",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
+            },
+          ],
+          name: "GreetingChange",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "greeting",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "premium",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_newGreeting",
+              type: "string",
+            },
+          ],
+          name: "setGreeting",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "totalCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "userGreetingCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 1,
+    },
+  },
   11155111: {
+    ChainlinkOracleAdapter: {
+      address: "0xa8dBDa42f882140eF0f1ca48435441dCba635C4a",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "feedAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "description",
+              type: "string",
+            },
+          ],
+          name: "PriceFeedRegistered",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint80",
+              name: "roundId",
+              type: "uint80",
+            },
+          ],
+          name: "PriceFetched",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "BTC_USD_FEED",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "ETH_USD_FEED",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "LINK_USD_FEED",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getFeedInfo",
+          outputs: [
+            {
+              internalType: "address",
+              name: "feedAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint8",
+              name: "decimals",
+              type: "uint8",
+            },
+            {
+              internalType: "string",
+              name: "description",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "heartbeat",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint80",
+              name: "roundId",
+              type: "uint80",
+            },
+          ],
+          name: "getHistoricalPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getLatestPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+            {
+              internalType: "uint80",
+              name: "roundId",
+              type: "uint80",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "isFeedRegistered",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          name: "priceFeeds",
+          outputs: [
+            {
+              internalType: "contract AggregatorV3Interface",
+              name: "feed",
+              type: "address",
+            },
+            {
+              internalType: "uint8",
+              name: "decimals",
+              type: "uint8",
+            },
+            {
+              internalType: "string",
+              name: "description",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "heartbeat",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 9778081,
+    },
     ClearSettle: {
       address: "0x03ECDCdC5f558494B126Eee6F195FAA772706EFB",
       abi: [
@@ -728,6 +1849,873 @@ const deployedContracts = {
         getEpochData: "contracts/core/EpochManager.sol",
       },
       deployedOnBlock: 9776065,
+    },
+    OracleAggregator: {
+      address: "0xa7b8405Ac7e7f350D80Bb86F8807192be7244Ddb",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_chainlink",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_pyth",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_uniswapTWAP",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "string",
+              name: "source",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+          ],
+          name: "OracleFetchFailed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "string",
+              name: "source",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          name: "OraclePriceFetched",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "medianPrice",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint8",
+              name: "sourceCount",
+              type: "uint8",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "deviation",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "isHealthy",
+              type: "bool",
+            },
+          ],
+          name: "PriceAggregated",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "MAX_ACCEPTABLE_DEVIATION",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "MAX_PRICE_AGE",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "MIN_SOURCES_REQUIRED",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "chainlink",
+          outputs: [
+            {
+              internalType: "contract ChainlinkOracleAdapter",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getAggregatedPrice",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "price",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "timestamp",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "confidence",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "deviation",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint8",
+                  name: "sourceCount",
+                  type: "uint8",
+                },
+                {
+                  internalType: "bool",
+                  name: "isHealthy",
+                  type: "bool",
+                },
+                {
+                  internalType: "string[]",
+                  name: "activeSources",
+                  type: "string[]",
+                },
+              ],
+              internalType: "struct OracleAggregator.AggregatedPrice",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getEmergencyPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "warning",
+              type: "string",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getIndividualPrices",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "chainlinkPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "pythPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "uniswapPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "chainlinkSuccess",
+              type: "bool",
+            },
+            {
+              internalType: "bool",
+              name: "pythSuccess",
+              type: "bool",
+            },
+            {
+              internalType: "bool",
+              name: "uniswapSuccess",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "pyth",
+          outputs: [
+            {
+              internalType: "contract PythOracleAdapter",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "uniswapTWAP",
+          outputs: [
+            {
+              internalType: "contract UniswapV3TWAPAdapter",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint256",
+              name: "claimedPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "claimTimestamp",
+              type: "uint256",
+            },
+          ],
+          name: "verifyClaimedPrice",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "isValid",
+              type: "bool",
+            },
+            {
+              internalType: "string",
+              name: "reason",
+              type: "string",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 9778084,
+    },
+    PythOracleAdapter: {
+      address: "0xb036C992911C98C7BcfcA5f7630829D74e17F270",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "feedId",
+              type: "bytes32",
+            },
+          ],
+          name: "PriceFeedRegistered",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint64",
+              name: "conf",
+              type: "uint64",
+            },
+          ],
+          name: "PriceFetched",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "BTC_USD_FEED_ID",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "ETH_USD_FEED_ID",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "PYTH_ADDRESS",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          name: "feedIds",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getLatestPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+            {
+              internalType: "uint64",
+              name: "conf",
+              type: "uint64",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getPriceUnsafe",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "int64",
+                  name: "price",
+                  type: "int64",
+                },
+                {
+                  internalType: "uint64",
+                  name: "conf",
+                  type: "uint64",
+                },
+                {
+                  internalType: "int32",
+                  name: "expo",
+                  type: "int32",
+                },
+                {
+                  internalType: "uint256",
+                  name: "publishTime",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct PythStructs.Price",
+              name: "priceData",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "updateDataSize",
+              type: "uint256",
+            },
+          ],
+          name: "getUpdateFee",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "isFeedRegistered",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "pyth",
+          outputs: [
+            {
+              internalType: "contract IPyth",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes[]",
+              name: "priceUpdateData",
+              type: "bytes[]",
+            },
+          ],
+          name: "updatePrice",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 9778082,
+    },
+    UniswapV3TWAPAdapter: {
+      address: "0x6BD710D43929dba6b2E384734E81f3f3BD0A464a",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "poolAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint32",
+              name: "twapPeriod",
+              type: "uint32",
+            },
+          ],
+          name: "PoolRegistered",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          name: "TWAPCalculated",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "USDC",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "USDC_WETH_POOL_03",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "WETH",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getLatestPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "getPoolConfig",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "pool",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "baseToken",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "quoteToken",
+                  type: "address",
+                },
+                {
+                  internalType: "uint8",
+                  name: "baseDecimals",
+                  type: "uint8",
+                },
+                {
+                  internalType: "uint8",
+                  name: "quoteDecimals",
+                  type: "uint8",
+                },
+                {
+                  internalType: "uint32",
+                  name: "twapPeriod",
+                  type: "uint32",
+                },
+                {
+                  internalType: "bool",
+                  name: "isToken0Base",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct UniswapV3TWAPAdapter.PoolConfig",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "isPoolHealthy",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "pairId",
+              type: "bytes32",
+            },
+          ],
+          name: "isPoolRegistered",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          name: "pools",
+          outputs: [
+            {
+              internalType: "address",
+              name: "pool",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "baseToken",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "quoteToken",
+              type: "address",
+            },
+            {
+              internalType: "uint8",
+              name: "baseDecimals",
+              type: "uint8",
+            },
+            {
+              internalType: "uint8",
+              name: "quoteDecimals",
+              type: "uint8",
+            },
+            {
+              internalType: "uint32",
+              name: "twapPeriod",
+              type: "uint32",
+            },
+            {
+              internalType: "bool",
+              name: "isToken0Base",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 9778083,
     },
     YourContract: {
       address: "0x6c927bebC93d3d304ddeECE1eF59E0723d5241A1",
