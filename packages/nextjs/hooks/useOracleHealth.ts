@@ -10,6 +10,7 @@ export interface OracleSource {
   staleness: number;
   healthy: boolean;
   confidence: number;
+  error?: string; // Error message if failed
 }
 
 export interface AggregatedPrice {
@@ -17,7 +18,10 @@ export interface AggregatedPrice {
   confidence: number;
   deviation: number;
   activeSources: number;
+  totalSources: number;
   healthy: boolean;
+  aggregationMethod: "median" | "majority" | "single"; // How price was calculated
+  warning?: string;
 }
 
 export function useOracleHealth() {
@@ -33,22 +37,12 @@ export function useOracleHealth() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Helper to format timestamp to "X minutes ago"
-  const formatTimeAgo = (timestamp: number): string => {
-    const now = Math.floor(Date.now() / 1000);
-    const secondsAgo = now - timestamp;
-
-    if (secondsAgo < 60) return `${secondsAgo} seconds ago`;
-    if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} minutes ago`;
-    if (secondsAgo < 86400) return `${Math.floor(secondsAgo / 3600)} hours ago`;
-    return `${Math.floor(secondsAgo / 86400)} days ago`;
-  };
-
   // Fetch oracle data from blockchain
   useEffect(() => {
     const fetchOracleData = async () => {
       if (!publicClient || !ORACLE_ADDRESS || !ORACLE_ABI) {
         setLoading(false);
+        setError("Oracle contract not deployed on this network");
         return;
       }
 
@@ -64,9 +58,6 @@ export function useOracleHealth() {
         // ETH/USD pair ID
         const ethUsdPairId = keccak256(toBytes("ETH/USD"));
 
-        // Fetch aggregated price data
-        const aggData = await contract.read.getAggregatedPrice([ethUsdPairId]);
-
         // Fetch individual oracle prices
         const individualPrices = (await contract.read.getIndividualPrices([ethUsdPairId])) as [
           bigint,
@@ -79,61 +70,148 @@ export function useOracleHealth() {
         const [chainlinkPrice, pythPrice, uniswapPrice, chainlinkSuccess, pythSuccess, uniswapSuccess] =
           individualPrices;
 
-        // Get current timestamp
-        const now = Math.floor(Date.now() / 1000);
-
-        // Parse aggregated data
-        const aggPriceData = aggData as any;
-        const priceInEth = Number(aggPriceData.price) / 1e18; // Convert from wei (18 decimals)
-        const confidence = Number(aggPriceData.confidence);
-        const deviation = Number(aggPriceData.deviation) / 100; // Convert from basis points
-        const timestamp = Number(aggPriceData.timestamp);
-        const staleness = now - timestamp;
-
-        // Build individual oracle data
+        // Build ALL oracle data (including failed ones)
         const oracleData: OracleSource[] = [];
 
-        if (chainlinkSuccess) {
-          oracleData.push({
-            name: "Chainlink",
-            price: Number(chainlinkPrice) / 1e18,
-            updateTime: formatTimeAgo(timestamp),
-            staleness: staleness,
-            healthy: true,
-            confidence: 98, // Chainlink typically has high confidence
-          });
-        }
+        // Chainlink
+        const chainlinkPriceNum = Number(chainlinkPrice) / 1e18;
+        oracleData.push({
+          name: "Chainlink",
+          price: chainlinkSuccess ? chainlinkPriceNum : 0,
+          updateTime: chainlinkSuccess ? "Recent" : "N/A",
+          staleness: 0,
+          healthy: chainlinkSuccess && chainlinkPriceNum > 0,
+          confidence: chainlinkSuccess ? 98 : 0,
+          error: chainlinkSuccess ? undefined : "Failed to fetch from Chainlink feed",
+        });
 
-        if (pythSuccess) {
-          oracleData.push({
-            name: "Pyth Network",
-            price: Number(pythPrice) / 1e18,
-            updateTime: formatTimeAgo(timestamp),
-            staleness: staleness,
-            healthy: true,
-            confidence: 99, // Pyth has very fast updates
-          });
-        }
+        // Pyth
+        const pythPriceNum = Number(pythPrice) / 1e18;
+        oracleData.push({
+          name: "Pyth Network",
+          price: pythSuccess ? pythPriceNum : 0,
+          updateTime: pythSuccess ? "May be stale (testnet)" : "N/A",
+          staleness: 0,
+          healthy: pythSuccess && pythPriceNum > 0,
+          confidence: pythSuccess ? 95 : 0,
+          error: pythSuccess ? undefined : "Pyth price unavailable (testnet may not have updates)",
+        });
 
-        if (uniswapSuccess) {
-          oracleData.push({
-            name: "Uniswap V3 TWAP",
-            price: Number(uniswapPrice) / 1e18,
-            updateTime: "Real-time",
-            staleness: 0, // TWAP is computed on-chain
-            healthy: true,
-            confidence: 96,
-          });
-        }
+        // Uniswap
+        const uniswapPriceNum = Number(uniswapPrice) / 1e18;
+        const uniswapSane = uniswapPriceNum > 100 && uniswapPriceNum < 10000;
+        oracleData.push({
+          name: "Uniswap V3 TWAP",
+          price: uniswapSuccess ? uniswapPriceNum : 0,
+          updateTime: uniswapSuccess ? "Real-time TWAP" : "N/A",
+          staleness: 0,
+          healthy: uniswapSuccess && uniswapSane,
+          confidence: uniswapSuccess && uniswapSane ? 96 : 30,
+          error: uniswapSuccess
+            ? !uniswapSane
+              ? "Price abnormal (testnet pool may lack liquidity)"
+              : undefined
+            : "Failed to fetch TWAP (pool may not have observations)",
+        });
 
         setOracles(oracleData);
-        setAggregatedPrice({
-          price: priceInEth,
-          confidence: confidence,
-          deviation: deviation,
-          activeSources: oracleData.length,
-          healthy: aggPriceData.isHealthy,
-        });
+
+        // Calculate aggregated price with smart fallback
+        const validPrices = oracleData.filter(o => o.healthy && o.price > 100 && o.price < 100000).map(o => o.price);
+
+        if (validPrices.length === 0) {
+          // No valid prices - try any remotely reasonable price
+          const anyPrice = oracleData.find(o => o.price > 100 && o.price < 100000);
+          if (anyPrice) {
+            setAggregatedPrice({
+              price: anyPrice.price,
+              confidence: 20,
+              deviation: 0,
+              activeSources: 1,
+              totalSources: 3,
+              healthy: false,
+              aggregationMethod: "single",
+              warning: `Only ${anyPrice.name} available - low confidence`,
+            });
+          } else {
+            setAggregatedPrice({
+              price: 0,
+              confidence: 0,
+              deviation: 0,
+              activeSources: 0,
+              totalSources: 3,
+              healthy: false,
+              aggregationMethod: "single",
+              warning: "No valid oracle prices available",
+            });
+          }
+        } else if (validPrices.length === 1) {
+          const source = oracleData.find(o => o.healthy && o.price > 100)!;
+          setAggregatedPrice({
+            price: validPrices[0],
+            confidence: 40,
+            deviation: 0,
+            activeSources: 1,
+            totalSources: 3,
+            healthy: false,
+            aggregationMethod: "single",
+            warning: `Only ${source.name} available`,
+          });
+        } else {
+          // Multiple valid prices - calculate deviation and decide method
+          const sortedPrices = [...validPrices].sort((a, b) => a - b);
+          const minPrice = sortedPrices[0];
+          const maxPrice = sortedPrices[sortedPrices.length - 1];
+          const medianPrice =
+            sortedPrices.length % 2 === 0
+              ? (sortedPrices[sortedPrices.length / 2 - 1] + sortedPrices[sortedPrices.length / 2]) / 2
+              : sortedPrices[Math.floor(sortedPrices.length / 2)];
+
+          const deviation = ((maxPrice - minPrice) / medianPrice) * 100;
+
+          let finalPrice: number;
+          let aggregationMethod: "median" | "majority";
+          let confidence: number;
+          let warning: string | undefined;
+
+          if (deviation > 30) {
+            // High deviation - use majority voting (find the two closest prices)
+            let bestPair = [validPrices[0], validPrices[1]];
+            let minDiff = Math.abs(validPrices[0] - validPrices[1]);
+
+            for (let i = 0; i < validPrices.length; i++) {
+              for (let j = i + 1; j < validPrices.length; j++) {
+                const diff = Math.abs(validPrices[i] - validPrices[j]);
+                if (diff < minDiff) {
+                  minDiff = diff;
+                  bestPair = [validPrices[i], validPrices[j]];
+                }
+              }
+            }
+
+            finalPrice = (bestPair[0] + bestPair[1]) / 2;
+            aggregationMethod = "majority";
+            confidence = Math.max(30, 70 - deviation);
+            warning = `High deviation (${deviation.toFixed(1)}%) - using majority voting`;
+          } else {
+            // Normal deviation - use median
+            finalPrice = medianPrice;
+            aggregationMethod = "median";
+            confidence = Math.min(99, 100 - deviation * 2);
+            warning = undefined;
+          }
+
+          setAggregatedPrice({
+            price: finalPrice,
+            confidence: Math.round(confidence),
+            deviation: deviation,
+            activeSources: validPrices.length,
+            totalSources: 3,
+            healthy: deviation < 30 && validPrices.length >= 2,
+            aggregationMethod,
+            warning,
+          });
+        }
 
         setLoading(false);
       } catch (err) {

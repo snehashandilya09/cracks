@@ -51,28 +51,65 @@ export default function OracleDashboard() {
             <div className="mb-8 rounded-lg border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 to-blue-50 p-8">
               <div className="text-center">
                 <p className="text-sm font-semibold uppercase text-slate-600">Aggregated ETH Price</p>
-                <p className="mt-3 text-5xl font-bold text-emerald-700">${aggregatedPrice.price.toFixed(2)}</p>
+                <p className="mt-3 text-5xl font-bold text-emerald-700">
+                  {aggregatedPrice.price > 0 ? `$${aggregatedPrice.price.toFixed(2)}` : "N/A"}
+                </p>
 
-                <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                {aggregatedPrice.warning && (
+                  <div className="mt-4 rounded-lg bg-amber-100 border border-amber-300 p-3">
+                    <p className="text-sm font-semibold text-amber-800">⚠️ {aggregatedPrice.warning}</p>
+                  </div>
+                )}
+
+                <div className="mt-6 grid gap-4 sm:grid-cols-4">
                   <div className="rounded-lg bg-white bg-opacity-60 backdrop-blur p-4">
                     <p className="text-xs font-semibold uppercase text-slate-600">Confidence</p>
-                    <p className="mt-2 text-2xl font-bold text-blue-600">{aggregatedPrice.confidence}%</p>
+                    <p
+                      className={`mt-2 text-2xl font-bold ${
+                        aggregatedPrice.confidence > 70
+                          ? "text-emerald-600"
+                          : aggregatedPrice.confidence > 40
+                            ? "text-amber-600"
+                            : "text-red-600"
+                      }`}
+                    >
+                      {aggregatedPrice.confidence}%
+                    </p>
                   </div>
 
                   <div className="rounded-lg bg-white bg-opacity-60 backdrop-blur p-4">
                     <p className="text-xs font-semibold uppercase text-slate-600">Max Deviation</p>
-                    <p className="mt-2 text-2xl font-bold text-amber-600">{aggregatedPrice.deviation.toFixed(2)}%</p>
+                    <p
+                      className={`mt-2 text-2xl font-bold ${
+                        aggregatedPrice.deviation < 10
+                          ? "text-emerald-600"
+                          : aggregatedPrice.deviation < 30
+                            ? "text-amber-600"
+                            : "text-red-600"
+                      }`}
+                    >
+                      {aggregatedPrice.deviation.toFixed(2)}%
+                    </p>
                   </div>
 
                   <div className="rounded-lg bg-white bg-opacity-60 backdrop-blur p-4">
                     <p className="text-xs font-semibold uppercase text-slate-600">Active Sources</p>
-                    <p className="mt-2 text-2xl font-bold text-purple-600">{aggregatedPrice.activeSources}/3</p>
+                    <p className="mt-2 text-2xl font-bold text-purple-600">
+                      {aggregatedPrice.activeSources}/{aggregatedPrice.totalSources}
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg bg-white bg-opacity-60 backdrop-blur p-4">
+                    <p className="text-xs font-semibold uppercase text-slate-600">Method</p>
+                    <p className="mt-2 text-lg font-bold text-blue-600 capitalize">
+                      {aggregatedPrice.aggregationMethod}
+                    </p>
                   </div>
                 </div>
 
                 <div className="mt-4 flex items-center justify-center gap-2">
                   <span
-                    className={`h-3 w-3 rounded-full ${aggregatedPrice.healthy ? "bg-emerald-500" : "bg-red-500"}`}
+                    className={`h-3 w-3 rounded-full ${aggregatedPrice.healthy ? "bg-emerald-500" : "bg-amber-500"}`}
                   />
                   <p className="text-sm font-semibold text-slate-700">
                     {aggregatedPrice.healthy ? "✓ Healthy" : "⚠️ Degraded"}
@@ -89,21 +126,33 @@ export default function OracleDashboard() {
                   <div
                     key={oracle.name}
                     className={`rounded-lg border-2 p-6 transition-all ${
-                      oracle.healthy ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"
+                      oracle.healthy
+                        ? "border-emerald-200 bg-emerald-50"
+                        : oracle.price > 0
+                          ? "border-amber-200 bg-amber-50"
+                          : "border-red-200 bg-red-50"
                     }`}
                   >
                     <div className="flex items-start justify-between">
                       <h3 className="font-semibold text-slate-900">{oracle.name}</h3>
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                          oracle.healthy ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"
+                          oracle.healthy
+                            ? "bg-emerald-100 text-emerald-800"
+                            : oracle.price > 0
+                              ? "bg-amber-100 text-amber-800"
+                              : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {oracle.healthy ? "✓ Online" : "⚠️ Issue"}
+                        {oracle.healthy ? "✓ Online" : oracle.price > 0 ? "⚠️ Issues" : "✗ Offline"}
                       </span>
                     </div>
 
-                    <p className="mt-4 text-3xl font-bold text-slate-900">${oracle.price.toFixed(2)}</p>
+                    <p className="mt-4 text-3xl font-bold text-slate-900">
+                      {oracle.price > 0 ? `$${oracle.price.toFixed(2)}` : "N/A"}
+                    </p>
+
+                    {oracle.error && <p className="mt-2 text-xs text-red-600">{oracle.error}</p>}
 
                     <div className="mt-4 space-y-2 text-sm">
                       <div className="flex items-center justify-between">
